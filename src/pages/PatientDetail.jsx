@@ -5,6 +5,7 @@ import { BsFillPersonLinesFill } from "react-icons/bs";
 import { NavLink,Link,Outlet,useParams,useNavigate} from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import Swal from "sweetalert2";
+import DefaultProfile from "../images/defaultprofile.jpg";
 
 const PatientDetails = ({ name, dob, nrc, gender }) => {
   const medicalHistorySurvey = () => {
@@ -34,7 +35,8 @@ const PatientDetails = ({ name, dob, nrc, gender }) => {
   const [partner, setPartner] = useState({});
   const [isTrue, setIsTrue] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
+  const [profile,setProfile] = useState(DefaultProfile)
+  const [partnerProfile,setPartnerProfile] = useState(DefaultProfile)
   const { id } = useParams();
   const getDataById = async () => {
     const response = await axios.post(
@@ -44,6 +46,7 @@ const PatientDetails = ({ name, dob, nrc, gender }) => {
     const data = response.data.data.result[0];
     setPatient(data);
     setPatientId(id);
+    setProfile(data.imageUrl)
   };
 
   const getRelation = async () => {
@@ -57,6 +60,7 @@ const PatientDetails = ({ name, dob, nrc, gender }) => {
       const data = response.data.data.data.result[0];
       console.log(data);
       setPartner(data);
+      setPartnerProfile(data.imageUrl)
       toggleState();
     }
   };
@@ -75,6 +79,8 @@ const PatientDetails = ({ name, dob, nrc, gender }) => {
     setPatient(partner);
     setPartner(patient);
     setPatientId(partner.id);
+    setProfile(partnerProfile)
+    setPartnerProfile(profile)
     navigate(`/admin/patient/patientdetail/${partner.id}`);
   };
 
@@ -111,7 +117,8 @@ const PatientDetails = ({ name, dob, nrc, gender }) => {
             Patient's Details
           </h3>
           <div className="flex px-4 py-5">
-            <BsFillPersonLinesFill className="text-4xl mr-4 md:mr-18" />
+            {/* <BsFillPersonLinesFill className="text-4xl mr-4 md:mr-18" /> */}
+            <img src={profile} alt="Profile Preview" className="w-16 h-16 mr-4 md:mr-18 rounded-full"/>
             <dl className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <dt className="text-gray-700 font-medium">Patient's ID:</dt>
               <dd className="text-gray-900">{patient.id}</dd>
@@ -132,7 +139,7 @@ const PatientDetails = ({ name, dob, nrc, gender }) => {
               Partner's Details
             </h3>
             <div className="flex px-4 py-5">
-              <BsFillPersonLinesFill className="text-4xl mr-4 md:mr-18" />
+              <img src={partnerProfile} alt="Profile Preview" className="w-16 h-16 mr-4 md:mr-18 rounded-full"/>
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <dt className="text-gray-700 font-medium">Partner's ID:</dt>
                 <dd className="text-gray-900">{partner.id}</dd>

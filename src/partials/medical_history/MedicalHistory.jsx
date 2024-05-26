@@ -78,7 +78,7 @@ const MedicalHistory = () => {
         icon: "success",
         title: "Patient's medical history is updated successfully",
       });
-      navigate(-1);
+      navigate(`/admin/patient/patientdetail/${patientId}/personalinfo`);
       console.log("response data", response.data);
     } else {
       Toast.fire({
@@ -123,7 +123,7 @@ const MedicalHistory = () => {
   };
   useEffect(() => {
     getData();
-  }, [formId]);
+  }, []);
   return <Survey model={survey} />;
 };
 export default MedicalHistory;

@@ -75,11 +75,11 @@ const PartnerForm = () => {
     const response= await axios.post("http://localhost:3000/partner/partnerCreate",formData)
     console.log("partner connect :",response.data);
     if(response.data.code == 200){
-        Toast.fire({
-            icon: "success",
-            title: "New Partner is connected with Patient",
-        });
-        navigate(`/admin/patient/patientdetail/${id}`)
+      Toast.fire({
+          icon: "success",
+          title: "New Partner is connected with Patient",
+      });
+        navigate(-1)
     } 
     else{
       Toast.fire({

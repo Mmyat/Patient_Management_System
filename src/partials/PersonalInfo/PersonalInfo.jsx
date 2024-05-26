@@ -50,7 +50,7 @@ const PersonalInfo = () => {
         icon: "success",
         title: "New Patient's family medical history is saved successfully",
       });
-      navigate(-1);
+      navigate(`/admin/patient/patientdetail/${patientId}/personalinfo`);
     } else {
       Toast.fire({
         icon: "error",
@@ -79,7 +79,7 @@ const PersonalInfo = () => {
         icon: "success",
         title: "Patient's social history is updated successfully",
       });
-      navigate(-1);
+      navigate(`/admin/patient/patientdetail/${patientId}/personalinfo`);
       console.log("response data", response.data);
     } else {
       Toast.fire({
@@ -127,7 +127,7 @@ const PersonalInfo = () => {
   useEffect(() => {
     getData();
     console.log("id :",patientId);
-  }, [formId]);
+  }, []);
   return <Survey model={survey}/>;
 }
 

@@ -54,7 +54,7 @@ export const medical_json = {
                     "isRequired": true,
                     "name": "infertility_issue_year",
                     "startWithNewLine": true,
-                    "title": "How long do you have infertility issue(year)?"
+                    "title": "How long do you have infertility issue(year) ?"
                   },
                   {
                     "type": "radiogroup",
@@ -71,7 +71,7 @@ export const medical_json = {
                     "colCount": 0,
                     "isRequired": true,
                     "name": "haveChildren",
-                    "title": "Do you have children?",               
+                    "title": "Do you have children ?",               
                   },
                   {
                     "type": "text",
@@ -98,7 +98,7 @@ export const medical_json = {
                     "isRequired": true,
                     "name": "delivery_methods",
                     "startWithNewLine": true,
-                    "title": "Refer to Q.6,what is delivery details type?",
+                    "title": "Refer to Q.6,what is delivery details type ?",
                     "titleLocation": "top",
                     "visible": false,
                     "visibleIf": "{haveChildren} = \"yes\""
