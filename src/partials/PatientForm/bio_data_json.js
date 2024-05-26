@@ -1,3 +1,5 @@
+import nrcdata from './nrc_data.json';
+import dropdownOptions from './dropdownopts.json';
 export const json = {
   pages: [
     {
@@ -20,7 +22,7 @@ export const json = {
               maxValueExpression: "today()",
               title: "Date of Birth",
               startWithNewLine: true,
-              dateFormat: "yy/mm/dd",
+              dateFormat: 'yy/mm/dd',
               isRequired: true,
             },
             {
@@ -32,20 +34,22 @@ export const json = {
               isRequired: true,
             },
             {
+              type: "text",
               name:"expiryDate",
               title:"Certificate Expiry Date",
-              cellType:"text",
               inputType:"date",
-              dateFormat: "dd/mm/yy",
+              dateFormat: "YY/MM/DD",
               isRequired: true
             }, 
             {
-              type: "text",
+              type: "dropdown",
               name: "nrc",
-              inputType: "text",
               title: "NRC(No)",
               startWithNewLine: true,
               isRequired: true,
+              // choices : ["1","2","3","4","5","6","7","8","9","10","11","12","13","14"]
+              choices: dropdownOptions.countries
+              // choices : nrcdata.name_en
             },
             {
               type: "radiogroup",

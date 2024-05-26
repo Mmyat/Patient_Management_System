@@ -1,15 +1,15 @@
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
-import { social_json } from "./social_json";
+import { objective_json } from "./objective_json";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useStateContext } from "../../context/ContextProvider";
 import { useEffect, useState } from "react";
 
-const SocialHistory = () => {
+const Objective = () => {
   const navigate = useNavigate();
-  const survey = new Model(social_json);
+  const survey = new Model(objective_json);
   const { patientId } = useStateContext();
   const [isNew, setIsNew] = useState(true);
   const [formId, setFormId] = useState(null);
@@ -26,7 +26,6 @@ const SocialHistory = () => {
     },
   });
   //
-  survey.completeText = isNew ? "Save" : "Update";
   const saveSurveyData = async (survey) => {
     const data = survey.data;
     delete data.age;
@@ -34,7 +33,7 @@ const SocialHistory = () => {
     const med_data = {
       patient_id: patientId,
       data: {
-        social_history: data,
+        objectives_concerns: data,
       },
     };
     console.log("history:", med_data);
@@ -42,17 +41,17 @@ const SocialHistory = () => {
       "http://localhost:3000/formData/formDataCreate",
       med_data
     );
-    console.log("med_history", response.data);
+    console.log("objecitves :", response.data);
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
-        title: "New Patient's social history is saved successfully",
+        title: "New Patient's family medical history is saved successfully",
       });
       navigate(-1);
     } else {
       Toast.fire({
         icon: "error",
-        title: "Failed to save new patient's social history",
+        title: "Failed to save new patient's family medical history",
       });
     }
   };
@@ -64,7 +63,7 @@ const SocialHistory = () => {
     const soc_data = {
       patient_id: patientId,
       data: {
-        social_history: data,
+        objectives_concerns: data,
       },
     };
     const response = await axios.put(
@@ -87,12 +86,12 @@ const SocialHistory = () => {
     }
   };
   survey.completeText = isNew ? "Save" : "Update";
- 
   survey.addNavigationItem({
     id: "cancel",
     title: "Cancel",
     action: () => {
-      navigate('/');
+      console.log("Cancel button clicked!");
+      navigate(-1);
     },
   });
   survey.onComplete.add(function (sender, options) {
@@ -103,13 +102,14 @@ const SocialHistory = () => {
   survey.sendResultOnPageNext = true;
   //Get Data
   const getData = async () => {
+    console.log("Id :",patientId);
     const response = await axios.post(
       `http://localhost:3000/formData/formDataSearchPatient/`,
-      { patient_id: patientId, history: "social_history" }
+      { patient_id: patientId, history: "objectives_concerns" }
     );
     console.log(response.data);
     if (response.data.code == 200 && response.data.data.length !== 0) {
-      const prevData = response.data.data[0].data.social_history;
+      const prevData = response.data.data[0].data.objectives_concerns;
       survey.data = prevData;
       console.log("previos data", prevData);
       const form_id = response.data.data[0].id;
@@ -123,8 +123,9 @@ const SocialHistory = () => {
   };
   useEffect(() => {
     getData();
+    console.log("id :",patientId);
   }, [formId]);
-  return <Survey model={survey} />;
-}
+  return <Survey model={survey}/>;
+};
 
-export default SocialHistory
+export default Objective;

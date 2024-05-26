@@ -126,13 +126,4 @@ const MedicalHistory = () => {
   }, [formId]);
   return <Survey model={survey} />;
 };
-
 export default MedicalHistory;
-// {
-//   first_period: 3;
-//   haveChildren: "no";
-//   infertility_issue_year: 8;
-//   lmp_date: "2023-04-21";
-//   menstrual_pattern: "regular";
-//   period_long_time: 5;
-// }

@@ -20,6 +20,7 @@ export const surgical_json = {
                 },
                 {
                   name: "procedure",
+                  type: "comment",
                   title: "Procedure:",
                   inputType: "comment",
                   isRequired: true,

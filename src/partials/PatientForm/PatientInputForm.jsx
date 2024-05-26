@@ -100,7 +100,7 @@ function PatientInputForm() {
     const getBioData = async()=>{
         if(!isNew){
             const response = await axios.post(`http://localhost:3000/patient/patientIdSearch/${id}`)
-            const data =response.data.data.patient
+            const data = response.data.data.result[0]
             survey.data = data;
         }
     }

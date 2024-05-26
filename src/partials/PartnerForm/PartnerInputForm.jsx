@@ -28,11 +28,9 @@ function PartnerInputForm() {
           toast.addEventListener('mouseenter', Swal.stopTimer)
           toast.addEventListener('mouseleave', Swal.resumeTimer)
         }
-      })
+    })
    
     survey.completeText ="Save";
-    //
-    const browserTheme = localStorage.getItem('theme')
     
     //
     const saveSurveyData=async (survey)=> {
@@ -74,12 +72,6 @@ function PartnerInputForm() {
          
     survey.showQuestionNumbers = false;  
     survey.sendResultOnPageNext = true;
-
-    //
-    useEffect(()=>{
-        let theme = localStorage.getItem('theme') == 'light' ? DefaultLight : DefaultDark ;
-        survey.applyTheme(theme);//dark:DefaultLight
-    },[])
     
     return (
         <div className='flex flex-col px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl items-center justify-center mx-auto'>

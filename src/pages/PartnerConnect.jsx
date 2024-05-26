@@ -1,13 +1,15 @@
 import { useEffect, useState, useRef } from "react";
 import { AiOutlineEdit, AiFillDelete } from "react-icons/ai";
-import { Link ,useParams} from "react-router-dom";
+import { useParams,useNavigate} from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
-const Table = () => {
+const PartnerConnect = () => {
   const { id } = useParams();
+  const isToConnect = id !== null
+  const navigate = useNavigate();
   const [patientList, setPatientList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("Name");
@@ -49,32 +51,53 @@ const Table = () => {
       Cell: ({ row }) => (
         
         <div className="flex gap-2">
-          <Link
-            to={`patientdetail/${row.id}`}
-            className="font-medium text-blue-600 dark:text-blue-500"
-          >
-            Detail
-          </Link>
-          <Link to={`patientform/${row.id}`}>
-            <AiOutlineEdit className="text-2xl text-orange-600 dark:text-orange-500 cursor-pointer" />
-          </Link>
-          <AiFillDelete
-            className="text-2xl text-red-400 dark:text-red-500 cursor-pointer"
-            onClick={() => {
-              deletePatient(row.id);
-            }}
-          />
+          <button className="text-blue-400 background-transparent font-bold px-3 py-2 text-sm outline focus:outline-none mr-2 mb-1 ease-linear transition-all duration-150 rounded-lg" type="button" onClick={()=>{PartnerConnecting(row.id)}}>
+            Connect
+          </button>
         </div>
       ),
     },
   ];
   //
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  })
+  //
+  const PartnerConnecting =async(partner_id)=>{
+    const data= {
+      patient_id_1 : id ,
+      patient_id_2 : partner_id
+    }
+    console.log("payload data",data);
+    const response= await axios.post("http://localhost:3000/partner/partnerJoin",data)
+    console.log(response.data);
+    if(response.data.code == 200){
+        Toast.fire({
+            icon: "success",
+            title: "Patient is connected successfully with partner",
+        });
+        navigate(`/admin/patient/patientdetail/${id}`)
+        console.log("response data",response.data);  
+    } 
+    else{
+        Toast.fire({
+            icon: "error",
+            title: "Failed to connect",
+        });
+        navigate(`/admin/patient/patientdetail/${id}`)
+    }     
+  }
+  //
   const handleSearchTypeChange = (e) => {
     setSearchType(e.target.value);
-  };
-  //
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
   };
   //
   const calculateAge = (dateOfBirth) => {
@@ -85,13 +108,25 @@ const Table = () => {
     return ageInYears;
   };
   //
+  const swalWithButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "bg-blue-500 text-white px-2 py-1 rounded shadow-lg",
+      cancelButton: "bg-red-500 text-white px-5 py-1 rounded shadow-lg mr-6",
+    },
+    buttonsStyling: false,
+  });
+  //
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+  //
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
         event.preventDefault();
         getData();
     }
-  };                                      
-
+  }; 
+  //
   const getData = async () => {
     try {
       if (searchTerm !== "" && searchTerm !== null) {
@@ -191,9 +226,11 @@ const Table = () => {
 
   useEffect(() => {
     getData();
-  },[page, total,isSearh]);
+    console.log("to connect :", isToConnect);
+  }, [page, total,isSearh]);
   return (
-    <>
+    <div className="w-full flex flex-col items-center sm:items-center justify-center md:justify-center items-center mb-8 overflow-x-auto">
+      <h3 className='text-center text-2xl mb-4 font-semibold '>Conect With Partner</h3>
       <div className="flex">
         <select
           value={searchType}
@@ -211,11 +248,10 @@ const Table = () => {
             className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
             placeholder="Search ..."
             ref={searchInput}
-            onChange={(event) => {
-              handleSearchChange(event);
-            }}
-            onKeyDown={(event) => {handleKeyDown(event)}}
-            required/>
+            onChange={(event) => {handleSearchChange(event);}}
+            onKeyDown={(event) => {handleKeyDown(event)}} 
+            required
+          />
           <button type="submit" onClick={(event) => {getData()}} class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
               <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
@@ -323,8 +359,8 @@ const Table = () => {
           <p className="text-center text-red-300 mt-8">{message}</p>
         </div>
       )}
-    </>
-  );
-};
+    </div>
+  )
+}
 
-export default Table;
+export default PartnerConnect

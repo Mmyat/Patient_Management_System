@@ -109,7 +109,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
               {/* Dashboard */}
               <li className="border-t border-gray-300 py-1">               
                 <NavLink
-                  to={"/admin"}
+                  to={"/admin/dashboard"}
                   className={({ isActive }) =>
                     isActive ? "flex text-gray-700 bg-blue-200 rounded-xl" : "flex text-gray-600"
                   }

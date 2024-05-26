@@ -1,3 +1,4 @@
+import nrcData from './nrc_data';
 export const json = {
     "pages": [
       {
