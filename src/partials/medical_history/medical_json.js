@@ -12,7 +12,7 @@ export const medical_json = {
                     "isRequired": true,
                     "name": "first_period",
                     "startWithNewLine": true,
-                    "title": "How old were you at your first menstral period?(year)"
+                    "title": "How old were you at your first menstral period ?(year)"
                   },
                   {
                     "type": "text",
@@ -20,7 +20,7 @@ export const medical_json = {
                     "isRequired": true,
                     "name": "period_long_time",
                     "startWithNewLine": true,
-                    "title": "How many days are between one menstral period and the next?(days)"
+                    "title": "How many days are between one menstral period and the next ?(days)"
                   },
                   {
                     "type": "radiogroup",
@@ -37,15 +37,16 @@ export const medical_json = {
                     "colCount": 0,
                     "isRequired": true,
                     "name": "menstrual_pattern",
-                    "title": "How is your menstrual pattern?"
+                    "title": "How is your menstrual pattern ?"
                   },
                   {
                     "type": "text",
                     "inputType": "date",
+                    "dateFormat": "yyyy/mm/dd",
                     "isRequired": true,
                     "name": "lmp_date",
                     "startWithNewLine": true,
-                    "title": "When did your last menstral period start(LMP date)?"
+                    "title": "When did your last menstral period start(LMP date) ?"
                   },
                   {
                     "type": "text",

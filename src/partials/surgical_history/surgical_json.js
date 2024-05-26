@@ -13,9 +13,11 @@ export const surgical_json = {
               titleLocation: "hidden",
               columns: [
                 {
+                  type : "text",
                   name: "date",
                   title: "Date",
                   inputType: "date",
+                  dateFormat: "yyyy/mm/dd",
                   isRequired: true,
                 },
                 {

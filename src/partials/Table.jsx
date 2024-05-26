@@ -91,6 +91,14 @@ const Table = () => {
         getData();
     }
   };                                      
+  //
+  const swalWithButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "bg-blue-500 text-white px-2 py-1 rounded shadow-lg",
+      cancelButton: "bg-red-500 text-white px-5 py-1 rounded shadow-lg mr-6",
+    },
+    buttonsStyling: false,
+  });
 
   const getData = async () => {
     try {
@@ -177,6 +185,45 @@ const Table = () => {
     } catch (error) {
       setMessage(error);
     }
+  };
+  //Delete patient
+  const deletePatient = async (id) => {
+    swalWithButtons
+      .fire({
+        title: "Are you sure to delete?",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          const response = await axios.delete(
+            `http://localhost:3000/patient/patientPicDelete/${id}`
+          );
+          console.log("deleting patient code", response.data);
+          if (response.data.code == 200) {
+            swalWithButtons.fire(
+              "Deleted!",
+              "Your patient's data has been deleted.",
+              "success"
+            );
+            getData();
+          } else {
+            swalWithButtons.fire(
+              "Cancelled",
+              "Your patient's data cannot not delete",
+              "error"
+            );
+          }
+        } else {
+          swalWithButtons.fire(
+            'Cancelled',
+            'Your patient\'s data cannot not delete',
+            'error'
+          )
+        }
+      });
   };
 
   const toggleState = async () => {

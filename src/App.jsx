@@ -19,6 +19,9 @@ import PersonalInfo from './partials/PersonalInfo/PersonalInfo';
 import PartnerConnect from './pages/PartnerConnect';
 import PartnerForm from './components/PartnerForm';
 import PatientForm from './components/PatientForm';
+import Calender from './components/Calender';
+import DateTest from './partials/PartnerForm/DateTest';
+import ProfileImageUpload from './components/ProfileImageUpload ';
 
 function App() {
 
@@ -36,6 +39,7 @@ function App() {
         <Route exact path="/admin" element={<Main />}>
           <Route path='dashboard' element={<Dashboard/>} />
           <Route path="patient" element={<Patients/>}/>           
+          <Route path="patient/calender" element={<ProfileImageUpload/>}/>           
           <Route path="patient/patientform/:id" element={<PatientForm/>}/> 
           <Route path="patient/partnerform/:id" element={<PartnerForm/>}/> 
           <Route path="patient/partnerconnect/:id" element={<PartnerConnect/>}/>
