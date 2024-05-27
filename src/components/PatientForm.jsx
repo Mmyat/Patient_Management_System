@@ -15,14 +15,8 @@ const PatientForm = () => {
   const [name, setName] = useState("");
   const [dob, setDob] = useState("");
   const [age, setAge] = useState("");
-  const [NRCCodeSelect, setNRCCodeSelect] = useState(1);
-  const [NRCPlaceSelect, setNRCPlaceSelect] = useState(nrc_data[0].name_en);
-  const [NRCTypeSelect, setNRCTypeSelect] = useState("N");
-  const [NRCCode, setNRCCode] = useState();
-  const [gender, setGender] = useState("Male");
-  const [townshipList, setTownshipList] = useState([]);
-  const [file, setFile] = useState(null);
   const nrcStateCode = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+  const [NRCCodeSelect, setNRCCodeSelect] = useState(nrcStateCode ? nrcStateCode[0] : '');
   const nrcType = [
     { en: "N", mm: "နိုင်" },
     { en: "E", mm: "ဧည့်" },
@@ -31,6 +25,12 @@ const PatientForm = () => {
     { en: "R", mm: "ယာယီ" },
     { en: "S", mm: "စ" },
   ];
+  const [NRCPlaceSelect, setNRCPlaceSelect] = useState(nrc_data[0].name_en);
+  const [NRCTypeSelect, setNRCTypeSelect] = useState(nrcType[0].en);
+  const [NRCCode, setNRCCode] = useState('');
+  const [gender, setGender] = useState("male");
+  const [townshipList, setTownshipList] = useState([]);
+  const [file, setFile] = useState(null);
   const { id } = useParams();
   console.log("id:", id);
   const navigate = useNavigate();
@@ -86,8 +86,8 @@ const PatientForm = () => {
   };
   const fileUploadRef = useRef();
   //
-  const savePatientData = async () => {
-    // e.preventDefault();
+  const savePatientData = async (e) => {
+    e.preventDefault();
     const formData = new FormData();
     formData.append("name", name);
     formData.append("dob", dob);
@@ -114,34 +114,28 @@ const PatientForm = () => {
         icon: "error",
         title: "Failed to register",
       });
-      // navigate(-1);
-      // navigate('/admin/patient')
     }
   };
   //
-  const updatePatientData = async () => {
-    // e.preventDefault();
+  const updatePatientData = async (e) => {
+    e.preventDefault();
     const formData = new FormData();
     formData.append("name", name);
     const formattedDate = format(dob, "yyyy/MM/dd");
     formData.append("dob", formattedDate);
-    formData.append(
-      "nrc",
-      `${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`
-    );
+    formData.append("nrc",`${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`);
     formData.append("gender", gender);
     formData.append("image", file);
     console.log("form data :", formData);
     const response = await axios.put(`http://localhost:3000/patient/patientPicUpdate/${id}`,formData);
     console.log("update :", response.data);
-    
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
         title: "Paatient's info is updated successfully",
       });
-      navigate('/admin/patient')
-      // navigate(-1)
+      // navigate(`http://localhost:5173/admin/patient`)
+      navigate(-1)
     } else {
       Toast.fire({
         icon: "error",
@@ -180,6 +174,7 @@ const PatientForm = () => {
       setNRCCode(code[1]);
       //imageUrl
       setPreview(data.imageUrl);
+      // setFile(preview)
     }
   };
   //
@@ -191,7 +186,7 @@ const PatientForm = () => {
   },[])
   return (
     <div className="flex w-full items-center justify-center">
-      <form className="w-full max-w-lg items-center justify-center bg-white p-6 rounded-lg shadow-md">
+      <form onSubmit={isNew ? savePatientData : updatePatientData} className="w-full max-w-lg items-center justify-center bg-white p-6 rounded-lg shadow-md">
         <p className="text-xl">{isNew ? "New Patient" : "Edit Patient"}</p>
         <div className="mb-4">
           <label
@@ -324,7 +319,6 @@ const PatientForm = () => {
             />
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center bg-gray-200 rounded-full">
-              {/* <span className="text-gray-400">No Image</span> */}
               <AiOutlinePlus className="text-3xl text-gray-900 font-semibold object-cover" />
               <p>Upload Profile</p>
             </div>
@@ -338,8 +332,6 @@ const PatientForm = () => {
             onChange={handleImageChange}
           />
         </div>
-        {/* <input type="file" onChange={handleImageUpload} /> */}
-        {/* <input type="file" id="file" ref={fileUploadRef} onChange={handleImageUpload}/> */}
         <div className="mt-6">
           <button
             onClick={() => navigate('/admin/patient')}
@@ -349,9 +341,9 @@ const PatientForm = () => {
           </button>
           <button
             type="submit"
-            onClick={() => {
-              isNew ? savePatientData(event) : updatePatientData(event);
-            }}
+            // onClick={() => {
+            //   isNew ? savePatientData() : updatePatientData();
+            // }}
             className="bg-indigo-600 text-white py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {isNew ? "Save" : "Update"}

@@ -13,14 +13,8 @@ const PartnerForm = () => {
   const [name, setName] = useState('');
   const [dob, setDob] = useState(null);
   const [age, setAge] = useState('');
-  const [NRCCodeSelect, setNRCCodeSelect] = useState(1);
-  const [NRCPlaceSelect, setNRCPlaceSelect] = useState(nrc_data[0].name_en);
-  const [NRCTypeSelect, setNRCTypeSelect] = useState("N");
-  const [NRCCode, setNRCCode] = useState();
-  const [gender, setGender] = useState('Male');
-  const [townshipList,setTownshipList] = useState([])
-
-  const nrcStateCode = [1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+  const nrcStateCode = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+  const [NRCCodeSelect, setNRCCodeSelect] = useState(nrcStateCode ? nrcStateCode[0] : '');
   const nrcType = [
     { en: "N", mm: "နိုင်" },
     { en: "E", mm: "ဧည့်" },
@@ -29,6 +23,12 @@ const PartnerForm = () => {
     { en: "R", mm: "ယာယီ" },
     { en: "S", mm: "စ" },
   ];
+  const [NRCPlaceSelect, setNRCPlaceSelect] = useState(nrc_data[0].name_en);
+  const [NRCTypeSelect, setNRCTypeSelect] = useState(nrcType[0].en);
+  const [NRCCode, setNRCCode] = useState('');
+  const [gender, setGender] = useState('male');
+  const [townshipList,setTownshipList] = useState([])
+
   const {id} = useParams()
   console.log("id:",id);
   const navigate = useNavigate();
@@ -78,7 +78,7 @@ const PartnerForm = () => {
           icon: "success",
           title: "New Partner is connected with Patient",
       });
-      navigate(`/admin/patient/patientdetail/${id}`)
+      navigate(-1)
     } 
     else{
       Toast.fire({
@@ -94,7 +94,7 @@ const PartnerForm = () => {
 
   return (
     <div className="flex w-full items-center justify-center">
-      <form className="w-full max-w-lg bg-white p-6 rounded-lg shadow-md">
+      <form onSubmit={savePatientData} className="w-full max-w-lg bg-white p-6 rounded-lg shadow-md">
         <div className="mb-4">
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
           <input
@@ -110,7 +110,11 @@ const PartnerForm = () => {
           <label htmlFor="dob" className="block text-sm font-medium text-gray-700">Date of Birth</label>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DemoContainer components={["DatePicker"]}>
-              <DatePicker value={dob} onChange={handleDobChange} format='yyyy/MM/dd' required/>
+              <DatePicker value={dob} onChange={handleDobChange} format='yyyy/MM/dd' slotProps={{
+                  textField: {
+                    variant: 'outlined',
+                    fullWidth: true,
+                  }}} required/>
             </DemoContainer>
           </LocalizationProvider>
         </div>
@@ -173,7 +177,6 @@ const PartnerForm = () => {
           <button onClick={()=>navigate(-1)} className='shadow-sm text-sm font-medium outline outline-indigo-600 outline-2 outline-offset-2 py-1 px-4 mr-4 rounded-md focus:ring-indigo-500'>Cancel</button>
           <button
             type="submit"
-            onClick={()=>savePatientData()}
             className="bg-indigo-600 text-white py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
           Save
