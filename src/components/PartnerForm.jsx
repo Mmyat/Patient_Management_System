@@ -63,7 +63,8 @@ const PartnerForm = () => {
     setTownshipList(townshipCode);
   }
 
-  const savePatientData=async()=> {
+  const savePatientData=async(event)=> {
+    event. preventDefault()
     const formData={
       "name" : name,
       "dob" : dob ,

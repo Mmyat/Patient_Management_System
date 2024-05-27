@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import nrc_data from "../data_sources/nrc_data.json";
 import { parse } from "date-fns";
 import { AiOutlinePlus } from "react-icons/ai";
+import { event } from "jquery";
 const PatientForm = () => {
   const [name, setName] = useState("");
   const [dob, setDob] = useState("");
@@ -84,7 +85,9 @@ const PatientForm = () => {
     setTownshipList(townshipCode);
   };
   const fileUploadRef = useRef();
+  //
   const savePatientData = async () => {
+    // e.preventDefault();
     const formData = new FormData();
     formData.append("name", name);
     formData.append("dob", dob);
@@ -117,6 +120,7 @@ const PatientForm = () => {
   };
   //
   const updatePatientData = async () => {
+    // e.preventDefault();
     const formData = new FormData();
     formData.append("name", name);
     const formattedDate = format(dob, "yyyy/MM/dd");
@@ -171,7 +175,7 @@ const PatientForm = () => {
       const subParts = parts[1].split(")");
       setNRCTypeSelect(subParts[0]);
       //NRC code destructure
-      const code = data.nrc.split("(N)");
+      const code = data.nrc.split(")");
       console.log("code", code[1]);
       setNRCCode(code[1]);
       //imageUrl
@@ -257,7 +261,7 @@ const PatientForm = () => {
               className="text-gray-900 bg-gray-50 border-s-2 rounded-s-lg border border-gray-300"
             >
               {nrcStateCode?.map((item, index) => (
-                <option value={item}>{item}</option>
+                <option value={item} key={index}>{item}</option>
               ))}
             </select>
             <select
@@ -266,7 +270,7 @@ const PatientForm = () => {
               className="text-gray-900 bg-gray-50 border border-gray-300"
             >
               {townshipList?.map((item, index) => (
-                <option value={item.name_en}>{item.name_en}</option>
+                <option value={item.name_en} key={index}>{item.name_en}</option>
               ))}
             </select>
             <select
@@ -275,7 +279,7 @@ const PatientForm = () => {
               className="text-gray-900 bg-gray-50 border border-gray-300"
             >
               {nrcType?.map((item, index) => (
-                <option value={item.en}>{item.en}</option>
+                <option value={item.en} key={index}>{item.en}</option>
               ))}
             </select>
 
@@ -346,7 +350,7 @@ const PatientForm = () => {
           <button
             type="submit"
             onClick={() => {
-              isNew ? savePatientData() : updatePatientData();
+              isNew ? savePatientData(event) : updatePatientData(event);
             }}
             className="bg-indigo-600 text-white py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
