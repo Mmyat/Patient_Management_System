@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import {useNavigate,useParams} from "react-router-dom";
 import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
 import "survey-core/defaultV2.min.css";
@@ -7,13 +7,12 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useStateContext } from "../../context/ContextProvider";
 import { useEffect, useState } from "react";
-import { inputmask } from "surveyjs-widgets";
-import * as SurveyCore from "survey-core";
-inputmask(SurveyCore)
+
 const PersonalInfo = () => {
   const navigate = useNavigate();
   const survey = new Model(personal_json);
-  const { patientId } = useStateContext();
+  survey.completedHtml = "";
+  const { id } = useParams();
   const [isNew, setIsNew] = useState(true);
   const [formId, setFormId] = useState(null);
   //
@@ -32,29 +31,30 @@ const PersonalInfo = () => {
   const saveSurveyData = async (survey) => {
     const data = survey.data;
     delete data.age;
-    console.log("patient_id", patientId);
-    const med_data = {
-      patient_id: patientId,
+
+    console.log("patient_id", id);
+    const personal_data = {
+      patient_id: id,
       data: {
         personal_info: data,
       },
     };
-    console.log("history:", med_data);
+    // console.log("personal :", personal_data);
     const response = await axios.post(
       "http://localhost:3000/formData/formDataCreate",
-      med_data
+      personal_data
     );
-    console.log("objecitves :", response.data);
+    console.log("personal res:", response.data);
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
-        title: "New Patient's family medical history is saved successfully",
+        title: "New Patient's personal information is saved successfully",
       });
-      navigate(`/admin/patient/patientdetail/${patientId}/personalinfo`);
+      navigate(`/admin/patient/patientdetail/${id}`);
     } else {
       Toast.fire({
         icon: "error",
-        title: "Failed to save new patient's family medical history",
+        title: "Failed to save new patient's personal information",
       });
     }
   };
@@ -63,28 +63,29 @@ const PersonalInfo = () => {
     const data = survey.data;
     delete data.age;
     console.log("update_data", data);
-    const soc_data = {
-      patient_id: patientId,
+    const personal_data = {
+      patient_id: id,
       data: {
         personal_info: data,
       },
     };
+    console.log(personal_data);
     const response = await axios.put(
       `http://localhost:3000/formData/formDataUpdate/${formId}`,
-      soc_data
+      personal_data
     );
     console.log("update", response.data);
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
-        title: "Patient's social history is updated successfully",
+        title: "Patient's personal information is updated successfully",
       });
-      navigate(`/admin/patient/patientdetail/${patientId}/personalinfo`);
+      navigate(`/admin/patient/patientdetail/${id}`);
       console.log("response data", response.data);
     } else {
       Toast.fire({
         icon: "error",
-        title: "Failed to update Patient's social history",
+        title: "Failed to update Patient's personal information",
       });
     }
   };
@@ -94,7 +95,7 @@ const PersonalInfo = () => {
     title: "Cancel",
     action: () => {
       console.log("Cancel button clicked!");
-      navigate(-1);
+      navigate(`/admin/patient/patientdetail/${id}`);
     },
   });
   survey.onComplete.add(function (sender, options) {
@@ -105,12 +106,12 @@ const PersonalInfo = () => {
   survey.sendResultOnPageNext = true;
   //Get Data
   const getData = async () => {
-    console.log("Id :",patientId);
+    console.log("Id :",id);
     const response = await axios.post(
       `http://localhost:3000/formData/formDataSearchPatient/`,
-      { patient_id: patientId, history: "personal_info" }
+      { patient_id: id, history: "personal_info" }
     );
-    console.log(response.data);
+    console.log("get res",response.data);
     if (response.data.code == 200 && response.data.data.length !== 0) {
       const prevData = response.data.data[0].data.personal_info;
       survey.data = prevData;
@@ -126,8 +127,7 @@ const PersonalInfo = () => {
   };
   useEffect(() => {
     getData();
-    console.log("id :",patientId);
-  }, []);
+  }, [formId]);
   return <Survey model={survey}/>;
 }
 

@@ -41,8 +41,8 @@ export const medical_json = {
                   },
                   {
                     "type": "text",
-                    "inputType": "date",
-                    "dateFormat": "yyyy/mm/dd",
+                    "inputMask": "datetime",
+                    "inputFormat": "yyyy/mm/dd",
                     "isRequired": true,
                     "name": "lmp_date",
                     "startWithNewLine": true,

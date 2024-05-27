@@ -1,16 +1,15 @@
-import {useNavigate} from "react-router-dom";
+import {useNavigate,useParams} from "react-router-dom";
 import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
 import { social_json } from "./social_json";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useStateContext } from "../../context/ContextProvider";
 import { useEffect, useState } from "react";
 
 const SocialHistory = () => {
   const navigate = useNavigate();
   const survey = new Model(social_json);
-  const { patientId } = useStateContext();
+  const { id } = useParams();
   const [isNew, setIsNew] = useState(true);
   const [formId, setFormId] = useState(null);
   //
@@ -30,9 +29,9 @@ const SocialHistory = () => {
   const saveSurveyData = async (survey) => {
     const data = survey.data;
     delete data.age;
-    console.log("patient_id", patientId);
+    console.log("patient_id", id);
     const med_data = {
-      patient_id: patientId,
+      patient_id: id,
       data: {
         social_history: data,
       },
@@ -48,7 +47,7 @@ const SocialHistory = () => {
         icon: "success",
         title: "New Patient's social history is saved successfully",
       });
-      navigate(-1);
+      navigate(`/admin/patient/patientdetail/${id}`);
     } else {
       Toast.fire({
         icon: "error",
@@ -62,7 +61,7 @@ const SocialHistory = () => {
     delete data.age;
     console.log("update_data", data);
     const soc_data = {
-      patient_id: patientId,
+      patient_id: id,
       data: {
         social_history: data,
       },
@@ -77,7 +76,7 @@ const SocialHistory = () => {
         icon: "success",
         title: "Patient's social history is updated successfully",
       });
-      navigate(-1);
+      navigate(`/admin/patient/patientdetail/${id}`);
       console.log("response data", response.data);
     } else {
       Toast.fire({
@@ -92,7 +91,7 @@ const SocialHistory = () => {
     id: "cancel",
     title: "Cancel",
     action: () => {
-      navigate('/');
+      navigate(`/admin/patient/patientdetail/${id}`);
     },
   });
   survey.onComplete.add(function (sender, options) {
@@ -105,7 +104,7 @@ const SocialHistory = () => {
   const getData = async () => {
     const response = await axios.post(
       `http://localhost:3000/formData/formDataSearchPatient/`,
-      { patient_id: patientId, history: "social_history" }
+      { patient_id: id, history: "social_history" }
     );
     console.log(response.data);
     if (response.data.code == 200 && response.data.data.length !== 0) {

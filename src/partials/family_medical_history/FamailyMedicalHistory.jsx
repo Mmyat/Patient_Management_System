@@ -1,16 +1,15 @@
-import { useNavigate } from "react-router-dom";
+import {useNavigate,useParams} from "react-router-dom";
 import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
 import { family_medical_json } from "./family_medical_json";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useStateContext } from "../../context/ContextProvider";
 import { useEffect, useState } from "react";
 
 const FamailyMedicalHistory = () => {
   const navigate = useNavigate();
   const survey = new Model(family_medical_json)
-  const { patientId } = useStateContext();
+  const { id } = useParams();
   const [isNew, setIsNew] = useState(true);
   const [formId, setFormId] = useState(null);
   //
@@ -29,9 +28,9 @@ const FamailyMedicalHistory = () => {
   const saveSurveyData = async (survey) => {
     const data = survey.data;
     delete data.age;
-    console.log("patient_id", patientId);
+    console.log("patient_id", id);
     const med_data = {
-      patient_id: patientId,
+      patient_id: id,
       data: {
         family_history: data,
       },
@@ -41,13 +40,12 @@ const FamailyMedicalHistory = () => {
       "http://localhost:3000/formData/formDataCreate",
       med_data
     );
-    console.log("med_history", response.data);
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
         title: "New Patient's family medical history is saved successfully",
       });
-      navigate(-1);
+      navigate(`/admin/patient/patientdetail/${id}`);
     } else {
       Toast.fire({
         icon: "error",
@@ -61,7 +59,7 @@ const FamailyMedicalHistory = () => {
     delete data.age;
     console.log("update_data", data);
     const soc_data = {
-      patient_id: patientId,
+      patient_id: id,
       data: {
         family_history: data,
       },
@@ -70,14 +68,12 @@ const FamailyMedicalHistory = () => {
       `http://localhost:3000/formData/formDataUpdate/${formId}`,
       soc_data
     );
-    console.log("update", response.data);
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
         title: "Patient's social history is updated successfully",
       });
-      navigate(-1);
-      console.log("response data", response.data);
+      navigate(`/admin/patient/patientdetail/${id}`);
     } else {
       Toast.fire({
         icon: "error",
@@ -91,7 +87,7 @@ const FamailyMedicalHistory = () => {
     title: "Cancel",
     action: () => {
       console.log("Cancel button clicked!");
-      navigate(-1);
+      navigate(`/admin/patient/patientdetail/${id}`);
     },
   });
   survey.onComplete.add(function (sender, options) {
@@ -104,9 +100,8 @@ const FamailyMedicalHistory = () => {
   const getData = async () => {
     const response = await axios.post(
       `http://localhost:3000/formData/formDataSearchPatient/`,
-      { patient_id: patientId, history: "family_history" }
+      { patient_id: id, history: "family_history" }
     );
-    console.log(response.data);
     if (response.data.code == 200 && response.data.data.length !== 0) {
       const prevData = response.data.data[0].data.family_history;
       survey.data = prevData;

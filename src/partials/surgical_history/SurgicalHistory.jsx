@@ -1,32 +1,21 @@
-import { useNavigate } from "react-router-dom";
+import {useNavigate,useParams} from "react-router-dom";
 import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
 import { surgical_json } from "./surgical_json";
 import axios from 'axios'
 import Swal from 'sweetalert2';
-import { useStateContext } from "../../context/ContextProvider";
 import { useEffect,useState} from "react";
+import { inputmask } from "surveyjs-widgets";
+import * as SurveyCore from "survey-core";
 
+inputmask(SurveyCore);
 const SurgicalHistory = () => {
   const navigate = useNavigate();
   const survey = new Model(surgical_json);
-  const {patientId} = useStateContext();
+  const { id } = useParams();
   const [formId,setFormId] =useState()
   const [isNew,setIsNew] = useState(true)
 
-  // survey.onComplete.add((sender, options) => {
-  //   var navigationBar = document.querySelector(".sv_nav");
-  //   if (navigationBar) {
-  //     var completeButton = navigationBar.querySelector(
-  //       'input[type="button"][value="Complete"]'
-  //     );
-  //     if (completeButton) {
-  //       completeButton.value = "Save";
-  //     }
-  //   }
-  //   console.log(JSON.stringify(sender.data, null, 3));
-  // });
-  //
  const Toast = Swal.mixin({
   toast: true,
   position: 'top-end',
@@ -43,9 +32,9 @@ const SurgicalHistory = () => {
   const saveSurveyData=async (survey)=> {
     const data = survey.data
     delete data.age ;
-    console.log("patient_id",patientId);
+    console.log("patient_id",id);
     const med_data = {
-        patient_id : patientId,
+        patient_id : id,
         data : {
             surgical_history : data
         }
@@ -58,7 +47,7 @@ const SurgicalHistory = () => {
             icon: "success",
             title: "New Patient's surgical history is saved successfully",
         });
-        navigate(-1)
+        navigate(`/admin/patient/patientdetail/${id}`)
         console.log("response data",response.data);  
     } 
     else{
@@ -66,7 +55,6 @@ const SurgicalHistory = () => {
             icon: "error",
             title: "Failed to save new patient's surgical history",
         });
-        navigate(-1);
     }     
   }
 // 
@@ -75,7 +63,7 @@ const SurgicalHistory = () => {
     delete data.age ;
     console.log('update_data',data);
     const med_data = {
-      patient_id : patientId,
+      patient_id : id,
       data : {
           surgical_history : data
       }
@@ -87,7 +75,7 @@ const SurgicalHistory = () => {
             icon: "success",
             title: "Patient's surgical history is updated successfully",
         });
-        navigate(-1)
+        navigate(`/admin/patient/patientdetail/${id}`)
         console.log("response data",response.data);  
     } 
     else
@@ -96,18 +84,14 @@ const SurgicalHistory = () => {
           icon: "error",
           title: "Failed to update Patient's surgical history",
       });
-      navigate(-1);
     }     
   }
   survey.width = "100%";
-  // survey.onPartialSend.add(function (sender) {
-  //   saveSurveyData(sender);
-  // });
   survey.addNavigationItem({
     id: "cancel",
     title: "Cancel",
     action: () => {
-      navigate(-1);
+      navigate(`/admin/patient/patientdetail/${id}`);
     },
   });
   survey.onComplete.add(function (sender, options) {
@@ -119,7 +103,7 @@ const SurgicalHistory = () => {
 
   //Get Data
   const getData=async()=>{
-    const response= await axios.post(`http://localhost:3000/formData/formDataSearchPatient/`,{patient_id : patientId,history : "surgical_history"})   
+    const response= await axios.post(`http://localhost:3000/formData/formDataSearchPatient/`,{patient_id : id,history : "surgical_history"})   
     if(response.data.code == 200){
       const form_id= response.data.data[0].id
       console.log("form_id",response.data);
@@ -137,7 +121,7 @@ const SurgicalHistory = () => {
  }
   useEffect(()=>{
     getData()
- },[formId,isNew])
+ },[formId])
   return <Survey model={survey} />;
 };
 

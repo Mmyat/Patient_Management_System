@@ -2,9 +2,7 @@ import React from "react";
 import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
 import "survey-core/defaultV2.min.css";
-import $ from "jquery";
 import * as SurveyCore from "survey-core";
-import Inputmask from "inputmask";
 import { inputmask } from "surveyjs-widgets";
 
 const surveyJSON = {

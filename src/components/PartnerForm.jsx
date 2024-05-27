@@ -7,7 +7,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { format } from 'date-fns';
-import nrc_data from '../partials/PatientForm/nrc_data.json'
+import nrc_data from "../data_sources/nrc_data.json";
 
 const PartnerForm = () => {
   const [name, setName] = useState('');
@@ -71,15 +71,13 @@ const PartnerForm = () => {
       "gender" : gender,
       "partner_id" : id
     }
-    console.log("form data :",formData);
     const response= await axios.post("http://localhost:3000/partner/partnerCreate",formData)
-    console.log("partner connect :",response.data);
     if(response.data.code == 200){
       Toast.fire({
           icon: "success",
           title: "New Partner is connected with Patient",
       });
-        navigate(-1)
+      navigate(`/admin/patient/patientdetail/${id}`)
     } 
     else{
       Toast.fire({

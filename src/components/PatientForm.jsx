@@ -7,12 +7,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { format } from "date-fns";
-import nrc_data from "../partials/PatientForm/nrc_data.json";
-import { AiFillTwitterCircle } from "react-icons/ai";
-import DefaultProfile from "../images/defaultprofile.jpg";
-import EditIcon from "../images/edit.svg";
-import UploadingAnimation from "../images/uploading.gif";
-import TextField from "@mui/material/TextField";
+import nrc_data from "../data_sources/nrc_data.json";
 import { parse } from "date-fns";
 import { AiOutlinePlus } from "react-icons/ai";
 const PatientForm = () => {
@@ -72,7 +67,6 @@ const PatientForm = () => {
     console.log("new dob :", newDate);
     if (newDate) {
       const formattedDate = format(newDate, "yyyy/MM/dd");
-      console.log(`Selected date: ${formattedDate}`);
       setDob(formattedDate);
       CalculateAge(newDate);
     }
@@ -87,11 +81,8 @@ const PatientForm = () => {
     const townshipCode = nrc_data.filter(
       (item) => item.nrc_code == NRCCodeSelect
     );
-    console.log("townshipCode :", townshipCode);
     setTownshipList(townshipCode);
   };
-
-  // const [avatarURL, setAvatarURL] = useState(DefaultProfile);
   const fileUploadRef = useRef();
   const savePatientData = async () => {
     const formData = new FormData();
@@ -114,9 +105,7 @@ const PatientForm = () => {
         icon: "success",
         title: "New Patient is registered successfully",
       });
-      // navigate(-1);
-      // console.log("response data", response.data);
-      navigate(`/admin/patient`)
+      navigate(-1);
     } else {
       Toast.fire({
         icon: "error",
@@ -130,7 +119,8 @@ const PatientForm = () => {
   const updatePatientData = async () => {
     const formData = new FormData();
     formData.append("name", name);
-    formData.append("dob", dob);
+    const formattedDate = format(dob, "yyyy/MM/dd");
+    formData.append("dob", formattedDate);
     formData.append(
       "nrc",
       `${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`
@@ -138,21 +128,16 @@ const PatientForm = () => {
     formData.append("gender", gender);
     formData.append("image", file);
     console.log("form data :", formData);
-    const response = await axios.put(
-      `http://localhost:3000/patient/patientPicUpdate/${id}`,
-      formData,
-      {
-        headers: { "content-type": "multipart/form-data" },
-      }
-    );
-    console.log("update", response.data);
+    const response = await axios.put(`http://localhost:3000/patient/patientPicUpdate/${id}`,formData);
+    console.log("update :", response.data);
+    
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
         title: "Paatient's info is updated successfully",
       });
-      console.log("response pre data", response.data);
-      navigate(`/admin/patient`)
+      navigate('/admin/patient')
+      // navigate(-1)
     } else {
       Toast.fire({
         icon: "error",
@@ -232,7 +217,13 @@ const PatientForm = () => {
                 value={dob || null}
                 onChange={handleDobChange}
                 format="yyyy/MM/dd"
-                renderInput={(params) => <TextField {...params} />}
+                // renderInput={(params) => <TextField {...params} />}
+                slotProps={{
+                  textField: {
+                    variant: 'outlined',
+                    fullWidth: true,
+                  }}
+                }
               />
             </DemoContainer>
           </LocalizationProvider>

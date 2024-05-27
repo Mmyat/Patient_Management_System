@@ -16,8 +16,8 @@ export const surgical_json = {
                   type : "text",
                   name: "date",
                   title: "Date",
-                  inputType: "date",
-                  dateFormat: "yyyy/mm/dd",
+                  inputMask: "datetime",
+                  inputFormat: "yyyy/mm/dd",
                   isRequired: true,
                 },
                 {

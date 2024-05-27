@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Survey } from "survey-react-ui";
-import { BsFillPersonLinesFill } from "react-icons/bs";
 import { NavLink,Link,Outlet,useParams,useNavigate} from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import Swal from "sweetalert2";

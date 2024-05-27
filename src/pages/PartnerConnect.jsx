@@ -85,14 +85,12 @@ const PartnerConnect = () => {
             title: "Patient is connected successfully with partner",
         });
         navigate(`/admin/patient/patientdetail/${id}`)
-        console.log("response data",response.data);  
     } 
     else{
         Toast.fire({
             icon: "error",
             title: "Failed to connect",
         });
-        navigate(`/admin/patient/patientdetail/${id}`)
     }     
   }
   //

@@ -1,17 +1,19 @@
-import { useNavigate } from "react-router-dom";
+import {useNavigate,useParams} from "react-router-dom";
 import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
 import { medical_json } from "./medical_json";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useStateContext } from "../../context/ContextProvider";
 import { useEffect, useState } from "react";
+import * as SurveyCore from "survey-core";
+import { inputmask } from "surveyjs-widgets";
 
+inputmask(SurveyCore);
 const MedicalHistory = () => {
   const navigate = useNavigate();
 
   const survey = new Model(medical_json);
-  const { patientId } = useStateContext();
+  const { id } = useParams();
   const [isNew, setIsNew] = useState(true);
   const [formId, setFormId] = useState(null);
   //
@@ -31,14 +33,13 @@ const MedicalHistory = () => {
   const saveSurveyData = async (survey) => {
     const data = survey.data;
     delete data.age;
-    console.log("patient_id", patientId);
+    console.log("patient_id", id);
     const med_data = {
-      patient_id: patientId,
+      patient_id: id,
       data: {
         med_history: data,
       },
     };
-    console.log("history:", med_data);
     const response = await axios.post(
       "http://localhost:3000/formData/formDataCreate",
       med_data
@@ -49,7 +50,7 @@ const MedicalHistory = () => {
         icon: "success",
         title: "New Patient's medical history is saved successfully",
       });
-      navigate(-1);
+      navigate(`/admin/patient/patientdetail/${id}`);
     } else {
       Toast.fire({
         icon: "error",
@@ -63,7 +64,7 @@ const MedicalHistory = () => {
     delete data.age;
     console.log("update_data", data);
     const med_data = {
-      patient_id: patientId,
+      patient_id: id,
       data: {
         med_history: data,
       },
@@ -78,7 +79,7 @@ const MedicalHistory = () => {
         icon: "success",
         title: "Patient's medical history is updated successfully",
       });
-      navigate(`/admin/patient/patientdetail/${patientId}/personalinfo`);
+      navigate(`/admin/patient/patientdetail/${id}`);
       console.log("response data", response.data);
     } else {
       Toast.fire({
@@ -91,7 +92,7 @@ const MedicalHistory = () => {
     id: "cancel",
     title: "Cancel",
     action: () => {
-      navigate(-1);
+      navigate(`/admin/patient/patientdetail/${id}`);
     },
   });
   survey.onComplete.add(function (sender, options) {
@@ -104,7 +105,7 @@ const MedicalHistory = () => {
   const getData = async () => {
     const response = await axios.post(
       `http://localhost:3000/formData/formDataSearchPatient/`,
-      { patient_id: patientId, history: "med_history" }
+      { patient_id: id, history: "med_history" }
     );
     console.log(response.data);
     if (response.data.code == 200) {
@@ -123,7 +124,7 @@ const MedicalHistory = () => {
   };
   useEffect(() => {
     getData();
-  }, []);
+  }, [formId]);
   return <Survey model={survey} />;
 };
 export default MedicalHistory;
