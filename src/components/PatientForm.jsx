@@ -10,7 +10,6 @@ import { format } from "date-fns";
 import nrc_data from "../data_sources/nrc_data.json";
 import { parse } from "date-fns";
 import { AiOutlinePlus } from "react-icons/ai";
-import { event } from "jquery";
 const PatientForm = () => {
   const [name, setName] = useState("");
   const [dob, setDob] = useState("");
@@ -174,7 +173,7 @@ const PatientForm = () => {
       setNRCCode(code[1]);
       //imageUrl
       setPreview(data.imageUrl);
-      // setFile(preview)
+      setFile(data.imageUrl)
     }
   };
   //
@@ -201,6 +200,7 @@ const PatientForm = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            required
           />
         </div>
         <div className="mb-4">
@@ -219,6 +219,7 @@ const PatientForm = () => {
                 // renderInput={(params) => <TextField {...params} />}
                 slotProps={{
                   textField: {
+                    required: true,
                     variant: 'outlined',
                     fullWidth: true,
                   }}
@@ -315,10 +316,10 @@ const PatientForm = () => {
             <img
               src={preview}
               alt="Profile Preview"
-              className="w-full h-full object-cover rounded-full"
+              className="w-full h-full object-cover rounded-md"
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-200 rounded-full">
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-200 rounded-md">
               <AiOutlinePlus className="text-3xl text-gray-900 font-semibold object-cover" />
               <p>Upload Profile</p>
             </div>
@@ -330,6 +331,7 @@ const PatientForm = () => {
             accept="image/*"
             className="absolute inset-0 opacity-0 cursor-pointer"
             onChange={handleImageChange}
+            required
           />
         </div>
         <div className="mt-6">

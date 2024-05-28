@@ -95,6 +95,8 @@ const PartnerForm = () => {
   return (
     <div className="flex w-full items-center justify-center">
       <form onSubmit={savePatientData} className="w-full max-w-lg bg-white p-6 rounded-lg shadow-md">
+      <p className="text-xl">"New Partner"</p>
+
         <div className="mb-4">
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
           <input
@@ -110,11 +112,15 @@ const PartnerForm = () => {
           <label htmlFor="dob" className="block text-sm font-medium text-gray-700">Date of Birth</label>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DemoContainer components={["DatePicker"]}>
-              <DatePicker value={dob} onChange={handleDobChange} format='yyyy/MM/dd' slotProps={{
+              <DatePicker value={dob} onChange={handleDobChange} format='yyyy/MM/dd' 
+                slotProps={{
                   textField: {
+                    required: true,
                     variant: 'outlined',
                     fullWidth: true,
-                  }}} required/>
+                  }
+                }} 
+              />
             </DemoContainer>
           </LocalizationProvider>
         </div>

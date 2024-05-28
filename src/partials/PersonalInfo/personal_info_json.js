@@ -18,7 +18,7 @@ export const personal_json = {
                 "type": "text",
                 "title": "Phone:",
                 "inputMask": "phone",
-                "inputFormat": "+959-999-999-999",
+                "inputFormat": "99999999999",
                 "startWithNewLine": true
              },
              {

@@ -1,19 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Survey } from "survey-react-ui";
 import { NavLink,Link,Outlet,useParams,useNavigate} from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import Swal from "sweetalert2";
 import DefaultProfile from "../images/defaultprofile.jpg";
 
-const PatientDetails = ({ name, dob, nrc, gender }) => {
-  const medicalHistorySurvey = () => {
-    const survey = new Survey();
-    survey.onComplete = (result) => {
-      console.log("Survey results:", result.data);
-    };
-    return survey;
-  };
+const PatientDetails = () => {
   //
   const Toast = Swal.mixin({
     toast: true,
@@ -116,8 +108,7 @@ const PatientDetails = ({ name, dob, nrc, gender }) => {
             Patient's Details
           </h3>
           <div className="flex px-4 py-5">
-            {/* <BsFillPersonLinesFill className="text-4xl mr-4 md:mr-18" /> */}
-            <img src={profile} alt="Profile Preview" className="w-16 h-16 mr-4 md:mr-18 rounded-full"/>
+            <img src={profile ? profile : DefaultProfile} alt="Profile Preview" className="w-36 h-36 mr-4 md:mr-18 rounded-md mt-1"/>
             <dl className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <dt className="text-gray-700 font-medium">Patient's ID:</dt>
               <dd className="text-gray-900">{patient.id}</dd>
@@ -138,7 +129,7 @@ const PatientDetails = ({ name, dob, nrc, gender }) => {
               Partner's Details
             </h3>
             <div className="flex px-4 py-5">
-              <img src={partnerProfile} alt="Profile Preview" className="w-16 h-16 mr-4 md:mr-18 rounded-full"/>
+              <img src={partnerProfile ? partnerProfile : DefaultProfile } alt="Profile Preview" className="w-36 h-36 mr-4 md:mr-18 rounded-md mt-1"/>
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <dt className="text-gray-700 font-medium">Partner's ID:</dt>
                 <dd className="text-gray-900">{partner.id}</dd>
@@ -151,7 +142,7 @@ const PatientDetails = ({ name, dob, nrc, gender }) => {
                 <dt className="text-gray-700 font-medium">Gender:</dt>
                 <dd className="text-gray-900">{partner.gender} </dd>
                 <button
-                  className=" rounded bg-indigo-500 hover:bg-indigo-600 text-white text-center"
+                  className=" rounded bg-indigo-500 hover:bg-indigo-600 text-white text-center mt-1"
                   onClick={handleViewDetail}
                 >
                   <span className="ml-2">View Detail</span>
@@ -199,9 +190,6 @@ const PatientDetails = ({ name, dob, nrc, gender }) => {
                           d="M6 18L18 6M6 6l12 12"
                         />
                       </svg>
-                      {/* <span className="text-gray-600 h-6 w-6 text-3xl block outline-none focus:outline-none">
-                        ×
-                      </span> */}
                     </button>
                   </div>
                   {/*body*/}
@@ -242,9 +230,8 @@ const PatientDetails = ({ name, dob, nrc, gender }) => {
         ) : null}
       </div>
       <div className=" relative flex items-center justify-center text-gray-500 dark:text-gray-400 bg-white md:flex shadow-md sm:rounded-lg py-1 md:py-4 mt-2 overflow-x-auto">
-        {/* <h2 className="text-lg font-medium text-gray-800 mb-2">Medical History Survey</h2> */}
         <ul
-          className={`flex justify-around md:items-center md:pb-0 md:z-auto z-10 left-0 w-full md:w-auto mt-4 md:mt-0 md:pl-0 pl-9`}
+          className={`flex items-center justify-around md:items-center md:pb-0 md:z-auto z-10 left-0 w-full md:w-auto mt-4 md:mt-0 md:pl-0 pl-9`}
         >
           {Links.map((link) => (
             <li

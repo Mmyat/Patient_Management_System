@@ -25,7 +25,7 @@ export const family_medical_json = {
             },
             {
               type: "comment",
-              inputType: "number",
+              // inputType: "number",
               isRequired: true,
               name: "problem_explain",
               startWithNewLine: true,

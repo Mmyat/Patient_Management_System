@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Transition from '../utils/Transition';
-
+import DefaultAvator from '../images/defaultprofile.jpg';
 import UserAvatar from '../images/user-avatar-32.png';
 
 function DropdownProfile({
@@ -43,7 +43,7 @@ function DropdownProfile({
         onClick={() => setDropdownOpen(!dropdownOpen)}
         aria-expanded={dropdownOpen}
       >
-        <img className="w-8 h-8 rounded-full" src={UserAvatar} width="32" height="32" alt="User" />
+        <img className="w-8 h-8 rounded-full" src={DefaultAvator} width="32" height="32" alt="User" />
       </button>
 
       <Transition
@@ -68,7 +68,7 @@ function DropdownProfile({
             <li>
               <Link
                 className="font-medium text-sm text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center py-1 px-3"
-                to="/signin"
+                to=' '
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 Sign Out
