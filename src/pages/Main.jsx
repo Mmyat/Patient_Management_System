@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Sidebar from '../partials/Sidebar';
 import Header from '../partials/Header';
-import WelcomeBanner from '../partials/dashboard/WelcomeBanner';
-// import FilterButton from '../components/DropdownFilter';
-// import Datepicker from '../components/Datepicker';
 import { Outlet } from "react-router-dom";
-// import {Link,useNavigate} from 'react-router-dom';
+
 function Main() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (

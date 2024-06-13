@@ -238,7 +238,7 @@ const Table = () => {
 
   useEffect(() => {
     getData();
-  },[page, total,isSearh]);
+  },[page, total,searchTerm]);
   return (
     <>
       <div className="flex">

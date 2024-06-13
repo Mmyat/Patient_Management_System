@@ -1,10 +1,6 @@
 import React from 'react'
-import FilterButton from '../components/DropdownFilter';
-import { IoMdContact } from "react-icons/io";
-import Datepicker from '../components/Datepicker';
 import {useNavigate} from 'react-router-dom';
 import Table from '../partials/Table';
-import SearchBar from '../components/SearchBar';
 const Patients = () => {
   const navigate = useNavigate();
   return (

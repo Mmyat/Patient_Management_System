@@ -5,9 +5,10 @@ import "survey-core/defaultV2.min.css";
 import { personal_json } from "./personal_info_json";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useStateContext } from "../../context/ContextProvider";
+import './index.css';
+import customTheme from './survey_theme.json';
 import { useEffect, useState } from "react";
-
+// import { BorderlessLight } from "survey-core/themes/borderless-light";
 const PersonalInfo = () => {
   const navigate = useNavigate();
   const survey = new Model(personal_json);
@@ -89,6 +90,7 @@ const PersonalInfo = () => {
       });
     }
   };
+  survey.applyTheme(customTheme)
   survey.completeText = isNew ? "Save" : "Update";
   survey.addNavigationItem({
     id: "cancel",

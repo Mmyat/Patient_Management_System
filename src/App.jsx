@@ -22,6 +22,10 @@ import PatientForm from './components/PatientForm';
 import Calender from './components/Calender';
 import DateTest from './partials/PartnerForm/DateTest';
 import ProfileImageUpload from './components/ProfileImageUpload ';
+import HospitalLab from './partials/HospitalLab';
+import FollowUp from './partials/FollowUp';
+import FileManager from './partials/FileManager';
+import Table from './components/Table';
 
 function App() {
 
@@ -39,7 +43,7 @@ function App() {
         <Route exact path="/admin" element={<Main />}>
           <Route path='dashboard' element={<Dashboard/>} />
           <Route path="patient" element={<Patients/>}/>           
-          <Route path="patient/calender" element={<ProfileImageUpload/>}/>           
+          <Route path="patient/table" element={<Table/>}/>      
           <Route path="patient/patientform/:id" element={<PatientForm/>}/> 
           <Route path="patient/partnerform/:id" element={<PartnerForm/>}/> 
           <Route path="patient/partnerconnect/:id" element={<PartnerConnect/>}/>
@@ -50,9 +54,30 @@ function App() {
             <Route path="social" element={<SocialHistory/>}/>
             <Route path="familymedical" element={<FamailyMedicalHistory/>}/>
             <Route path="objectives" element={<Objective/>}/>           
+            <Route path="hospital-lab" element={<HospitalLab/>}/>           
+            <Route path="follow-up" element={<FollowUp/>}/>           
+            <Route path="file-manager" element={<FileManager/>}/>           
           </Route>
         </Route>
       </Routes>
+      {/* <Routes>
+        <Route exact path="/admin" element={<Main />}>
+          <Route path='dashboard' element={<Dashboard/>} />
+          <Route path="patient" element={<Patients/>}>           
+            <Route path="patientform/:id" index element={<PatientForm/>}/> 
+            <Route path="partnerform/:id" element={<PartnerForm/>}/> 
+            <Route path="partnerconnect/:id" element={<PartnerConnect/>}/>
+            <Route path="patientdetail/:id" element={<PatientDetails/>}>   
+              <Route index element={<PersonalInfo/>}/>
+              <Route path="medical" element={<MedicalHistory/>}/>
+              <Route path="surgical" element={<SurgicalHistory/>}/>
+              <Route path="social" element={<SocialHistory/>}/>
+              <Route path="familymedical" element={<FamailyMedicalHistory/>}/>
+              <Route path="objectives" element={<Objective/>}/>           
+            </Route>
+          </Route>
+        </Route>
+      </Routes> */}
     </>
   );
 }

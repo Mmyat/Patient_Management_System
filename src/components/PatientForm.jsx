@@ -29,6 +29,7 @@ const PatientForm = () => {
   const [NRCCode, setNRCCode] = useState('');
   const [gender, setGender] = useState("male");
   const [townshipList, setTownshipList] = useState([]);
+  const [isRequired,setIsRequired] = useState(false)
   const [file, setFile] = useState(null);
   const { id } = useParams();
   console.log("id:", id);
@@ -49,6 +50,12 @@ const PatientForm = () => {
       reader.readAsDataURL(upload_file);
       console.log("img", upload_file);
     }
+  };
+  //
+  const handleCodeChange = (event) => {
+    const inputValue = event.target.value;
+    const requiredCode = inputValue.substring(0,6)
+    setNRCCode(requiredCode);
   };
   //
   const Toast = Swal.mixin({
@@ -86,34 +93,40 @@ const PatientForm = () => {
   const fileUploadRef = useRef();
   //
   const savePatientData = async (e) => {
+
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("dob", dob);
-    formData.append(
-      "nrc",
-      `${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`
-    );
-    formData.append("gender", gender);
-    formData.append("image", file);
-    console.log("form data :", formData);
-    const response = await axios.post(
-      "http://localhost:3000/patient/patientPicUpload",
-      formData
-    );
-    console.log(response);
-    if (response.data.code == 200) {
-      Toast.fire({
-        icon: "success",
-        title: "New Patient is registered successfully",
-      });
-      navigate(-1);
-    } else {
-      Toast.fire({
-        icon: "error",
-        title: "Failed to register",
-      });
+    if(NRCCode.length < 6){
+      setIsRequired(true)
+    }else{
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("dob", dob);
+      formData.append(
+        "nrc",
+        `${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`
+      );
+      formData.append("gender", gender);
+      formData.append("image", file);
+      console.log("form data :", formData);
+      const response = await axios.post(
+        "http://localhost:3000/patient/patientPicUpload",
+        formData
+      );
+      console.log(response);
+      if (response.data.code == 200) {
+        Toast.fire({
+          icon: "success",
+          title: "New Patient is registered successfully",
+        });
+        navigate(-1);
+      } else {
+        Toast.fire({
+          icon: "error",
+          title: "Failed to register",
+        });
+      }
     }
+    
   };
   //
   const updatePatientData = async (e) => {
@@ -244,12 +257,12 @@ const PatientForm = () => {
           />
         </div>
         <div className="mb-4">
-          <label
-            htmlFor="nrc"
-            className="block text-sm font-medium text-gray-700"
-          >
-            NRC Number
-          </label>
+          <div>
+            <label htmlFor="nrc" className="block text-sm font-medium text-gray-700">
+              NRC Number
+            </label>
+            <p className="text-sm text-red-300">{isRequired && "(Please fill at least 6 digits)"} </p>
+          </div>
           <div className="flex">
             <select
               value={NRCCodeSelect}
@@ -286,10 +299,8 @@ const PatientForm = () => {
               placeholder="Enter code..."
               value={NRCCode}
               maxLength={6}
-              minLength={6}
-              onChange={(event) => {
-                setNRCCode(event.target.value);
-              }}
+              minLength={5}
+              onChange={handleCodeChange}
               required
             />
           </div>
@@ -331,7 +342,6 @@ const PatientForm = () => {
             accept="image/*"
             className="absolute inset-0 opacity-0 cursor-pointer"
             onChange={handleImageChange}
-            required
           />
         </div>
         <div className="mt-6">

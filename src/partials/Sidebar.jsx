@@ -143,7 +143,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
         <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-end mt-auto">
           <div className="px-3 py-2">
             <button onClick={() => setSidebarExpanded(!sidebarExpanded)}>
-              <span className="sr-only">Expand / collapse sidebar</span>
+              {/* <span className="sr-only">Expand / collapse sidebar</span> */}
               <svg
                 className="w-6 h-6 fill-current sidebar-expanded:rotate-180"
                 viewBox="0 0 24 24"

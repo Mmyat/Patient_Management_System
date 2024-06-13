@@ -4,6 +4,7 @@ import { NavLink,Link,Outlet,useParams,useNavigate} from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import Swal from "sweetalert2";
 import DefaultProfile from "../images/defaultprofile.jpg";
+import { BsArrowLeft } from "react-icons/bs";
 
 const PatientDetails = () => {
   //
@@ -92,6 +93,9 @@ const PatientDetails = () => {
     { name: "Surgical History", link: "surgical" },
     { name: "Social History", link: "social" },
     { name: "Family Medical History", link: "familymedical" },
+    { name: "Hospital & Lab", link: "hospital-lab" },
+    { name: "Follow Up", link: "follow-up" },
+    { name: "File Manager", link: "file-manager"},
   ];
   //get Data
   useEffect(() => {
@@ -100,11 +104,13 @@ const PatientDetails = () => {
   }, []);
   return (
     <div className="container mx-auto px-4 py-8">
+      <button className="text-3xl bg-white p-1 mb-2 border-dashed border-1 border-gray-300 stroke-1 rounded-md" onClick={() => navigate(`/admin/patient/`)}>
+        <BsArrowLeft/>
+      </button>
       <div className="grid bg-white grid-cols-1 sm:grid-cols-2 gap-2 shadow-md">
+        
         <div className="flex-col">
-          <h3
-            className="text-xl text-slate-800 ml-4 mt-2"
-          >
+          <h3 className="text-xl text-slate-800 ml-4 mt-2">
             Patient's Details
           </h3>
           <div className="flex px-4 py-5">
@@ -159,6 +165,7 @@ const PatientDetails = () => {
               <span className="ml-2">Add Partner</span>
             </button>
           </div>
+          // <div>Hello </div>
         )}
         {showModal ? (
           <>
