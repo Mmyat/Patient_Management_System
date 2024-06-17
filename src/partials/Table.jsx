@@ -39,10 +39,6 @@ const Table = () => {
       Header: "Gender",
       accessor: "gender",
     },
-    // {
-    //   Header: "Phone",
-    //   accessor: "phone",
-    // },
     {
       Header: "Actions",
       accessor: "detail",

@@ -9,8 +9,7 @@ const Modal = ({ isOpen, onClose, children,confirmBtnText,cancelBtnText}) => {
       <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
         <div className="bg-white p-6">
           {children}
-        </div>
-        
+        </div>       
       </div>
     </div>
   );

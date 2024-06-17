@@ -19,13 +19,13 @@ import PersonalInfo from './partials/PersonalInfo/PersonalInfo';
 import PartnerConnect from './pages/PartnerConnect';
 import PartnerForm from './components/PartnerForm';
 import PatientForm from './components/PatientForm';
-import Calender from './components/Calender';
-import DateTest from './partials/PartnerForm/DateTest';
-import ProfileImageUpload from './components/ProfileImageUpload ';
+// import Calender from './components/Calender';
+// import DateTest from './partials/PartnerForm/DateTest';
+// import ProfileImageUpload from './components/ProfileImageUpload ';
 import HospitalLab from './partials/HospitalLab';
 import FollowUp from './partials/FollowUp';
 import FileManager from './partials/FileManager';
-import Table from './components/Table';
+// import Table from './components/Table';
 import PopupModal from './components/PopupModal';
 
 function App() {

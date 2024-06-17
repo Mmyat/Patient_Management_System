@@ -71,7 +71,6 @@ const PatientForm = () => {
   });
 
   const handleDobChange = (newDate) => {
-    console.log("new dob :", newDate);
     if (newDate) {
       const formattedDate = format(newDate, "yyyy/MM/dd");
       setDob(formattedDate);

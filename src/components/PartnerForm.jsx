@@ -96,7 +96,6 @@ const PartnerForm = () => {
     <div className="flex w-full items-center justify-center">
       <form onSubmit={savePatientData} className="w-full max-w-lg bg-white p-6 rounded-lg shadow-md">
       <p className="text-xl">"New Partner"</p>
-
         <div className="mb-4">
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
           <input
