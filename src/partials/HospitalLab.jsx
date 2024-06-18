@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import { saveAs } from 'file-saver';
-import XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 import TableComponent from '../components/TableComponent';
 import { AiOutlineEdit, AiFillDelete } from "react-icons/ai";
 import { Link ,useParams} from "react-router-dom";
@@ -77,6 +77,7 @@ const HospitalLab = () => {
   const closeModal = () => setIsModalOpen(false);
 
   const exportToExcel = () => {
+    const fileName = "hospital_lab_history"
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
