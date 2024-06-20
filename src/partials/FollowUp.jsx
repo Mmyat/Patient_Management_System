@@ -3,9 +3,9 @@ import { saveAs } from 'file-saver';
 import * as XLSX from "xlsx";
 import TableComponent from '../components/TableComponent';
 import { AiOutlineEdit, AiFillDelete } from "react-icons/ai";
-import { Link ,useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import Modal from '../components/Modal';
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -17,12 +17,12 @@ const FollowUp = () => {
 
   const columns = [
     {
-      Header: "Name",
-      accessor: "location_name",
+      Header: "Category",
+      accessor: "category",
     },
     {
-      Header: "Date",
-      accessor: "date",
+      Header: "Date & Time",
+      accessor: "date_time",
     },
     {
       Header: "Remark",
@@ -49,11 +49,10 @@ const FollowUp = () => {
   const [total, setTotal] = useState(0);
   const [dataList, setDataList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [location_name,setLocation_name] = useState('')
+  const [category,setCategory] = useState('online')
   const [remark,setRemark] = useState('')
   const [date, setDate] = useState(null);
   const [isNew,setIsNew] = useState(true)
-  const [isToDelete,setIsToDelete] = useState(false)
   const { id } = useParams();
   const [updateId,setUpdateId] = useState(null)
 
@@ -72,10 +71,9 @@ const FollowUp = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () =>{ 
     setIsModalOpen(false);
-    setLocation_name("")
+    setCategory("online")
     setDate(null)
     setRemark("")
-    // setIsNew(!isNew)
   }
 
   const swalWithButtons = Swal.mixin({
@@ -99,8 +97,9 @@ const FollowUp = () => {
 
   const handleDateChange = (newDate) => {
     if (newDate) {
-      const formattedDate = format(newDate, "yyyy/MM/dd");
-      console.log(formattedDate);
+      console.log("new date",newDate);
+      const formattedDate = format(newDate, "yyyy/MM/dd hh:mm a");
+      console.log("formate date",formattedDate);
       setDate(formattedDate);
     }
   };
@@ -113,13 +112,13 @@ const FollowUp = () => {
   const handleEdit =async (rowId) => {
     setIsNew(false)
     openModal()
-    let response = await axios.get(`http://localhost:3000/hospAndLab/HosAndLabIdSearch/${rowId}`)
+    let response = await axios.get(`http://localhost:3000/followUp/followUpIDSearch/${rowId}`)
     setUpdateId(rowId);
     console.log('Edit data', response.data.data[0]);
     if (response.data.code == 200) {
       let history = response.data.data[0];
-      setLocation_name(history.location_name);
-      const formatDate = parse(history.date, "yyyy/MM/dd", new Date());
+      setCategory(history.category);
+      const formatDate = parse(history.date_time, "yyyy/MM/dd hh:mm a", new Date());
       console.log("edit fetch",formatDate);
       setDate(formatDate)
       setRemark(history.remark);
@@ -132,24 +131,7 @@ const FollowUp = () => {
   };
 
   const handleDelete =async (rowId) => {
-    // const response = await axios.delete(`http://localhost:3000/hospAndLab/HosAndLabDelete/${rowId}`)
-    // console.log("delete res:",response);
-    // if (response.data.code == 200) {
-    //   console.log("lab res",response.data);
-    //   closeModal();
-    //   getHistoryList();
-    //   Toast.fire({
-    //     icon: "success",
-    //     title: "Patient's hospital and lab history is deleted successfully",
-    //   });
-    // } else {
-    //   Toast.fire({
-    //     icon: "error",
-    //     title: "Failed to delete patient's hospital and lab history",
-    //   });
-    // }
-    swalWithButtons
-      .fire({
+    swalWithButtons.fire({
         title: "Are you sure to delete?",
         showCancelButton: true,
         confirmButtonText: "Yes",
@@ -158,7 +140,7 @@ const FollowUp = () => {
       })
       .then(async (result) => {
         if (result.isConfirmed) {
-          const response = await axios.delete(`http://localhost:3000/hospAndLab/HosAndLabDelete/${rowId}`)
+          const response = await axios.delete(`http://localhost:3000/followUp/followUpDelete/${rowId}`)
           if (response.data.code == 200) {
             Toast.fire({
               icon: "success",
@@ -182,12 +164,12 @@ const FollowUp = () => {
   const saveNewHistory =async () =>{
     const formData = {
       patient_id : id,
-      location_name,
-      date,
+      category,
+      date_time : date,
       remark
     }
-    let response = await axios.post("http://localhost:3000/followUp/followUpCreate",formData)
-   
+    console.log("form -",formData);
+    let response = await axios.post("http://localhost:3000/followUp/followUpCreate",formData)  
     if (response.data.code == 200) {
       closeModal();
       Toast.fire({
@@ -203,14 +185,14 @@ const FollowUp = () => {
   }
 
   const updateHistory = async() =>{
-    const formattedDate = format(date, "yyyy/MM/dd");
+    const formattedDate = format(date, "yyyy/MM/dd hh:mm a");
     const formData = {
       patient_id : id,
-      location_name,
-      date : formattedDate,
+      category,
+      date_time : formattedDate,
       remark
     }
-    let response = await axios.put(`http://localhost:3000/hospAndLab/HosAndLabUpdate/${updateId}`,formData)   
+    let response = await axios.put(`http://localhost:3000/followUp/followUpUpdate/${updateId}`,formData)   
     if (response.data.code == 200) {
       closeModal();
       getHistoryList();
@@ -227,7 +209,7 @@ const FollowUp = () => {
   }
 
   const getHistoryList = async ()=>{
-    let response = await axios.post("http://localhost:3000/hospAndLab/HosAndLabPatientIdSearch",{
+    let response = await axios.post("http://localhost:3000/followUp/followUpPatientIdSearch",{
       patient_id : id,
     })
     if(response.data.code ==='200'){
@@ -263,34 +245,34 @@ const FollowUp = () => {
             </button>
         </div>
       </div>
-
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <form onSubmit={isNew ? saveNewHistory : updateHistory} className="w-full max-w-lg p-6">
-          <p className="text-xl">{isNew ?"New" : "Update"} Hospital & Lab History</p>
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Hospital & Lab Name</label>
-            <input
-              type="text"
-              id="name"
-              value={location_name}
-              onChange={(e)=>setLocation_name(e.target.value)}
-              required
+          <p className="text-xl">{isNew ?"New" : "Update"} Follow Up History</p>
+          <div className="w-1/3 mb-4">
+            <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
+              Category
+            </label>
+            <select
+              id="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
               className="mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+            >
+              <option value="online">Online</option>
+              <option value="hospital">Hospital</option>
+              <option value="other">Others</option>
+            </select>
+        </div>
           <div className="mb-4">
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
+            <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date & Time</label>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DemoContainer components={["DatePicker"]}>
-                <DatePicker value={date} onChange={handleDateChange} format='yyyy/MM/dd' 
-                  slotProps={{
-                    textField: {
-                      required: true,
-                      variant: 'outlined',
-                      fullWidth: true,
-                    }
-                  }} 
-                />
+                 <DateTimePicker value={date} onChange={handleDateChange} format='yyyy/MM/dd hh:mm a' slotProps={{
+                  textField: {
+                    required: true,
+                    variant: 'outlined',
+                    fullWidth: true,
+                  }}} label="Basic date time picker"/>
               </DemoContainer>
             </LocalizationProvider>
           </div>

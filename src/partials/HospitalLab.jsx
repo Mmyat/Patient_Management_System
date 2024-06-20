@@ -14,15 +14,6 @@ import axios from 'axios';
 import Swal from "sweetalert2";
 
 const HospitalLab = () => {
-  const data = [
-    { name: 'John Doe', date: 30, condition: 'Flu' },
-    { name: 'Jane Smith', date: 25, condition: 'Cold' },
-    { name: 'Mike Johnson', date: 40, condition: 'Covid-19' },
-    { name: 'Sarah Williams', date: 35, condition: 'Allergies' },
-    { name: 'Chris Brown', date: 28, condition: 'Asthma' },
-    { name: 'Laura Wilson', date: 50, condition: 'Diabetes' },
-    { name: 'Paul White', date: 45, condition: 'Hypertension' },
-  ];
   
   const columns = [
     {
@@ -62,7 +53,6 @@ const HospitalLab = () => {
   const [remark,setRemark] = useState('')
   const [date, setDate] = useState(null);
   const [isNew,setIsNew] = useState(true)
-  const [isToDelete,setIsToDelete] = useState(false)
   const { id } = useParams();
   const [updateId,setUpdateId] = useState(null)
 
@@ -84,7 +74,6 @@ const HospitalLab = () => {
     setLocation_name("")
     setDate(null)
     setRemark("")
-    // setIsNew(!isNew)
   }
 
   const swalWithButtons = Swal.mixin({
@@ -141,22 +130,6 @@ const HospitalLab = () => {
   };
 
   const handleDelete =async (rowId) => {
-    // const response = await axios.delete(`http://localhost:3000/hospAndLab/HosAndLabDelete/${rowId}`)
-    // console.log("delete res:",response);
-    // if (response.data.code == 200) {
-    //   console.log("lab res",response.data);
-    //   closeModal();
-    //   getHistoryList();
-    //   Toast.fire({
-    //     icon: "success",
-    //     title: "Patient's hospital and lab history is deleted successfully",
-    //   });
-    // } else {
-    //   Toast.fire({
-    //     icon: "error",
-    //     title: "Failed to delete patient's hospital and lab history",
-    //   });
-    // }
     swalWithButtons
       .fire({
         title: "Are you sure to delete?",
