@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import nrc_data from "../data_sources/nrc_data.json";
 import { parse } from "date-fns";
 import { AiOutlinePlus } from "react-icons/ai";
+
 const PatientForm = () => {
   const [name, setName] = useState("");
   const [dob, setDob] = useState("");
@@ -48,7 +49,6 @@ const PatientForm = () => {
         setPreview(reader.result);
       };
       reader.readAsDataURL(upload_file);
-      console.log("img", upload_file);
     }
   };
   //
@@ -106,7 +106,6 @@ const PatientForm = () => {
       );
       formData.append("gender", gender);
       formData.append("image", file);
-      console.log("form data :", formData);
       const response = await axios.post(
         "http://localhost:3000/patient/patientPicUpload",
         formData
@@ -352,9 +351,6 @@ const PatientForm = () => {
           </button>
           <button
             type="submit"
-            // onClick={() => {
-            //   isNew ? savePatientData() : updatePatientData();
-            // }}
             className="bg-indigo-600 text-white py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {isNew ? "Save" : "Update"}

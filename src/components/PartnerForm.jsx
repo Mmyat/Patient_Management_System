@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState,useRef } from 'react';
 import {useParams,useNavigate} from "react-router-dom";
 import axios from "axios";
 import Swal from 'sweetalert2';
@@ -8,6 +8,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { format } from 'date-fns';
 import nrc_data from "../data_sources/nrc_data.json";
+import { AiOutlinePlus } from "react-icons/ai";
 
 const PartnerForm = () => {
   const [name, setName] = useState('');
@@ -28,7 +29,9 @@ const PartnerForm = () => {
   const [NRCCode, setNRCCode] = useState('');
   const [gender, setGender] = useState('male');
   const [townshipList,setTownshipList] = useState([])
-
+  const [preview, setPreview] = useState(null);
+  const [file, setFile] = useState(null);
+  const fileUploadRef = useRef();
   const {id} = useParams()
   console.log("id:",id);
   const navigate = useNavigate();
@@ -45,8 +48,20 @@ const PartnerForm = () => {
       }
     })
   
+  const handleImageChange = (e) => {
+    e.preventDefault();
+    const upload_file = fileUploadRef.current.files[0];
+    if (upload_file) {
+      setFile(upload_file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(upload_file);
+    }
+  };
+
   const handleDobChange = (newDate) => {
-    console.log("new dob :",newDate);
     if (newDate) {
       const formattedDate = format(newDate, 'yyyy/MM/dd');
       console.log(`Selected date: ${formattedDate}`);
@@ -63,29 +78,37 @@ const PartnerForm = () => {
     setTownshipList(townshipCode);
   }
 
-  const savePatientData=async(event)=> {
-    event. preventDefault()
-    const formData={
-      "name" : name,
-      "dob" : dob ,
-      "nrc" : `${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`,
-      "gender" : gender,
-      "partner_id" : id
-    }
-    const response= await axios.post("http://localhost:3000/partner/partnerCreate",formData)
-    if(response.data.code == 200){
-      Toast.fire({
-          icon: "success",
-          title: "New Partner is connected with Patient",
-      });
-      navigate(-1)
-    } 
-    else{
-      Toast.fire({
-          icon: "error",
-          title: "Failed to register and connect",
-      });
-    }     
+  const savePartnerData=async(e)=> {
+    e.preventDefault();
+    if(NRCCode.length < 6){
+      setIsRequired(true)
+    }else{
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("dob", dob);
+      formData.append(
+        "nrc",
+        `${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`
+      );
+      formData.append("gender", gender);
+      formData.append("partner_id", id);
+      formData.append("image", file);
+      // console.log("form img",formData);
+      const response= await axios.post("http://localhost:3000/partner/partnerCreateWithPic",formData)
+      if(response.data.code == 200){
+        Toast.fire({
+            icon: "success",
+            title: "New Partner is connected with Patient",
+        });
+        navigate(-1)
+      } 
+      else{
+        Toast.fire({
+            icon: "error",
+            title: "Failed to register and connect",
+        });
+      }  
+    }   
   }
   //
   useEffect(()=>{
@@ -94,7 +117,7 @@ const PartnerForm = () => {
 
   return (
     <div className="flex w-full items-center justify-center">
-      <form onSubmit={savePatientData} className="w-full max-w-lg bg-white p-6 rounded-lg shadow-md">
+      <form onSubmit={savePartnerData} className="w-full max-w-lg bg-white p-6 rounded-lg shadow-md">
       <p className="text-xl">"New Partner"</p>
         <div className="mb-4">
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
@@ -177,6 +200,28 @@ const PartnerForm = () => {
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
+        </div>
+        <div className="relative w-40 h-40">
+          {preview ? (
+            <img
+              src={preview}
+              alt="Profile Preview"
+              className="w-full h-full object-cover rounded-md"
+            />
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-200 rounded-md">
+              <AiOutlinePlus className="text-3xl text-gray-900 font-semibold object-cover" />
+              <p>Upload Profile</p>
+            </div>
+          )}
+          <input
+            type="file"
+            id="file"
+            ref={fileUploadRef}
+            accept="image/*"
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            onChange={handleImageChange}
+          />
         </div>
         <div className="mt-6">
           <button onClick={()=>navigate(-1)} className='shadow-sm text-sm font-medium outline outline-indigo-600 outline-2 outline-offset-2 py-1 px-4 mr-4 rounded-md focus:ring-indigo-500'>Cancel</button>

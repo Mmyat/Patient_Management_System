@@ -62,6 +62,7 @@ const HospitalLab = () => {
   const [remark,setRemark] = useState('')
   const [date, setDate] = useState(null);
   const [isNew,setIsNew] = useState(true)
+  const [isToDelete,setIsToDelete] = useState(false)
   const { id } = useParams();
   const [updateId,setUpdateId] = useState(null)
 
@@ -85,6 +86,14 @@ const HospitalLab = () => {
     setRemark("")
     // setIsNew(!isNew)
   }
+
+  const swalWithButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "bg-blue-500 text-white px-2 py-1 rounded shadow-lg",
+      cancelButton: "bg-red-500 text-white px-5 py-1 rounded shadow-lg mr-6",
+    },
+    buttonsStyling: false,
+  });
 
   const exportToExcel = () => {
     const fileName = "hospital_lab_history"
@@ -132,22 +141,51 @@ const HospitalLab = () => {
   };
 
   const handleDelete =async (rowId) => {
-    const response = await axios.delete(`http://localhost:3000/hospAndLab/HosAndLabDelete/${rowId}`)
-    console.log("delete res:",response);
-    if (response.data.code == 200) {
-      console.log("lab res",response.data);
-      closeModal();
-      getHistoryList();
-      Toast.fire({
-        icon: "success",
-        title: "Patient's hospital and lab history is deleted successfully",
-      });
-    } else {
-      Toast.fire({
-        icon: "error",
-        title: "Failed to delete patient's hospital and lab history",
-      });
-    }
+    // const response = await axios.delete(`http://localhost:3000/hospAndLab/HosAndLabDelete/${rowId}`)
+    // console.log("delete res:",response);
+    // if (response.data.code == 200) {
+    //   console.log("lab res",response.data);
+    //   closeModal();
+    //   getHistoryList();
+    //   Toast.fire({
+    //     icon: "success",
+    //     title: "Patient's hospital and lab history is deleted successfully",
+    //   });
+    // } else {
+    //   Toast.fire({
+    //     icon: "error",
+    //     title: "Failed to delete patient's hospital and lab history",
+    //   });
+    // }
+    swalWithButtons
+      .fire({
+        title: "Are you sure to delete?",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+        reverseButtons: true,
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          const response = await axios.delete(`http://localhost:3000/hospAndLab/HosAndLabDelete/${rowId}`)
+          if (response.data.code == 200) {
+            Toast.fire({
+              icon: "success",
+              title: "Patient's hospital and lab history is deleted successfully",
+            });
+            closeModal();
+            getHistoryList();
+          } else {
+              Toast.fire({
+                icon: "error",
+                title: "Failed to delete patient's hospital and lab history",
+              });
+          }
+        } else {
+          closeModal();
+        }
+      }
+    );
   }
 
   const saveNewHistory =async () =>{
@@ -234,6 +272,7 @@ const HospitalLab = () => {
             </button>
         </div>
       </div>
+
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <form onSubmit={isNew ? saveNewHistory : updateHistory} className="w-full max-w-lg p-6">
           <p className="text-xl">{isNew ?"New" : "Update"} Hospital & Lab History</p>
