@@ -27,6 +27,7 @@ import FollowUp from './partials/FollowUp';
 import FileManager from './partials/FileManager';
 // import Table from './components/Table';
 import PopupModal from './components/PopupModal';
+import Test from './partials/Test';
 
 function App() {
 
@@ -44,7 +45,7 @@ function App() {
         <Route exact path="/admin" element={<Main />}>
           <Route path='dashboard' element={<Dashboard/>} />
           <Route path="patient" element={<Patients/>}/>           
-          <Route path="patient/test" element={<PopupModal/>}/>      
+          {/* <Route path="patient/test" element={<Test/>}/>       */}
           <Route path="patient/patientform/:id" element={<PatientForm/>}/> 
           <Route path="patient/partnerform/:id" element={<PartnerForm/>}/> 
           <Route path="patient/partnerconnect/:id" element={<PartnerConnect/>}/>

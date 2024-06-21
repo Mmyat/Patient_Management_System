@@ -36,7 +36,7 @@ const FollowUp = () => {
         <div className="flex gap-2">  
           <AiOutlineEdit onClick={() => { handleEdit(row.id);}} className="text-2xl text-orange-600 dark:text-orange-500 cursor-pointer" />
           <AiFillDelete
-            className="text-2xl text-red-400 dark:text-red-500 cursor-pointer"
+            className="text-2xl text-red-500 dark:text-red-500 cursor-pointer"
             onClick={() => {
               handleDelete(row.id);
             }}
@@ -85,15 +85,42 @@ const FollowUp = () => {
   });
 
   const exportToExcel = () => {
-    const fileName = "hospital_lab_history"
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([excelBuffer], {type: 'application/octet-stream'});
-    saveAs(blob, `${fileName}.xlsx`);
-
-  }
+    try {
+      console.log("list", dataList);
+      // Check if dataList is an array and not empty
+      if (!Array.isArray(dataList) || dataList.length === 0) {
+        Swal.fire({
+          title: 'No data to export',
+          showConfirmButton: true,
+        });
+        return;
+      }
+  
+      const fileName = 'hospital_lab_history';
+      const worksheet = XLSX.utils.json_to_sheet(dataList);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+      saveAs(blob, `${fileName}.xlsx`);
+  
+      // Show success message
+      Swal.fire({
+        icon: 'success',
+        title: 'Export successful',
+        showConfirmButton: true,
+      });
+    } catch (error) {
+      // Log error and show error message
+      console.error('Error exporting to Excel:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Export failed',
+        text: error.message,
+        showConfirmButton: true,
+      });
+    }
+  };
 
   const handleDateChange = (newDate) => {
     if (newDate) {
@@ -114,12 +141,10 @@ const FollowUp = () => {
     openModal()
     let response = await axios.get(`http://localhost:3000/followUp/followUpIDSearch/${rowId}`)
     setUpdateId(rowId);
-    console.log('Edit data', response.data.data[0]);
-    if (response.data.code == 200) {
-      let history = response.data.data[0];
+    if (response.data.code === '200') {
+      let history = response.data.data;
       setCategory(history.category);
       const formatDate = parse(history.date_time, "yyyy/MM/dd hh:mm a", new Date());
-      console.log("edit fetch",formatDate);
       setDate(formatDate)
       setRemark(history.remark);
     } else {
@@ -161,52 +186,69 @@ const FollowUp = () => {
     );
   }
 
-  const saveNewHistory =async () =>{
+  const saveNewHistory = async () => {
     const formData = {
-      patient_id : id,
+      patient_id: id,
       category,
-      date_time : date,
+      date_time: date,
       remark
-    }
-    console.log("form -",formData);
-    let response = await axios.post("http://localhost:3000/followUp/followUpCreate",formData)  
-    if (response.data.code == 200) {
-      closeModal();
+    };
+  
+    try {
+      const response = await axios.post("http://localhost:3000/followUp/followUpCreate", formData);
+      
+      if (response.status === 200 && response.data.code === '200') {
+        closeModal();
+        Toast.fire({
+          icon: 'success',
+          title: "Patient's hospital and lab history is saved successfully",
+        });
+        getHistoryList();
+      } else {
+        throw new Error('Failed to save history: Unexpected response');
+      }
+    } catch (error) {
       Toast.fire({
-        icon: "success",
-        title: "Patient's hospital and lab history is saved successfully",
-      });
-    } else {
-      Toast.fire({
-        icon: "error",
+        icon: 'error',
         title: "Failed to save patient's hospital and lab history",
+        text: error.message,
       });
     }
-  }
+  };
 
-  const updateHistory = async() =>{
-    const formattedDate = format(date, "yyyy/MM/dd hh:mm a");
-    const formData = {
-      patient_id : id,
-      category,
-      date_time : formattedDate,
-      remark
-    }
-    let response = await axios.put(`http://localhost:3000/followUp/followUpUpdate/${updateId}`,formData)   
-    if (response.data.code == 200) {
-      closeModal();
-      getHistoryList();
-      Toast.fire({
-        icon: "success",
-        title: "Patient's hospital and lab history is updated successfully",
-      });
-    } else {
+  const updateHistory = async () => {
+    try {
+      const formattedDate = format(date, "yyyy/MM/dd hh:mm a");
+      const formData = {
+        patient_id: id,
+        category,
+        date_time: formattedDate,
+        remark
+      };
+  
+      const response = await axios.put(`http://localhost:3000/followUp/followUpUpdate/${updateId}`, formData);
+      console.log("update",response);
+      if (response.status === 200 && response.data.code === '200') {
+        closeModal();
+        Toast.fire({
+          icon: "success",
+          title: "Patient's hospital and lab history is updated successfully",
+        });
+        getHistoryList();
+      } else {
+        Toast.fire({
+          icon: "error",
+          title: "Failed to update patient's hospital and lab history",
+        });
+      }
+    } catch (error) {
       Toast.fire({
         icon: "error",
-        title: "Failed to update patient's hospital and lab history",
+        title: "An error occurred while updating the history",
+        text: error.message,
       });
     }
-  }
+  };
 
   const getHistoryList = async ()=>{
     let response = await axios.post("http://localhost:3000/followUp/followUpPatientIdSearch",{
@@ -223,6 +265,15 @@ const FollowUp = () => {
       return;
     }  
   }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isNew) {
+      await saveNewHistory();
+    } else {
+      await updateHistory();
+    }
+  };
 
   useEffect(()=>{
     getHistoryList()
@@ -246,23 +297,18 @@ const FollowUp = () => {
         </div>
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <form onSubmit={isNew ? saveNewHistory : updateHistory} className="w-full max-w-lg p-6">
+        <form onSubmit={handleSubmit} className="w-full max-w-lg p-6">
           <p className="text-xl">{isNew ?"New" : "Update"} Follow Up History</p>
           <div className="w-1/3 mb-4">
             <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
               Category
             </label>
-            <select
-              id="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
+            <select id="category" value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
               <option value="online">Online</option>
               <option value="hospital">Hospital</option>
               <option value="other">Others</option>
             </select>
-        </div>
+          </div>
           <div className="mb-4">
             <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date & Time</label>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -272,7 +318,7 @@ const FollowUp = () => {
                     required: true,
                     variant: 'outlined',
                     fullWidth: true,
-                  }}} label="Basic date time picker"/>
+                  }}}/>
               </DemoContainer>
             </LocalizationProvider>
           </div>

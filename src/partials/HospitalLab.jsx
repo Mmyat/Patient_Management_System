@@ -3,7 +3,7 @@ import { saveAs } from 'file-saver';
 import * as XLSX from "xlsx";
 import TableComponent from '../components/TableComponent';
 import { AiOutlineEdit, AiFillDelete } from "react-icons/ai";
-import { Link ,useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import Modal from '../components/Modal';
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -36,7 +36,7 @@ const HospitalLab = () => {
         <div className="flex gap-2">  
           <AiOutlineEdit onClick={() => { handleEdit(row.id);}} className="text-2xl text-orange-600 dark:text-orange-500 cursor-pointer" />
           <AiFillDelete
-            className="text-2xl text-red-400 dark:text-red-500 cursor-pointer"
+            className="text-2xl text-red-500 dark:text-red-500 cursor-pointer"
             onClick={() => {
               handleDelete(row.id);
             }}
@@ -55,6 +55,7 @@ const HospitalLab = () => {
   const [isNew,setIsNew] = useState(true)
   const { id } = useParams();
   const [updateId,setUpdateId] = useState(null)
+  const baseURL = 'http://localhost:3000/hospAndLab';
 
   const Toast = Swal.mixin({
     toast: true,
@@ -85,16 +86,43 @@ const HospitalLab = () => {
   });
 
   const exportToExcel = () => {
-    const fileName = "hospital_lab_history"
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([excelBuffer], {type: 'application/octet-stream'});
-    saveAs(blob, `${fileName}.xlsx`);
-
-  }
-
+    try {
+      console.log("list", dataList);
+      // Check if dataList is an array and not empty
+      if (!Array.isArray(dataList) || dataList.length === 0) {
+        Swal.fire({
+          title: 'No data to export',
+          showConfirmButton: true,
+        });
+        return;
+      }
+  
+      const fileName = 'hospital_lab_history';
+      const worksheet = XLSX.utils.json_to_sheet(dataList);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+      saveAs(blob, `${fileName}.xlsx`);
+  
+      // Show success message
+      Swal.fire({
+        icon: 'success',
+        title: 'Export successful',
+        showConfirmButton: true,
+      });
+    } catch (error) {
+      // Log error and show error message
+      console.error('Error exporting to Excel:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Export failed',
+        text: error.message,
+        showConfirmButton: true,
+      });
+    }
+  };  
+  
   const handleDateChange = (newDate) => {
     if (newDate) {
       const formattedDate = format(newDate, "yyyy/MM/dd");
@@ -113,12 +141,10 @@ const HospitalLab = () => {
     openModal()
     let response = await axios.get(`http://localhost:3000/hospAndLab/HosAndLabIdSearch/${rowId}`)
     setUpdateId(rowId);
-    console.log('Edit data', response.data.data[0]);
     if (response.data.code == 200) {
-      let history = response.data.data[0];
+      let history = response.data.data;
       setLocation_name(history.location_name);
       const formatDate = parse(history.date, "yyyy/MM/dd", new Date());
-      console.log("edit fetch",formatDate);
       setDate(formatDate)
       setRemark(history.remark);
     } else {
@@ -141,7 +167,7 @@ const HospitalLab = () => {
       .then(async (result) => {
         if (result.isConfirmed) {
           const response = await axios.delete(`http://localhost:3000/hospAndLab/HosAndLabDelete/${rowId}`)
-          if (response.data.code == 200) {
+          if (response.status === 200 && response.data.code === '200') {
             Toast.fire({
               icon: "success",
               title: "Patient's hospital and lab history is deleted successfully",
@@ -161,52 +187,76 @@ const HospitalLab = () => {
     );
   }
 
-  const saveNewHistory =async () =>{
+  const saveNewHistory = async () => {
     const formData = {
-      patient_id : id,
+      patient_id: id,
       location_name,
       date,
       remark
-    }
-    let response = await axios.post("http://localhost:3000/hospAndLab/HosAndLabCreate",formData)
-   
-    if (response.data.code == 200) {
-      closeModal();
-      Toast.fire({
-        icon: "success",
-        title: "Patient's hospital and lab history is saved successfully",
-      });
-    } else {
+    };
+  
+    try {
+      if(location_name == ""){
+        return;
+      }
+      const response = await axios.post("http://localhost:3000/hospAndLab/HosAndLabCreate", formData); 
+      if (response.status === 200 && response.data.code === '200') {
+        closeModal();
+        Toast.fire({
+          icon: "success",
+          title: "Patient's hospital and lab history is saved successfully",
+        });
+        getHistoryList();
+      } else {
+        Toast.fire({
+          icon: "error",
+          title: "Failed to save patient's hospital and lab history",
+        });
+      }
+    } catch (error) {
+      console.error('Error saving hospital and lab history:', error);
       Toast.fire({
         icon: "error",
-        title: "Failed to save patient's hospital and lab history",
+        title: "An error occurred while saving patient's hospital and lab history",
       });
     }
-  }
+  };  
 
-  const updateHistory = async() =>{
-    const formattedDate = format(date, "yyyy/MM/dd");
-    const formData = {
-      patient_id : id,
-      location_name,
-      date : formattedDate,
-      remark
-    }
-    let response = await axios.put(`http://localhost:3000/hospAndLab/HosAndLabUpdate/${updateId}`,formData)   
-    if (response.data.code == 200) {
-      closeModal();
-      getHistoryList();
-      Toast.fire({
-        icon: "success",
-        title: "Patient's hospital and lab history is updated successfully",
-      });
-    } else {
+  const updateHistory = async () => {
+    try {
+      const formattedDate = format(date, "yyyy/MM/dd");
+      const formData = {
+        patient_id: id,
+        location_name,
+        date: formattedDate,
+        remark,
+      };
+  
+      const response = await axios.put(`${baseURL}/HosAndLabUpdate/${updateId}`, formData);
+      console.log("update res",response);
+      if (response.status === 200 && response.data.code === '200') {
+        closeModal();
+        getHistoryList();
+        Toast.fire({
+          icon: "success",
+          title: "Patient's hospital and lab history is updated successfully",
+        });
+      } else {
+        Toast.fire({
+          icon: "error",
+          title: "Failed to update patient's hospital and lab history",
+        });
+      }
+    } catch (error) {
+      console.error('Error updating history:', error);
       Toast.fire({
         icon: "error",
-        title: "Failed to update patient's hospital and lab history",
+        title: "An error occurred while updating patient's hospital and lab history",
+        text: error.message,
       });
     }
-  }
+  };
+  
 
   const getHistoryList = async ()=>{
     let response = await axios.post("http://localhost:3000/hospAndLab/HosAndLabPatientIdSearch",{
@@ -223,6 +273,15 @@ const HospitalLab = () => {
       return;
     }  
   }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isNew) {
+      await saveNewHistory();
+    } else {
+      await updateHistory();
+    }
+  };
 
   useEffect(()=>{
     getHistoryList()
@@ -241,13 +300,13 @@ const HospitalLab = () => {
         </div>           
         <div className="justify-end">               
             <button onClick={exportToExcel} className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                Export to Excel
+              Export to Excel
             </button>
         </div>
       </div>
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <form onSubmit={isNew ? saveNewHistory : updateHistory} className="w-full max-w-lg p-6">
+        <form onSubmit={handleSubmit} className="w-full max-w-lg p-6">
           <p className="text-xl">{isNew ?"New" : "Update"} Hospital & Lab History</p>
           <div className="mb-4">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">Hospital & Lab Name</label>
