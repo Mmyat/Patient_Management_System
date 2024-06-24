@@ -22,6 +22,7 @@ import PatientForm from './components/PatientForm';
 import HospitalLab from './partials/HospitalLab';
 import FollowUp from './partials/FollowUp';
 import FileManager from './partials/FileManager';
+import Report from './pages/Report';
 
 function App() {
 
@@ -39,7 +40,7 @@ function App() {
         <Route exact path="/admin" element={<Main />}>
           <Route path='dashboard' element={<Dashboard/>} />
           <Route path="patient" element={<Patients/>}/>           
-          <Route path="patient/report" element={<Report/>}/>      
+          <Route path="report" element={<Report/>}/>      
           <Route path="patient/patientform/:id" element={<PatientForm/>}/> 
           <Route path="patient/partnerform/:id" element={<PartnerForm/>}/> 
           <Route path="patient/partnerconnect/:id" element={<PartnerConnect/>}/>

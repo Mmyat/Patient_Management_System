@@ -1,8 +1,5 @@
 import React from "react";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+
 import Datepicker from "../components/Datepicker";
 
 const Report = () => {
@@ -15,9 +12,9 @@ const Report = () => {
           </p>
         </div>
 
-        <div className="flex border bg-white rounded px-12 py-10">
-          <div className="flex flex-row ">
-            <div className="w-full mb-4">
+        <div className="flex flex-row justify-between  border bg-white rounded p-10">
+
+            <div className="flex  mb-4">
               <label
                 htmlFor="category"
                 className="block text-sm font-medium text-gray-700"
@@ -37,31 +34,14 @@ const Report = () => {
             <div>
             <Datepicker />
             </div>
-            {/* <div className="w-full mb-4">
-              <label
-                htmlFor="date"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Start Date
-              </label>
-              <Datepicker />
-            </div>
-            <div className="w-full mb-4">
-              <label
-                htmlFor="date"
-                className="block text-sm font-medium text-gray-700"
-              >
-                End Date
-              </label>
-              <Datepicker />
-            </div> */}
+
             <div className="item-end">
               <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mb-4">
                 Search
               </button>
             </div>
+
           </div>
-        </div>
       </div>
     </>
   );

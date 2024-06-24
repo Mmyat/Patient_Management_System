@@ -135,6 +135,19 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                   </span>
                 </NavLink>
               </li>
+              <li className="border-t border-gray-300 py-2">
+                <NavLink
+                  to={"/admin/report"}
+                  className={({ isActive }) =>
+                    isActive ? "flex text-gray-700 bg-blue-200 rounded-xl" : "flex text-gray-600"
+                  }
+                >
+                  <img className="w-8 h-8 rounded-full" src={patient_icon} width="32" height="32" alt="dashboardicon" />
+                  <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                    Report
+                  </span>
+                </NavLink>
+              </li>
             </ul>
           </div>
         </div>
