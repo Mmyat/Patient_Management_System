@@ -18,12 +18,14 @@ export const surgical_json = {
                   title: "Date",
                   inputMask: "datetime",
                   inputFormat: "yyyy/mm/dd",
+                  startWithNewLine: true,
                   isRequired: true,
                 },
                 {
                   name: "procedure",
                   title: "Procedure:",
                   cellType: "comment",
+                  startWithNewLine: true,
                   isRequired: true,
                 },
               ],
@@ -37,7 +39,6 @@ export const surgical_json = {
   ],
   showQuestionNumbers: "off",
   questionErrorLocation: "bottom",
-  // completeText: "Register",
   width: "1024",
   fitToContainer: true,
 };

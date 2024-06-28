@@ -41,10 +41,9 @@ const TableComponent = ({ columns, data,total }) => {
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             {columns.map((column) => (
-              <th key={column.accessor}  className="flex-row items-center justify-center py-2 px-4 border-b">
-                 
+              <th key={column.accessor}  className="flex-row items-center justify-center py-2 px-4 border-b">                 
                { column.accessor !=="actions" ?(
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-start">
                     {column.Header}
                     <svg onClick={() => handleSort(column.accessor)} xmlns="http://www.w3.org/2000/svg" className={`flex-end h-5 w-5 cursor-pointer ${sortConfig.direction === 'ascending' ? "rotate-0" : "rotate-180"}`} viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 3a1 1 0 0 1 .707.293l4 4a1 1 0 0 1-1.414 1.414L11 6.414V16a1 1 0 1 1-2 0V6.414l-2.293 2.293a1 1 0 1 1-1.414-1.414l4-4A1 1 0 0 1 10 3z" clipRule="evenodd" /></svg>
                   </div>
@@ -66,12 +65,14 @@ const TableComponent = ({ columns, data,total }) => {
             }>
               {columns.map((column) => (
                 <td key={column.accessor} className="py-2 px-4 border-b">
-                 {column.accessor === "actions" ? (
-                        <column.Cell row={{ ...row }} />
-                      ) : (
-                        row[column.accessor]
-                      )
-                    }
+                 {column.accessor === "remark" ? (
+                  row.remark.length > 20 ? (row.remark.substring(0,20)+"...") : (row.remark)
+                 ): column.accessor === "actions" ? (
+                    <column.Cell row={{ ...row }} />
+                  ) : (
+                    row[column.accessor]
+                  )
+                }
                 </td>
               ))}
             </tr>
@@ -98,25 +99,25 @@ const TableComponent = ({ columns, data,total }) => {
           </label>
               <div>
                 <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                  <a href="#" onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                  <button disabled={currentPage == 1} href="#" onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
                     <span className="sr-only">Previous</span>
                     <AiOutlineLeft className="h-5 w-5" aria-hidden="true" />
-                  </a>
-                  <a
+                  </button>
+                  <span
                     href="#"
                     aria-current="page"
                     className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
                     {currentPage}
-                  </a>
-                  <a
+                  </span>
+                  <button
                     href="#"
                     onClick={() => setCurrentPage((prev) => Math.min(prev + 1, Math.ceil(data.length / rowsPerPage)))}
                     className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                   >
                     <span className="sr-only">Next</span>
                     <AiOutlineRight className="h-5 w-5" aria-hidden="true" />
-                  </a>
+                  </button>
                 </nav>
               </div>
             </div>

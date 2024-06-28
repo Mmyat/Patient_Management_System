@@ -304,7 +304,6 @@ const HospitalLab = () => {
             </button>
         </div>
       </div>
-
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <form onSubmit={handleSubmit} className="w-full max-w-lg p-6">
           <p className="text-xl">{isNew ?"New" : "Update"} Hospital & Lab History</p>

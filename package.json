@@ -20,6 +20,7 @@
     "dayjs": "^1.11.11",
     "file-saver": "^2.0.5",
     "jquery": "^3.7.1",
+    "js-file-download": "^0.4.12",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-data-table-component": "^7.6.2",
