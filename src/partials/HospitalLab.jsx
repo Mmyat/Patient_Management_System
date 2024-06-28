@@ -309,15 +309,29 @@ const HospitalLab = () => {
           <p className="text-xl">{isNew ?"New" : "Update"} Hospital & Lab History</p>
           <div className="mb-4">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">Hospital & Lab Name</label>
-            <input
+            <select
+              id="location_name"
+              value = {location_name}
+              className="mt-1 block w-64  pl-2 pr-2 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              onChange={(e)=>setLocation_name(e.target.value)}
+              name="location_name"
+            >
+              <option value="Samitevij">Samitevij</option>
+              <option value="Jetamin">Jetanin</option>
+              <option value="Chaing Mai">Chaing Mai</option>
+              <option value="N Health">N Health</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+            {/* <input
               type="text"
               id="name"
               value={location_name}
               onChange={(e)=>setLocation_name(e.target.value)}
               required
               className="mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+            /> */}
+          {/* </div> */}
           <div className="mb-4">
             <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
             <LocalizationProvider dateAdapter={AdapterDateFns}>

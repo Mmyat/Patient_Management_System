@@ -280,7 +280,6 @@ const Report = () => {
               <option value="Jetamin">Jetanin</option>
               <option value="Chaing Mai">Chaing Mai</option>
               <option value="N Health">N Health</option>
-              <option value="Shan Koe Mee">Ningar Hospital</option>
               <option value="Others">Others</option>
             </select>
           </div>
