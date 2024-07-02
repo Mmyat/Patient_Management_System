@@ -32,9 +32,8 @@ const PatientDetails = () => {
   const { id } = useParams();
   const getDataById = async () => {
     const response = await axios.post(
-      `http://localhost:3000/patient/patientIdSearch/${id}`
+      `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientIdSearch/${id}`
     );
-    console.log("response :", response);
     const data = response.data.data.result[0];
     setPatient(data);
     setPatientId(id);
@@ -44,7 +43,7 @@ const PatientDetails = () => {
   const getRelation = async () => {
     const requestData = { patient_id: id };
     const response = await axios.post(
-      "http://localhost:3000/partner/partnerSearch",
+      `${import.meta.env.VITE_SERVER_DOMAIN}/partner/partnerSearch`,
       requestData
     );
     if (response.data.code == 200) {

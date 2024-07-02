@@ -67,7 +67,22 @@ const TableComponent = ({ columns, data,total }) => {
                 <td key={column.accessor} className="py-2 px-4 border-b">
                  {column.accessor === "remark" ? (
                   row.remark.length > 20 ? (row.remark.substring(0,20)+"...") : (row.remark)
-                 ): column.accessor === "actions" ? (
+                 ): 
+                 column.accessor === "reminder_1" ?(
+                  row.reminder_1 === null ? (
+                    <span className="px-2 py-1 text-sm font-medium bg-red-100 text-red-800 rounded-full">Pending</span>
+                  ) : (
+                    <span className="px-2 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">Done</span>
+                  )
+                 ) :
+                 column.accessor === "reminder_2" ?(
+                  row.reminder_2 === null ? (
+                    <span className="px-2 py-1 text-sm font-medium bg-red-100 text-red-800 rounded-full">Pending</span>
+                  ) : (
+                    <span className="px-2 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">Done</span>
+                  )
+                 ) :
+                 column.accessor === "actions" ? (
                     <column.Cell row={{ ...row }} />
                   ) : (
                     row[column.accessor]

@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { AiOutlineEdit, AiFillDelete } from "react-icons/ai";
 import { Link ,useParams} from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
@@ -18,6 +17,7 @@ const Table = () => {
   const [message, setMessage] = useState(
     "No patient's information has been searched yet!"
   );
+
   const columns = [
     {
       Header: "Name",
@@ -103,12 +103,11 @@ const Table = () => {
           //Name Searching
           case "Name":
             const response = await axios.post(
-              `http://localhost:3000/patient/patientNameSearch/${page}`,
+              `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientNameSearch/${page}`,
               { name: searchTerm } // Pass offset and limit parameters
             );
             if (response.data.code == 200) {
               const list = response.data.data.result;
-              console.log("list", list);
               list?.map((patient) => {
                 const patient_age = calculateAge(patient.dob);
                 patient.age = patient_age;
@@ -127,7 +126,7 @@ const Table = () => {
           //NRC searching
           case "NRC":
             const nrc_response = await axios.post(
-              `http://localhost:3000/patient/patientNrcSearch`,
+              `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientNrcSearch`,
               { nrc: searchTerm } // Pass offset and limit parameters
             );
             console.log("nrc res:", nrc_response);
@@ -152,7 +151,7 @@ const Table = () => {
             //ID searching
             case "ID":
             const Id_response = await axios.post(
-              `http://localhost:3000/patient/patientIdSearch/${searchTerm}`,
+              `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientIdSearch/${searchTerm}`,
               // { name: searchTerm } // Pass offset and limit parameters
             );
             if (Id_response.data.code == 200) {

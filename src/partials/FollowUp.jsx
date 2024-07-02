@@ -138,7 +138,7 @@ const FollowUp = () => {
   const handleEdit =async (rowId) => {
     setIsNew(false)
     openModal()
-    let response = await axios.get(`http://localhost:3000/followUp/followUpIDSearch/${rowId}`)
+    let response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpIDSearch/${rowId}`)
     setUpdateId(rowId);
     if (response.data.code === '200') {
       let history = response.data.data;
@@ -194,7 +194,7 @@ const FollowUp = () => {
     };
   
     try {
-      const response = await axios.post("http://localhost:3000/followUp/followUpCreate", formData);
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpCreate`, formData);
       
       if (response.status === 200 && response.data.code === '200') {
         closeModal();
@@ -225,7 +225,7 @@ const FollowUp = () => {
         remark
       };
   
-      const response = await axios.put(`http://localhost:3000/followUp/followUpUpdate/${updateId}`, formData);
+      const response = await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpUpdate/${updateId}`, formData);
       console.log("update",response);
       if (response.status === 200 && response.data.code === '200') {
         closeModal();
@@ -250,7 +250,7 @@ const FollowUp = () => {
   };
 
   const getHistoryList = async ()=>{
-    let response = await axios.post("http://localhost:3000/followUp/followUpPatientIdSearch",{
+    let response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpPatientIdSearch`,{
       patient_id : id,
     })
     if(response.data.code ==='200'){
