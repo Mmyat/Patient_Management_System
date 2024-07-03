@@ -5,7 +5,11 @@ import { useStateContext } from "../context/ContextProvider";
 import Swal from "sweetalert2";
 import DefaultProfile from "../images/defaultprofile.jpg";
 import { BsArrowLeft } from "react-icons/bs";
-
+import { AiOutlineEdit } from "react-icons/ai";
+import { FaEdit } from 'react-icons/fa';
+import PersonalIcon from '../images/personal_icon.png';
+import ObjectiveIcon from '../images/concern.png';
+import MedicalIcon from '../images/medical-history.png';
 const PatientDetails = () => {
   //
   const Toast = Swal.mixin({
@@ -21,7 +25,6 @@ const PatientDetails = () => {
   });
   //
   const navigate = useNavigate();
-
   const { patientId, setPatientId } = useStateContext();
   const [patient, setPatient] = useState({});
   const [partner, setPartner] = useState({});
@@ -57,16 +60,14 @@ const PatientDetails = () => {
   };
   //
   const toggleState = () => {
-    // Check if partner data exists
     if (partner) {
-      setIsTrue(true); // Set isTrue to true if partner data exists
+      setIsTrue(true);
     } else {
-      setIsTrue(false); // Set isTrue to false if partner data doesn't exist
+      setIsTrue(false);
     }
   };
 
   const handleViewDetail = () => {
-    // Swap patient and partner data
     setPatient(partner);
     setPartner(patient);
     setPatientId(partner.id);
@@ -74,7 +75,9 @@ const PatientDetails = () => {
     setPartnerProfile(profile)
     navigate(`/admin/patient/patientdetail/${partner.id}`);
   };
-
+  const changeToEdit = (Id)=>{
+    navigate(`/admin/patient/patientform/${Id}`);
+  }
   const addNewPartner = async (patientId) => {  
       setShowModal(false);
       navigate(`/admin/patient/partnerform/${patientId}`);  
@@ -86,9 +89,9 @@ const PatientDetails = () => {
   }
   //
   let Links = [
-    { name: "Personal Info", link: "personalinfo" },
-    { name: "Objectives Concerns", link: "objectives" },
-    { name: "Medical History", link: "medical" },
+    { name: "PersonalIcon" , link: "personalinfo",icon : PersonalIcon },
+    { name: "Objectives Concerns", link: "objectives",icon : ObjectiveIcon },
+    { name: "Medical History", link: "medical",icon : MedicalIcon },
     { name: "Surgical History", link: "surgical" },
     { name: "Social History", link: "social" },
     { name: "Family Medical History", link: "familymedical" },
@@ -96,7 +99,7 @@ const PatientDetails = () => {
     { name: "Follow Up", link: "follow-up" },
     { name: "File Manager", link: "file-manager"},
   ];
-  //get Data
+  //http://localhost:5173/admin/patient/patientform/5219
   useEffect(() => {
     getDataById();
     getRelation();
@@ -113,7 +116,12 @@ const PatientDetails = () => {
             Patient's Details
           </h3>
           <div className="flex px-4 py-5">
-            <img src={profile ? profile : DefaultProfile} alt="Profile Preview" className="w-36 h-36 mr-4 md:mr-18 rounded-md mt-1"/>
+            <div className="relative inline-block">
+              <img src={profile ? profile : DefaultProfile} alt="Profile Preview" className="w-36 h-36 mr-4 md:mr-18 rounded-md mt-1 object-cover" />
+              <button onClick={()=>changeToEdit(patient.id)} className="absolute -bottom-2 right-0 m-2 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full">
+                <AiOutlineEdit/>
+              </button>
+            </div>
             <dl className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <dt className="text-gray-700 font-medium">Patient's ID:</dt>
               <dd className="text-gray-900">{patient.id}</dd>
@@ -134,7 +142,12 @@ const PatientDetails = () => {
               Partner's Details
             </h3>
             <div className="flex px-4 py-5">
-              <img src={partnerProfile ? partnerProfile : DefaultProfile } alt="Profile Preview" className="w-36 h-36 mr-4 md:mr-18 rounded-md mt-1"/>
+              <div className="relative inline-block">
+                <img src={partnerProfile ? partnerProfile : DefaultProfile } alt="Profile" className="w-36 h-36 mr-4 md:mr-18 rounded-md mt-1 object-cover" />
+                <button onClick={()=>changeToEdit(partner.id)} className="absolute bottom-7 right-0 m-2 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full">
+                  <AiOutlineEdit/>
+                </button>
+              </div>
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <dt className="text-gray-700 font-medium">Partner's ID:</dt>
                 <dd className="text-gray-900">{partner.id}</dd>
@@ -250,7 +263,7 @@ const PatientDetails = () => {
                   isActive ? "text-blue-700" : "text-gray-600"
                 }
               >
-                {link.name}
+                  <img src={link.icon} alt={`${link.name} icon`} className="w-6 h-6 mr-2" />
               </NavLink>
             </li>
           ))}

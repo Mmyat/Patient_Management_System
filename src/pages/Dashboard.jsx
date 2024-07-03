@@ -40,7 +40,7 @@ const Dashboard = () => {
       accessor: "actions",
       Cell: ({ row }) => (  
         <div className="flex gap-2">  
-          <button onClick={() =>{}} className={`px-4 py-1 text-white text-sm font-medium rounded-full ${reminderDoneCheck(row.reminder_1,row.reminder_2) ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'}`} disabled={false}> 
+          <button onClick={() =>handleReminder(row.id)} className={`px-4 py-1 text-white text-sm font-medium rounded-full ${isReminderActive(row.reminder_1,row.reminder_2) ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'}`} disabled={!isReminderActive(row.reminder_1,row.reminder_2)}> 
           Done </button>        
         </div>
       ),
@@ -48,6 +48,7 @@ const Dashboard = () => {
   ];
   const [dataList,setDataList] = useState([]);
   const [total,setTotal] = useState([]);
+  const [isActive,setIsActive] = useState(true);
 
   const getFollowUpList = async () => {
     try {  
@@ -68,22 +69,30 @@ const Dashboard = () => {
       return;
     }
   }
-  const reminderDoneCheck = (reminder_1,reminder_2)=>{
+  const isReminderActive  = (reminder_1,reminder_2)=>{
+    if (reminder_1 === null && reminder_2 === null) {
+      return true;
+    }
     let todayDate = new Date();
     const twoDaysLater = new Date(todayDate);
     twoDaysLater.setDate(todayDate.getDate() + 2);
-    const formatTodayDate = format(todayDate, "yyyy/MM/dd");  
-    const formatTwoDaysLater = format(twoDaysLater, "yyyy/MM/dd");  
-    if (reminder_1 !== null || reminder_2 !== null){
-      if (reminder_1 == formatTwoDaysLater || reminder_2 == formatTodayDate){
-        return false ;
-      }else{
-        return true
-      }
-    }else{
-      return true
-    }
+    const formattedToday = format(todayDate, "yyyy/MM/dd");  
+    const formattedTwoDaysLater = format(twoDaysLater, "yyyy/MM/dd");  
+    return (reminder_1 === formattedTwoDaysLater || reminder_2 === formattedToday);
+  }
 
+  const handleReminder =async(reminderId)=>{
+    try {  
+    const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/updateReminder/${reminderId}`);
+        if (response.data.code === '200') { 
+          getFollowUpList()
+        } else {
+          return;
+        }
+    } catch (error) {
+        console.log("Error:", error);
+        return;
+      }
   }
   
   useEffect(()=>{

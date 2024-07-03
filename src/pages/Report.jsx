@@ -80,7 +80,7 @@ const Report = () => {
       return;
     }
     let response = await axios.post(
-      `http://localhost:3000/hospAndLab/HosAndLabDateSearch`,
+      `${import.meta.env.VITE_SERVER_DOMAIN}/hospAndLab/HosAndLabDateSearch`,
       {
         start_date: start_date,
         end_date: end_date,

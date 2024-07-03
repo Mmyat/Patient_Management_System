@@ -28,6 +28,7 @@ const PatientForm = () => {
   const [NRCPlaceSelect, setNRCPlaceSelect] = useState(nrc_data[0].name_en);
   const [NRCTypeSelect, setNRCTypeSelect] = useState(nrcType[0].en);
   const [NRCCode, setNRCCode] = useState('');
+  const [passport, setPassport] = useState(null);
   const [gender, setGender] = useState("male");
   const [townshipList, setTownshipList] = useState([]);
   const [isRequired,setIsRequired] = useState(false)
@@ -104,10 +105,11 @@ const PatientForm = () => {
         "nrc",
         `${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`
       );
+      formData.append("passport", passport);
       formData.append("gender", gender);
       formData.append("image", file);
       const response = await axios.post(
-        "http://localhost:3000/patient/patientPicUpload",
+        `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientPicUpload`,
         formData
       );
       console.log(response);
@@ -129,15 +131,16 @@ const PatientForm = () => {
   //
   const updatePatientData = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", name);
+    const form_data = new FormData();
+    form_data.append("name", name);
     const formattedDate = format(dob, "yyyy/MM/dd");
-    formData.append("dob", formattedDate);
-    formData.append("nrc",`${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`);
-    formData.append("gender", gender);
-    formData.append("image", file);
-    console.log("form data :", formData);
-    const response = await axios.put(`http://localhost:3000/patient/patientPicUpdate/${id}`,formData);
+    form_data.append("dob", formattedDate);
+    form_data.append("nrc",`${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`);
+    form_data.append("passport", passport);
+    form_data.append("gender", gender);
+    form_data.append("image", file);
+    console.log("update form data :", form_data);
+    const response = await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientPicUpdate/${id}`,form_data);
     console.log("update :", response.data);
     if (response.data.code == 200) {
       Toast.fire({
@@ -157,7 +160,7 @@ const PatientForm = () => {
   const getDataById = async () => {
     if (!isNew) {
       const response = await axios.post(
-        `http://localhost:3000/patient/patientIdSearch/${id}`
+        `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientIdSearch/${id}`
       );
       const data = response.data.data.result[0];
       console.log("edit data", data);
@@ -165,6 +168,7 @@ const PatientForm = () => {
       const formatDate = parse(data.dob, "yyyy/MM/dd", new Date());
       setDob(formatDate);
       CalculateAge(formatDate);
+      setPassport(data.passport);
       setGender(data.gender);
       //NRC region code destructure
       const state_code = data.nrc.split("/", 1);
@@ -303,6 +307,16 @@ const PatientForm = () => {
             />
           </div>
         </div>
+        <div className="mb-4">
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Passport</label>
+          <input
+            type="text"
+            id="name"
+            value={passport}
+            onChange={(e) => setPassport(e.target.value)}
+            className="mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
+        </div>
         <div className="w-1/3 mb-4">
           <label
             htmlFor="gender"
@@ -344,7 +358,7 @@ const PatientForm = () => {
         </div>
         <div className="mt-6">
           <button
-            onClick={() => navigate('/admin/patient')}
+            onClick={() => navigate(-1)}
             className="shadow-sm text-sm font-medium outline outline-indigo-600 outline-2 outline-offset-2 py-1 px-4 mr-4 rounded-md focus:ring-indigo-500"
           >
             Cancel

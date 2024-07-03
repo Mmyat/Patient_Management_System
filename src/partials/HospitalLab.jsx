@@ -55,8 +55,6 @@ const HospitalLab = () => {
   const [isNew,setIsNew] = useState(true)
   const { id } = useParams();
   const [updateId,setUpdateId] = useState(null)
-  const baseURL = 'http://localhost:3000/hospAndLab';
-
   const Toast = Swal.mixin({
     toast: true,
     position: "top-end",
@@ -139,7 +137,7 @@ const HospitalLab = () => {
   const handleEdit =async (rowId) => {
     setIsNew(false)
     openModal()
-    let response = await axios.get(`http://localhost:3000/hospAndLab/HosAndLabIdSearch/${rowId}`)
+    let response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/hospAndLab/HosAndLabIdSearch/${rowId}`)
     setUpdateId(rowId);
     if (response.data.code == 200) {
       let history = response.data.data;
@@ -166,7 +164,7 @@ const HospitalLab = () => {
       })
       .then(async (result) => {
         if (result.isConfirmed) {
-          const response = await axios.delete(`http://localhost:3000/hospAndLab/HosAndLabDelete/${rowId}`)
+          const response = await axios.delete(`${import.meta.env.VITE_SERVER_DOMAIN}/hospAndLab/HosAndLabDelete/${rowId}`)
           if (response.status === 200 && response.data.code === '200') {
             Toast.fire({
               icon: "success",
@@ -199,7 +197,7 @@ const HospitalLab = () => {
       if(location_name == ""){
         return;
       }
-      const response = await axios.post("http://localhost:3000/hospAndLab/HosAndLabCreate", formData); 
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/hospAndLab/HosAndLabCreate`, formData); 
       if (response.status === 200 && response.data.code === '200') {
         closeModal();
         Toast.fire({
@@ -232,7 +230,7 @@ const HospitalLab = () => {
         remark,
       };
   
-      const response = await axios.put(`${baseURL}/HosAndLabUpdate/${updateId}`, formData);
+      const response = await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/HosAndLabUpdate/${updateId}`, formData);
       console.log("update res",response);
       if (response.status === 200 && response.data.code === '200') {
         closeModal();
@@ -259,7 +257,7 @@ const HospitalLab = () => {
   
 
   const getHistoryList = async ()=>{
-    let response = await axios.post("http://localhost:3000/hospAndLab/HosAndLabPatientIdSearch",{
+    let response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/hospAndLab/HosAndLabPatientIdSearch`,{
       patient_id : id,
     })
     if(response.data.code ==='200'){

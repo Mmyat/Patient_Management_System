@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { AiOutlineEdit, AiFillDelete } from "react-icons/ai";
 import { useParams,useNavigate} from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";

@@ -12,6 +12,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 
 const PartnerForm = () => {
   const [name, setName] = useState('');
+  const [passport, setPassport] = useState(null);
   const [dob, setDob] = useState(null);
   const [age, setAge] = useState('');
   const nrcStateCode = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
@@ -90,11 +91,13 @@ const PartnerForm = () => {
         "nrc",
         `${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`
       );
+      formData.append("passport", passport);
       formData.append("gender", gender);
       formData.append("partner_id", id);
       formData.append("image", file);
       // console.log("form img",formData);
-      const response= await axios.post("http://localhost:3000/partner/partnerCreateWithPic",formData)
+      const response= await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/partner/partnerCreateWithPic`,formData)
+      console.log("partner res",response.data);
       if(response.data.code == 200){
         Toast.fire({
             icon: "success",
@@ -187,6 +190,16 @@ const PartnerForm = () => {
             }}
             required/>
           </div>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Passport</label>
+          <input
+            type="text"
+            id="name"
+            value={passport}
+            onChange={(e) => setPassport(e.target.value)}
+            className="mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
         </div>
         <div className="w-1/3 mb-4">
           <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>

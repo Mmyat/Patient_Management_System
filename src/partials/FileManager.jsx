@@ -3,7 +3,7 @@ import folderIcon from '../images/folder-icon.png'
 import fileIcon from '../images/file-icon.png'
 import { AiOutlineEdit, AiFillDelete } from "react-icons/ai";
 import { MdDownload } from "react-icons/md";
-import { BsArrowLeft,BsArrowRight } from "react-icons/bs";
+import { BsArrowLeft} from "react-icons/bs";
 import axios from 'axios';
 import Modal from '../components/Modal';
 import {useParams,useNavigate} from "react-router-dom";
@@ -37,7 +37,7 @@ const FileManager = () => {
         <div className="flex gap-2">  
           {row.type === "file" ? (
             <Tooltip text="Download file">
-              <MdDownload onClick={() => {downloadFile(row.name)}} className="text-2xl text-cyan-500 dark:text-red-500 cursor-pointer"/>
+              <MdDownload onClick={() => {downloadFile(row.nameURL)}} className="text-2xl text-cyan-500 dark:text-red-500 cursor-pointer"/>
             </Tooltip>)
           :(
             <Tooltip text="Rename">
@@ -51,17 +51,15 @@ const FileManager = () => {
     },
   ];
 
-  const baseURL = 'http://localhost:3000';
   const { id } = useParams();
-
   const [dataList,setDataList] = useState([]);
   const [isFolder,setIsFolder] = useState(false);
   const [isNew,setIsNew] = useState(true);
   const [isModalOpen,setIsModalOpen] = useState(false);
   const [name,setName] = useState('')
   const [updateId,setUpdateId] = useState(null)
-  const [path,setPath] = useState('Main')
-  const [type,setType] = useState('Main')
+  const [path,setPath] = useState('main')
+  const [type,setType] = useState('folder')
   const openModal = () => {setIsModalOpen(true);  }
   const closeModal = () =>{setIsModalOpen(false); }
   const fileUploadRef = useRef();
@@ -88,7 +86,7 @@ const FileManager = () => {
 
   const getMainFolderList = async()=>{
     try{
-      const response = await axios.get(`${baseURL}/fileUpload/mainfFolderSearch`, {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/fileUpload/mainfFolderSearch`, {
         params :{
           "patient_id": id, 
           path 
@@ -153,7 +151,7 @@ const FileManager = () => {
       formData.append("name", name);
       formData.append("path", path);
       formData.append("type", type);
-      const response = await axios.post(`${baseURL}/file/fileCreate`,formData);
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/file/fileCreate`,formData);
       console.log("rsponse",response);
       if (response.data.code === '200') {
         closeModal();
@@ -169,7 +167,6 @@ const FileManager = () => {
           title: "Failed to save patient's hospital and lab history",
         });
       }
-      // let list = response.data.data;
     }
     catch{
       return;
@@ -189,7 +186,7 @@ const FileManager = () => {
       }
 
       console.log("upt form:",formData);
-      const response = await axios.put(`${baseURL}/file/fileUpdate/${updateId}`,formData);
+      const response = await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/file/fileUpdate/${updateId}`,formData);
       console.log("rsponse updt:",response);
       if (response.data.code === '200') {
         closeModal();
@@ -205,7 +202,6 @@ const FileManager = () => {
           title: "Failed to save patient's hospital and lab history",
         });
       }
-      // let list = response.data.data;
     }
     catch{
       return;
@@ -233,7 +229,7 @@ const FileManager = () => {
       })
       .then(async (result) => {
         if (result.isConfirmed) {
-          const response = await axios.delete(`http://localhost:3000/file/fileDelete/${row.id}`)
+          const response = await axios.delete(`${import.meta.env.VITE_SERVER_DOMAIN}/file/fileDelete/${row.id}`)
           console.log("delete res:",response.data);
           if (response.status === 200 && response.data.code === '200') {
             Toast.fire({
@@ -316,7 +312,7 @@ const FileManager = () => {
                 <td key={column.accessor} className="py-2 px-4 border-b">
                  {
                   column.accessor === "name" ? (
-                      <div onClick={()=>openFolder(row.name)} className="flex items-center cursor-pointer">
+                      <div onClick={()=>{row.type == "folder" ? (openFolder(row.name)) : (null)}} className="flex items-center cursor-pointer">
                         {row.type == "folder" ? (<img className="w-8 h-8 mr-2" src={folderIcon} alt="Folder Icon" />) :(
                           <img className="w-8 h-8 mr-2" src={fileIcon} alt="File Icon" />
                         )}
