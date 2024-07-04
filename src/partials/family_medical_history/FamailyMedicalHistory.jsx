@@ -37,7 +37,7 @@ const FamailyMedicalHistory = () => {
     };
     console.log("history:", med_data);
     const response = await axios.post(
-      "http://localhost:3000/formData/formDataCreate",
+      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataCreate`,
       med_data
     );
     if (response.data.code == 200) {
@@ -65,7 +65,7 @@ const FamailyMedicalHistory = () => {
       },
     };
     const response = await axios.put(
-      `http://localhost:3000/formData/formDataUpdate/${formId}`,
+      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataUpdate/${formId}`,
       soc_data
     );
     if (response.data.code == 200) {
@@ -99,7 +99,7 @@ const FamailyMedicalHistory = () => {
   //Get Data
   const getData = async () => {
     const response = await axios.post(
-      `http://localhost:3000/formData/formDataSearchPatient/`,
+      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,
       { patient_id: id, history: "family_history" }
     );
     if (response.data.code == 200 && response.data.data.length !== 0) {

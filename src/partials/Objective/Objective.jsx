@@ -37,7 +37,7 @@ const Objective = () => {
     };
     console.log("history:", med_data);
     const response = await axios.post(
-      "http://localhost:3000/formData/formDataCreate",
+      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataCreate`,
       med_data
     );
     console.log("objecitves :", response.data);
@@ -66,7 +66,7 @@ const Objective = () => {
       },
     };
     const response = await axios.put(
-      `http://localhost:3000/formData/formDataUpdate/${formId}`,
+      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataUpdate/${formId}`,
       soc_data
     );
     console.log("update", response.data);
@@ -103,7 +103,7 @@ const Objective = () => {
   const getData = async () => {
     console.log("Id :",id);
     const response = await axios.post(
-      `http://localhost:3000/formData/formDataSearchPatient/`,
+      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,
       { patient_id: id, history: "objectives_concerns" }
     );
     console.log(response.data);

@@ -36,7 +36,7 @@ const TableComponent = ({ columns, data,total }) => {
   const currentRows = sortedData.slice(indexOfFirstRow, indexOfLastRow);
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
+    <div className="relative bg-white overflow-x-auto shadow-md sm:rounded-lg mt-4">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 overflow-x-auto">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -95,8 +95,8 @@ const TableComponent = ({ columns, data,total }) => {
         </tbody>
       </table>
       <div className="relative flex items-center justify-between border-t border-gray-200 bg-white dark:bg-gray-900 px-4 py-3 sm:px-6">
-          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-              <div>
+          <div className="sm:flex flex flex-row sm:flex-1 sm:items-center sm:mx-auto justify-between sm:justify-between">
+              <div className='sm:mr-8'>
                 <p className="text-sm text-gray-700 dark:text-gray-400">
                   Total:
                   <span className="font-medium text-gray-500 dark:text-gray-400">
@@ -104,19 +104,18 @@ const TableComponent = ({ columns, data,total }) => {
                   </span>
                 </p>
               </div>
-              <label>
+              <label className='md:block hidden flex flex-row'>
                 Rows per page:
                 <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))} className="ml-1">
-                <option value={5}>5</option>
-                <option value={10}>10</option>
-                <option value={15}>15</option>
-              </select>
-          </label>
-              <div>
-                <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={15}>15</option>
+                </select>
+              </label>
+              <div className='sm:ml-8'>
+                <nav className="isolate inline-flex -space-x-px ml-20 rounded-md shadow-sm" aria-label="Pagination">
                   <button disabled={currentPage == 1} href="#" onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-                    <span className="sr-only">Previous</span>
-                    <AiOutlineLeft className="h-5 w-5" aria-hidden="true" />
+                    <AiOutlineLeft className="h-5 w-5"/>
                   </button>
                   <span
                     href="#"
@@ -130,8 +129,7 @@ const TableComponent = ({ columns, data,total }) => {
                     onClick={() => setCurrentPage((prev) => Math.min(prev + 1, Math.ceil(data.length / rowsPerPage)))}
                     className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                   >
-                    <span className="sr-only">Next</span>
-                    <AiOutlineRight className="h-5 w-5" aria-hidden="true" />
+                    <AiOutlineRight className="h-5 w-5" />
                   </button>
                 </nav>
               </div>

@@ -41,7 +41,7 @@ const MedicalHistory = () => {
       },
     };
     const response = await axios.post(
-      "http://localhost:3000/formData/formDataCreate",
+      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataCreate`,
       med_data
     );
     console.log("med_history", response.data);
@@ -70,7 +70,7 @@ const MedicalHistory = () => {
       },
     };
     const response = await axios.put(
-      `http://localhost:3000/formData/formDataUpdate/${formId}`,
+      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataUpdate/${formId}`,
       med_data
     );
     console.log("update", response.data);
@@ -104,7 +104,7 @@ const MedicalHistory = () => {
   //Get Data
   const getData = async () => {
     const response = await axios.post(
-      `http://localhost:3000/formData/formDataSearchPatient/`,
+      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,
       { patient_id: id, history: "med_history" }
     );
     console.log(response.data);

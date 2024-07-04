@@ -116,7 +116,7 @@ const PatientForm = () => {
       if (response.data.code == 200) {
         Toast.fire({
           icon: "success",
-          title: "New Patient is registered successfully",
+          title: `${name} is registered successfully`,
         });
         navigate(-1);
       } else {
@@ -145,9 +145,8 @@ const PatientForm = () => {
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
-        title: "Paatient's info is updated successfully",
+        title: `${name}'s information is updated successfully`,
       });
-      // navigate(`http://localhost:5173/admin/patient`)
       navigate(-1)
     } else {
       Toast.fire({

@@ -95,7 +95,6 @@ const PartnerForm = () => {
       formData.append("gender", gender);
       formData.append("partner_id", id);
       formData.append("image", file);
-      // console.log("form img",formData);
       const response= await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/partner/partnerCreateWithPic`,formData)
       console.log("partner res",response.data);
       if(response.data.code == 200){

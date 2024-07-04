@@ -6,6 +6,25 @@ export const medical_json = {
             type: "panel",
             name: "patient_form",
             elements: [
+              {
+                type: "matrixdynamic",
+                name: "history_list",
+                title: "Recent shots from a doctor or pharmacist",
+                titleLocation: "hidden",
+                columns: [
+                  {
+                    type : "text",
+                    inputMask : "datetime",
+                    inputFormat : "yyyy/mm/dd",
+                    isRequired : true,
+                    name : "lmp_date",
+                    startWithNewLine : true,
+                    title : "When did your last menstral period start(LMP date) ?"
+                  },
+                ],
+                cellType: "text",
+                rowCount: 1,
+              },
                 {
                     "type": "text",
                     "inputType": "number",
@@ -39,15 +58,15 @@ export const medical_json = {
                     "name": "menstrual_pattern",
                     "title": "How is your menstrual pattern ?"
                   },
-                  {
-                    "type": "text",
-                    "inputMask": "datetime",
-                    "inputFormat": "yyyy/mm/dd",
-                    "isRequired": true,
-                    "name": "lmp_date",
-                    "startWithNewLine": true,
-                    "title": "When did your last menstral period start(LMP date) ?"
-                  },
+                  // {
+                  //   "type": "text",
+                  //   "inputMask": "datetime",
+                  //   "inputFormat": "yyyy/mm/dd",
+                  //   "isRequired": true,
+                  //   "name": "lmp_date",
+                  //   "startWithNewLine": true,
+                  //   "title": "When did your last menstral period start(LMP date) ?"
+                  // },
                   {
                     "type": "text",
                     "inputType": "number",

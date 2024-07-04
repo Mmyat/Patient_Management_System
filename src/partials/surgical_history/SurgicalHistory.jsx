@@ -40,7 +40,7 @@ const SurgicalHistory = () => {
         }
     }
     console.log("history:",med_data);
-    const response= await axios.post("http://localhost:3000/formData/formDataCreate",med_data)
+    const response= await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataCreate`,med_data)
     console.log("med_history",response.data);
     if(response.data.code == 200){
         Toast.fire({
@@ -68,7 +68,7 @@ const SurgicalHistory = () => {
           surgical_history : data
       }
   }
-    const response= await axios.put(`http://localhost:3000/formData/formDataUpdate/${formId}`,med_data)
+    const response= await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataUpdate/${formId}`,med_data)
     console.log("update",response.data);
     if(response.data.code == 200){
         Toast.fire({
@@ -103,7 +103,7 @@ const SurgicalHistory = () => {
 
   //Get Data
   const getData=async()=>{
-    const response= await axios.post(`http://localhost:3000/formData/formDataSearchPatient/`,{patient_id : id,history : "surgical_history"})   
+    const response= await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,{patient_id : id,history : "surgical_history"})   
     if(response.data.code == 200){
       const form_id= response.data.data[0].id
       console.log("form_id",response.data);

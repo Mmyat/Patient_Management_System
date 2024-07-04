@@ -147,7 +147,7 @@ const PatientDetails = () => {
                 <AiOutlineEdit />
               </button>
             </div>
-            <dl className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <dl className="grid grid-cols-1 md:grid-cols-2 gap-2 ml-2">
               <dt className="text-gray-700 font-medium">Patient's ID:</dt>
               <dd className="text-gray-900">{patient.id}</dd>
               <dt className="text-gray-700 font-medium">Name:</dt>
@@ -180,7 +180,7 @@ const PatientDetails = () => {
                   <AiOutlineEdit />
                 </button>
               </div>
-              <dl className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <dl className="grid grid-cols-1 md:grid-cols-2 gap-2 ml-2">
                 <dt className="text-gray-700 font-medium">Partner's ID:</dt>
                 <dd className="text-gray-900">{partner.id}</dd>
                 <dt className="text-gray-700 font-medium">Name:</dt>

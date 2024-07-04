@@ -42,7 +42,7 @@ const PersonalInfo = () => {
     };
     // console.log("personal :", personal_data);
     const response = await axios.post(
-      "http://localhost:3000/formData/formDataCreate",
+      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataCreate`,
       personal_data
     );
     console.log("personal res:", response.data);
@@ -72,7 +72,7 @@ const PersonalInfo = () => {
     };
     console.log(personal_data);
     const response = await axios.put(
-      `http://localhost:3000/formData/formDataUpdate/${formId}`,
+      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataUpdate/${formId}`,
       personal_data
     );
     console.log("update", response.data);
@@ -110,7 +110,7 @@ const PersonalInfo = () => {
   const getData = async () => {
     console.log("Id :",id);
     const response = await axios.post(
-      `http://localhost:3000/formData/formDataSearchPatient/`,
+      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,
       { patient_id: id, history: "personal_info" }
     );
     console.log("get res",response.data);

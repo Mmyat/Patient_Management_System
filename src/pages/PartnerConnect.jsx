@@ -76,7 +76,7 @@ const PartnerConnect = () => {
       patient_id_2 : partner_id
     }
     console.log("payload data",data);
-    const response= await axios.post("http://localhost:3000/partner/partnerJoin",data)
+    const response= await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/partner/partnerJoin`,data)
     console.log(response.data);
     if(response.data.code == 200){
         Toast.fire({
@@ -131,7 +131,7 @@ const PartnerConnect = () => {
           //Name Searching
           case "Name":
             const response = await axios.post(
-              `http://localhost:3000/patient/patientNameSearch/${page}`,
+              `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientNameSearch/${page}`,
               { name: searchTerm } // Pass offset and limit parameters
             );
             if (response.data.code == 200) {
@@ -155,7 +155,7 @@ const PartnerConnect = () => {
           //NRC searching
           case "NRC":
             const nrc_response = await axios.post(
-              `http://localhost:3000/patient/patientNrcSearch`,
+              `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientNrcSearch`,
               { nrc: searchTerm } // Pass offset and limit parameters
             );
             console.log("nrc res:", nrc_response);
@@ -180,7 +180,7 @@ const PartnerConnect = () => {
             //ID searching
             case "ID":
             const Id_response = await axios.post(
-              `http://localhost:3000/patient/patientIdSearch/${searchTerm}`,
+              `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientIdSearch/${searchTerm}`,
               // { name: searchTerm } // Pass offset and limit parameters
             );
             if (Id_response.data.code == 200) {
