@@ -1,17 +1,30 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { NavLink,Link,Outlet,useParams,useNavigate} from "react-router-dom";
+import {
+  NavLink,
+  Link,
+  Outlet,
+  useParams,
+  useNavigate,
+} from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import Swal from "sweetalert2";
 import DefaultProfile from "../images/defaultprofile.jpg";
 import { BsArrowLeft } from "react-icons/bs";
 import { AiOutlineEdit } from "react-icons/ai";
-import { FaEdit } from 'react-icons/fa';
-import PersonalIcon from '../images/personal_icon.png';
-import ObjectiveIcon from '../images/concern.png';
-import MedicalIcon from '../images/medical-history.png';
+import { FaEdit } from "react-icons/fa";
+import Tooltip from "../components/Tooltip";
+import PersonalIcon from "../images/personal_icon.png";
+import ObjectiveIcon from "../images/concern.png";
+import MedicalIcon from "../images/medical-history.png";
+import SurgicalIcon from "../images/surgery-room.png";
+import SocialHistoryIcon from "../images/social-media.png";
+import FamilyMedicalIcon from "../images/family_medial_history.png";
+import HospitalIcon from "../images/hospital.png";
+import FollowUpIcon from "../images/follow_up_icon.png";
+import FileManagerIcon from "../images/file-manager.png";
+
 const PatientDetails = () => {
-  //
   const Toast = Swal.mixin({
     toast: true,
     position: "top-end",
@@ -30,8 +43,8 @@ const PatientDetails = () => {
   const [partner, setPartner] = useState({});
   const [isTrue, setIsTrue] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [profile,setProfile] = useState(DefaultProfile)
-  const [partnerProfile,setPartnerProfile] = useState(DefaultProfile)
+  const [profile, setProfile] = useState(DefaultProfile);
+  const [partnerProfile, setPartnerProfile] = useState(DefaultProfile);
   const { id } = useParams();
   const getDataById = async () => {
     const response = await axios.post(
@@ -40,7 +53,7 @@ const PatientDetails = () => {
     const data = response.data.data.result[0];
     setPatient(data);
     setPatientId(id);
-    setProfile(data.imageUrl)
+    setProfile(data.imageUrl);
   };
 
   const getRelation = async () => {
@@ -54,7 +67,7 @@ const PatientDetails = () => {
       const data = response.data.data.data.result[0];
       console.log(data);
       setPartner(data);
-      setPartnerProfile(data.imageUrl)
+      setPartnerProfile(data.imageUrl);
       toggleState();
     }
   };
@@ -71,55 +84,67 @@ const PatientDetails = () => {
     setPatient(partner);
     setPartner(patient);
     setPatientId(partner.id);
-    setProfile(partnerProfile)
-    setPartnerProfile(profile)
+    setProfile(partnerProfile);
+    setPartnerProfile(profile);
     navigate(`/admin/patient/patientdetail/${partner.id}`);
   };
-  const changeToEdit = (Id)=>{
+  const changeToEdit = (Id) => {
     navigate(`/admin/patient/patientform/${Id}`);
-  }
-  const addNewPartner = async (patientId) => {  
-      setShowModal(false);
-      navigate(`/admin/patient/partnerform/${patientId}`);  
+  };
+  const addNewPartner = async (patientId) => {
+    setShowModal(false);
+    navigate(`/admin/patient/partnerform/${patientId}`);
   };
   //
-  const connectPartner = ()=>{
+  const connectPartner = () => {
     setShowModal(false);
     navigate(`/admin/patient/partnerconnect/${patientId}`);
-  }
+  };
   //
   let Links = [
-    { name: "PersonalIcon" , link: "personalinfo",icon : PersonalIcon },
-    { name: "Objectives Concerns", link: "objectives",icon : ObjectiveIcon },
-    { name: "Medical History", link: "medical",icon : MedicalIcon },
-    { name: "Surgical History", link: "surgical" },
-    { name: "Social History", link: "social" },
-    { name: "Family Medical History", link: "familymedical" },
-    { name: "Hospital & Lab", link: "hospital-lab" },
-    { name: "Follow Up", link: "follow-up" },
-    { name: "File Manager", link: "file-manager"},
+    { name: "Personal Information", link: "personalinfo", icon: PersonalIcon },
+    { name: "Objectives Concerns", link: "objectives", icon: ObjectiveIcon },
+    { name: "Medical History", link: "medical", icon: MedicalIcon },
+    { name: "Surgical History", link: "surgical", icon: SurgicalIcon },
+    { name: "Social History", link: "social", icon: SocialHistoryIcon },
+    {
+      name: "Family Medical History",
+      link: "familymedical",
+      icon: FamilyMedicalIcon,
+    },
+    { name: "Hospital & Lab", link: "hospital-lab", icon: HospitalIcon },
+    { name: "Follow Up", link: "follow-up", icon: FollowUpIcon },
+    { name: "File Manager", link: "file-manager", icon: FileManagerIcon },
   ];
-  //http://localhost:5173/admin/patient/patientform/5219
   useEffect(() => {
     getDataById();
     getRelation();
   }, []);
   return (
     <div className="container mx-auto px-4 py-8">
-      <button className="text-3xl bg-white p-1 mb-2 border-dashed border-1 border-gray-300 stroke-1 rounded-md" onClick={() => navigate(`/admin/patient/`)}>
-        <BsArrowLeft/>
+      <button
+        className="text-3xl bg-white p-1 mb-2 border-dashed border-1 border-gray-300 stroke-1 rounded-md"
+        onClick={() => navigate(`/admin/patient/`)}
+      >
+        <BsArrowLeft />
       </button>
       <div className="grid bg-white grid-cols-1 sm:grid-cols-2 gap-2 shadow-md">
-        
         <div className="flex-col">
           <h3 className="text-xl text-slate-800 ml-4 mt-2">
             Patient's Details
           </h3>
           <div className="flex px-4 py-5">
             <div className="relative inline-block">
-              <img src={profile ? profile : DefaultProfile} alt="Profile Preview" className="w-36 h-36 mr-4 md:mr-18 rounded-md mt-1 object-cover" />
-              <button onClick={()=>changeToEdit(patient.id)} className="absolute -bottom-2 right-0 m-2 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full">
-                <AiOutlineEdit/>
+              <img
+                src={profile ? profile : DefaultProfile}
+                alt="Profile Preview"
+                className="w-36 h-36 mr-4 md:mr-18 rounded-md mt-1 object-cover"
+              />
+              <button
+                onClick={() => changeToEdit(patient.id)}
+                className="absolute -bottom-2 right-0 m-2 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full"
+              >
+                <AiOutlineEdit />
               </button>
             </div>
             <dl className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -143,9 +168,16 @@ const PatientDetails = () => {
             </h3>
             <div className="flex px-4 py-5">
               <div className="relative inline-block">
-                <img src={partnerProfile ? partnerProfile : DefaultProfile } alt="Profile" className="w-36 h-36 mr-4 md:mr-18 rounded-md mt-1 object-cover" />
-                <button onClick={()=>changeToEdit(partner.id)} className="absolute bottom-7 right-0 m-2 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full">
-                  <AiOutlineEdit/>
+                <img
+                  src={partnerProfile ? partnerProfile : DefaultProfile}
+                  alt="Profile"
+                  className="w-36 h-36 mr-4 md:mr-18 rounded-md mt-1 object-cover"
+                />
+                <button
+                  onClick={() => changeToEdit(partner.id)}
+                  className="absolute bottom-7 right-0 m-2 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full"
+                >
+                  <AiOutlineEdit />
                 </button>
               </div>
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -170,22 +202,27 @@ const PatientDetails = () => {
           </div>
         ) : (
           <div className="flex justify-center items-center border-solid border-gray-400 border-l">
-            <button onClick={() => {setShowModal(true)}} className="btn bg-indigo-500 hover:bg-indigo-600 text-white">
-              <svg className="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
+            <button
+              onClick={() => {
+                setShowModal(true);
+              }}
+              className="btn bg-indigo-500 hover:bg-indigo-600 text-white"
+            >
+              <svg
+                className="w-4 h-4 fill-current opacity-50 shrink-0"
+                viewBox="0 0 16 16"
+              >
                 <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
               </svg>
               <span className="ml-2">Add Partner</span>
             </button>
           </div>
-          // <div>Hello </div>
         )}
         {showModal ? (
           <>
             <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
               <div className="relative w-2/4 my-6 mx-auto max-w-3xl">
-                {/*content*/}
                 <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                  {/*header*/}
                   <div className="flex items-start justify-between p-2 border-b border-solid border-blueGray-200 rounded-t">
                     <p className="text-xl font-semibold">
                       Connect with partner
@@ -248,22 +285,25 @@ const PatientDetails = () => {
           </>
         ) : null}
       </div>
-      <div className=" relative flex items-center justify-center text-gray-500 dark:text-gray-400 bg-white md:flex shadow-md sm:rounded-lg py-1 md:py-4 mt-2 overflow-x-auto">
-        <ul
-          className={`flex items-center justify-around md:items-center md:pb-0 md:z-auto z-10 left-0 w-full md:w-auto mt-4 md:mt-0 md:pl-0 pl-9`}
-        >
+      <div className="relative flex items-center justify-around text-gray-500 dark:text-gray-400 bg-white shadow-md sm:rounded-lg py-2 md:py-8 mt-2 overflow-x-auto">
+        <ul className="flex flex-wrap items-center justify-start md:z-auto left-0 w-full md:w-auto mt-2 md:mt-0">
           {Links.map((link) => (
-            <li
-              className="md:mr-8 mr-4 md:my-0 my-2 font-semibold"
-              key={link.name}
-            >
+            <li key={link.name} className="mx-8">
               <NavLink
                 to={link.link}
                 className={({ isActive }) =>
-                  isActive ? "text-blue-700" : "text-gray-600"
+                  isActive
+                    ? "h-full bg-blue-200 pt-5 p-2 rounded-md"
+                    : "text-gray-600"
                 }
               >
-                  <img src={link.icon} alt={`${link.name} icon`} className="w-6 h-6 mr-2" />
+                <Tooltip text={link.name}>
+                  <img
+                    src={link.icon}
+                    alt={`${link.name} icon`}
+                    className="w-8 h-8"
+                  />
+                </Tooltip>
               </NavLink>
             </li>
           ))}

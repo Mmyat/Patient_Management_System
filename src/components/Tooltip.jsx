@@ -12,7 +12,7 @@ const Tooltip = ({ text, children }) => {
         {children}
       </div>
       {showTooltip && (
-        <div className="absolute bottom-full mb-2 w-max max-w-xs p-1 bg-gray-300 text-gray-500 text-sm rounded-lg shadow-lg">
+        <div className="absolute bottom-full w-max mb-1 p-1 bg-gray-300 text-gray-500 text-sm rounded-lg shadow-lg">
           {text}
         </div>
       )}

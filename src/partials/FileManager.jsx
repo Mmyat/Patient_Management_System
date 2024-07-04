@@ -60,6 +60,9 @@ const FileManager = () => {
   const [updateId,setUpdateId] = useState(null)
   const [path,setPath] = useState('main')
   const [type,setType] = useState('folder')
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isProgress, setIsProgress] = useState(false);
+
   const openModal = () => {setIsModalOpen(true);  }
   const closeModal = () =>{setIsModalOpen(false); }
   const fileUploadRef = useRef();
@@ -102,12 +105,19 @@ const FileManager = () => {
   }
 
   const downloadFile =async (url)=>{
+    setIsProgress(true)
     let modifiedName=url.split("/",5)
     let filename = modifiedName[4]
-    axios.get(url, {
-      responseType: 'blob',
+    await axios.get(url, {
+      responseType: 'blob', // important
+      onDownloadProgress: (progressEvent) => {
+        let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        console.log(`Download Progress: ${percentCompleted}%`);
+        setUploadProgress(percentCompleted);
+      }
     })
     .then((res) => {
+      setIsProgress(false)
       fileDownload(res.data, filename)
     })   
   }
@@ -146,15 +156,24 @@ const FileManager = () => {
       if(name == ""){
         return;
       }
+      closeModal();
+      setIsProgress(true)
       const formData = new FormData();
       formData.append("patient_id", id);
       formData.append("name", name);
       formData.append("path", path);
       formData.append("type", type);
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/file/fileCreate`,formData);
-      console.log("rsponse",response);
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/file/fileCreate`,formData,{
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(percentCompleted);
+        }});
+      console.log("response new save",response);
       if (response.data.code === '200') {
-        closeModal();
+        setIsProgress(false)
         Toast.fire({
           icon: "success",
           title: "Patient's hospital and lab history is saved successfully",
@@ -284,6 +303,13 @@ const FileManager = () => {
       </div>      
       <div className="flex flex-col w-full h-fit bg-white grid-cols-1 sm:grid-cols-2 gap-2 shadow-md">
         <input className='border-gray-400' value={path} readOnly/>
+        <Modal isOpen={isProgress} onClose={()=>setIsProgress(false)}>
+          <p className='text-sm text-gray-700'>Downloading {uploadProgress}%</p>
+          <div className="w-full bg-gray-200 rounded-full h-2.5"> 
+            <div className="bg-blue-500 h-2.5 items-center justify-center rounded-full" style={{ width: `${uploadProgress}%` }}>    
+            </div>
+          </div>
+        </Modal>
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 overflow-x-auto">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -335,8 +361,8 @@ const FileManager = () => {
           <form onSubmit={handleSubmit} className="w-full max-w-lg p-6">           
             {isFolder ? (
               <div className="mb-4">
-                <label htmlFor="age" className="block text-sm font-medium text-gray-700">Folder Name</label>
-                <input type="text" id="remark" value={name} onChange={(e)=>setName(e.target.value)} className="h-auto mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
+                <label htmlFor="folder-name" className="block text-sm font-medium text-gray-700">Folder Name</label>
+                <input type="text" id="folder-name" value={name} onChange={(e)=>setName(e.target.value)} className="h-auto mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
               </div>
             ) :(
               <div>
@@ -353,6 +379,7 @@ const FileManager = () => {
               {isNew ? "Save" : "Update"}
               </button>
             </div>
+            
           </form>
         </Modal>) : (
           null
