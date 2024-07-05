@@ -28,6 +28,24 @@ const MedicalHistory = () => {
       toast.addEventListener("mouseleave", Swal.resumeTimer);
     },
   });
+  //Get Data
+  const getData = async () => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,
+      { patient_id: id, history: "med_history" }
+    );
+    if (response.data.code == 200) {
+      const prevData = response.data.data[0].data.med_history;
+      console.log("getting data",prevData);
+      survey.data = prevData;
+      const form_id = response.data.data[0].id;
+      setFormId(form_id);
+      setIsNew(false);
+    } else {
+      setIsNew(true);
+      return;
+    }
+  };
   //
   survey.completeText = isNew ? "Save" : "Update";
   const saveSurveyData = async (survey) => {
@@ -48,13 +66,14 @@ const MedicalHistory = () => {
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
-        title: "New Patient's medical history is saved successfully",
+        title: "Patient's medical history is saved successfully",
       });
-      navigate(`/admin/patient/patientdetail/${id}`);
+      navigate(`/admin/patient/patientdetail/${id}/medical`);
+      getData()
     } else {
       Toast.fire({
         icon: "error",
-        title: "Failed to save new patient's medical history",
+        title: "Failed to save patient's medical history",
       });
     }
   };
@@ -73,14 +92,13 @@ const MedicalHistory = () => {
       `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataUpdate/${formId}`,
       med_data
     );
-    console.log("update", response.data);
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
         title: "Patient's medical history is updated successfully",
       });
-      navigate(`/admin/patient/patientdetail/${id}`);
-      console.log("response data", response.data);
+      navigate(`/admin/patient/patientdetail/${id}/medical`);
+      getData()
     } else {
       Toast.fire({
         icon: "error",
@@ -101,27 +119,7 @@ const MedicalHistory = () => {
 
   survey.showQuestionNumbers = false;
   survey.sendResultOnPageNext = true;
-  //Get Data
-  const getData = async () => {
-    const response = await axios.post(
-      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,
-      { patient_id: id, history: "med_history" }
-    );
-    console.log(response.data);
-    if (response.data.code == 200) {
-      console.log("get",response.data.data[0].data);
-      const prevData = response.data.data[0].data.med_history;
-      survey.data = prevData;
-      console.log("previos data", prevData);
-      const form_id = response.data.data[0].id;
-      setFormId(form_id);
-      console.log("formId", formId);
-      setIsNew(false);
-    } else {
-      setIsNew(true);
-      return;
-    }
-  };
+  
   useEffect(() => {
     getData();
   }, [formId]);

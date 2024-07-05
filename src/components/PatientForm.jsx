@@ -16,7 +16,7 @@ const PatientForm = () => {
   const [dob, setDob] = useState("");
   const [age, setAge] = useState("");
   const nrcStateCode = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-  const [NRCCodeSelect, setNRCCodeSelect] = useState(nrcStateCode ? nrcStateCode[0] : '');
+  const [NRCCodeSelect, setNRCCodeSelect] = useState(null);//nrcStateCode ? nrcStateCode[0] : null
   const nrcType = [
     { en: "N", mm: "နိုင်" },
     { en: "E", mm: "ဧည့်" },
@@ -25,9 +25,10 @@ const PatientForm = () => {
     { en: "R", mm: "ယာယီ" },
     { en: "S", mm: "စ" },
   ];
-  const [NRCPlaceSelect, setNRCPlaceSelect] = useState(nrc_data[0].name_en);
-  const [NRCTypeSelect, setNRCTypeSelect] = useState(nrcType[0].en);
-  const [NRCCode, setNRCCode] = useState('');
+  const [NRCPlaceSelect, setNRCPlaceSelect] = useState(null);//nrc_data[0].name_en
+  const [NRCTypeSelect, setNRCTypeSelect] = useState(null);//nrcType[0].en
+  const [NRCCode, setNRCCode] = useState(null);
+  const [nrc, setNrc] = useState(null);
   const [passport, setPassport] = useState(null);
   const [gender, setGender] = useState("male");
   const [townshipList, setTownshipList] = useState([]);
@@ -93,26 +94,24 @@ const PatientForm = () => {
   const fileUploadRef = useRef();
   //
   const savePatientData = async (e) => {
-
     e.preventDefault();
-    if(NRCCode.length < 6){
-      setIsRequired(true)
+    if(NRCCodeSelect == null && NRCPlaceSelect==null && NRCTypeSelect==null && NRCCode == null){
+      setNrc(null)
     }else{
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("dob", dob);
-      formData.append(
-        "nrc",
-        `${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`
-      );
-      formData.append("passport", passport);
-      formData.append("gender", gender);
-      formData.append("image", file);
+      setNrc(`${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`)
+    }
+      const form_data = new FormData();
+      form_data.append("name", name);
+      form_data.append("dob", dob);
+      form_data.append("nrc",nrc);
+      form_data.append("passport", passport);
+      form_data.append("gender", gender);
+      form_data.append("image", file);
+      console.log("form_data :",form_data);
       const response = await axios.post(
         `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientPicUpload`,
-        formData
+        form_data
       );
-      console.log(response);
       if (response.data.code == 200) {
         Toast.fire({
           icon: "success",
@@ -125,23 +124,25 @@ const PatientForm = () => {
           title: "Failed to register",
         });
       }
-    }
-    
   };
   //
   const updatePatientData = async (e) => {
     e.preventDefault();
+    if(NRCCodeSelect == null && NRCPlaceSelect==null && NRCTypeSelect==null && NRCCode == null){
+      setNrc(null)
+    }else{
+      setNrc(`${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`)
+    }
     const form_data = new FormData();
     form_data.append("name", name);
     const formattedDate = format(dob, "yyyy/MM/dd");
     form_data.append("dob", formattedDate);
-    form_data.append("nrc",`${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`);
+    form_data.append("nrc",nrc);
     form_data.append("passport", passport);
     form_data.append("gender", gender);
     form_data.append("image", file);
     console.log("update form data :", form_data);
     const response = await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientPicUpdate/${id}`,form_data);
-    console.log("update :", response.data);
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
@@ -292,7 +293,6 @@ const PatientForm = () => {
                 <option value={item.en} key={index}>{item.en}</option>
               ))}
             </select>
-
             <input
               type="number"
               id="search-dropdown"
@@ -301,9 +301,7 @@ const PatientForm = () => {
               value={NRCCode}
               maxLength={6}
               minLength={5}
-              onChange={handleCodeChange}
-              required
-            />
+              onChange={handleCodeChange}/>
           </div>
         </div>
         <div className="mb-4">

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   NavLink,
-  Link,
+  useLocation,
   Outlet,
   useParams,
   useNavigate,
@@ -38,6 +38,7 @@ const PatientDetails = () => {
   });
   //
   const navigate = useNavigate();
+  const location = useLocation();
   const { patientId, setPatientId } = useStateContext();
   const [patient, setPatient] = useState({});
   const [partner, setPartner] = useState({});
@@ -117,14 +118,22 @@ const PatientDetails = () => {
     { name: "File Manager", link: "file-manager", icon: FileManagerIcon },
   ];
   useEffect(() => {
-    getDataById();
-    getRelation();
+    if (location.state) {
+      const { info } = location.state;
+      setPatient(info);
+      setPatientId(info.id);
+      setProfile(info.imageUrl);
+      getRelation();
+    } else {
+      getDataById();
+      getRelation();
+    }
   }, []);
   return (
     <div className="container mx-auto px-4 py-8">
       <button
         className="text-3xl bg-white p-1 mb-2 border-dashed border-1 border-gray-300 stroke-1 rounded-md"
-        onClick={() => navigate(`/admin/patient/`)}
+        onClick={() => navigate(`/admin/patient/`, { state: location.state })}
       >
         <BsArrowLeft />
       </button>
@@ -285,8 +294,8 @@ const PatientDetails = () => {
           </>
         ) : null}
       </div>
-      <div className="relative flex items-center justify-around text-gray-500 dark:text-gray-400 bg-white shadow-md sm:rounded-lg py-2 md:py-8 mt-2 overflow-x-auto">
-        <ul className="flex flex-wrap items-center justify-start md:z-auto left-0 w-full md:w-auto mt-2 md:mt-0">
+      {/* <div className="relative flex items-center justify-around text-gray-500 dark:text-gray-400 bg-white shadow-md sm:rounded-lg py-2 md:py-8 mt-2"> */}
+        <ul className="relative flex items-center justify-around bg-white mt-8 py-8 md:mt-0 sm:overflow-x-auto">
           {Links.map((link) => (
             <li key={link.name} className="mx-8">
               <NavLink
@@ -308,7 +317,8 @@ const PatientDetails = () => {
             </li>
           ))}
         </ul>
-      </div>
+      {/* </div> */}
+
       <Outlet />
     </div>
   );

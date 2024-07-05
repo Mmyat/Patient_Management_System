@@ -16,7 +16,7 @@ const PartnerForm = () => {
   const [dob, setDob] = useState(null);
   const [age, setAge] = useState('');
   const nrcStateCode = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-  const [NRCCodeSelect, setNRCCodeSelect] = useState(nrcStateCode ? nrcStateCode[0] : '');
+  const [NRCCodeSelect, setNRCCodeSelect] = useState(null);
   const nrcType = [
     { en: "N", mm: "နိုင်" },
     { en: "E", mm: "ဧည့်" },
@@ -25,12 +25,13 @@ const PartnerForm = () => {
     { en: "R", mm: "ယာယီ" },
     { en: "S", mm: "စ" },
   ];
-  const [NRCPlaceSelect, setNRCPlaceSelect] = useState(nrc_data[0].name_en);
-  const [NRCTypeSelect, setNRCTypeSelect] = useState(nrcType[0].en);
-  const [NRCCode, setNRCCode] = useState('');
+  const [NRCPlaceSelect, setNRCPlaceSelect] = useState(null);
+  const [NRCTypeSelect, setNRCTypeSelect] = useState(null);
+  const [NRCCode, setNRCCode] = useState(null);
   const [gender, setGender] = useState('male');
   const [townshipList,setTownshipList] = useState([])
   const [preview, setPreview] = useState(null);
+  const [nrc, setNrc] = useState(null);
   const [file, setFile] = useState(null);
   const fileUploadRef = useRef();
   const {id} = useParams()
@@ -81,16 +82,15 @@ const PartnerForm = () => {
 
   const savePartnerData=async(e)=> {
     e.preventDefault();
-    if(NRCCode.length < 6){
-      setIsRequired(true)
+    if(NRCCodeSelect == null && NRCPlaceSelect==null && NRCTypeSelect==null && NRCCode == null){
+      setNrc(null)
     }else{
+      setNrc(`${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`)
+    }
       const formData = new FormData();
       formData.append("name", name);
       formData.append("dob", dob);
-      formData.append(
-        "nrc",
-        `${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`
-      );
+      formData.append("nrc",nrc);
       formData.append("passport", passport);
       formData.append("gender", gender);
       formData.append("partner_id", id);
@@ -108,9 +108,8 @@ const PartnerForm = () => {
         Toast.fire({
             icon: "error",
             title: "Failed to register and connect",
-        });
-      }  
-    }   
+        });  
+      }   
   }
   //
   useEffect(()=>{
@@ -187,7 +186,7 @@ const PartnerForm = () => {
             onChange={(event) => {
               setNRCCode(event.target.value);
             }}
-            required/>
+            />
           </div>
         </div>
         <div className="mb-4">

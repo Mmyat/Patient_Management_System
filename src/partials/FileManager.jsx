@@ -203,8 +203,6 @@ const FileManager = () => {
         path,
         type
       }
-
-      console.log("upt form:",formData);
       const response = await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/file/fileUpdate/${updateId}`,formData);
       console.log("rsponse updt:",response);
       if (response.data.code === '200') {
@@ -301,8 +299,8 @@ const FileManager = () => {
           New File     
         </button>
       </div>      
-      <div className="flex flex-col w-full h-fit bg-white grid-cols-1 sm:grid-cols-2 gap-2 shadow-md">
-        <input className='border-gray-400' value={path} readOnly/>
+      <div className="flex flex-col w-full h-fit bg-white grid-cols-1 sm:grid-cols-2 gap-2 shadow-md overflow-x-auto">
+        <input className='w-full border-gray-400' value={path} readOnly/>
         <Modal isOpen={isProgress} onClose={()=>setIsProgress(false)}>
           <p className='text-sm text-gray-700'>Downloading {uploadProgress}%</p>
           <div className="w-full bg-gray-200 rounded-full h-2.5"> 
@@ -310,7 +308,7 @@ const FileManager = () => {
             </div>
           </div>
         </Modal>
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 overflow-x-auto">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 overflow-x-auto">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             {columns.map((column) => (

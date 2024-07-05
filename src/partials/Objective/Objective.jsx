@@ -12,6 +12,7 @@ const Objective = () => {
   const { id } = useParams();
   const [isNew, setIsNew] = useState(true);
   const [formId, setFormId] = useState(null);
+  const [surveyKey, setSurveyKey] = useState(Date.now()); 
   //
   const Toast = Swal.mixin({
     toast: true,
@@ -24,6 +25,11 @@ const Objective = () => {
       toast.addEventListener("mouseleave", Swal.resumeTimer);
     },
   });
+  const resetSurvey = () => {
+    survey.clear();
+    setSurveyKey(Date.now()); // Change key to re-render survey
+  };
+
   //
   const saveSurveyData = async (survey) => {
     const data = survey.data;
@@ -71,12 +77,14 @@ const Objective = () => {
     );
     console.log("update", response.data);
     if (response.data.code == 200) {
+      // navigate(-1)
       Toast.fire({
         icon: "success",
         title: "Patient's objectives/concerns is updated successfully",
       });
-      navigate(`/admin/patient/patientdetail/${id}`);
-      console.log("response data", response.data);
+      navigate(`/admin/patient/patientdetail/${id}/objectives`); 
+      resetSurvey(); 
+      // await getData();
     } else {
       Toast.fire({
         icon: "error",
@@ -101,7 +109,6 @@ const Objective = () => {
   survey.sendResultOnPageNext = true;
   //Get Data
   const getData = async () => {
-    console.log("Id :",id);
     const response = await axios.post(
       `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,
       { patient_id: id, history: "objectives_concerns" }
@@ -113,7 +120,7 @@ const Objective = () => {
       console.log("previos data", prevData);
       const form_id = response.data.data[0].id;
       setFormId(form_id);
-      console.log("formId", formId);
+      console.log("formId", form_id);
       setIsNew(false);
     } else {
       setIsNew(true);
@@ -123,7 +130,7 @@ const Objective = () => {
   useEffect(() => {
     getData();
     console.log("id :",id);
-  }, [formId]);
+  }, [id]);
   return <Survey model={survey}/>;
 };
 
