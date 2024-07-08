@@ -23,6 +23,8 @@ import HospitalLab from './partials/HospitalLab';
 import FollowUp from './partials/FollowUp';
 import FileManager from './partials/FileManager';
 import Report from './pages/Report';
+import Login from './pages/Login';
+import Unauthorize from './pages/Unauthorize';
 
 function App() {
 
@@ -37,6 +39,7 @@ function App() {
   return (
     <>
       <Routes>
+        <Route exact path="/login" element={<Login/>}/>
         <Route exact path="/admin" element={<Main />}>
           <Route path='dashboard' element={<Dashboard/>} />
           <Route path="patient" element={<Patients/>}/>           
@@ -56,6 +59,7 @@ function App() {
             <Route path="file-manager" element={<FileManager/>}/>           
           </Route>
         </Route>
+        <Route exact path="/unauthorize" element={<Unauthorize/>}/>
       </Routes>
       {/* <Routes>
         <Route exact path="/admin" element={<Main />}>

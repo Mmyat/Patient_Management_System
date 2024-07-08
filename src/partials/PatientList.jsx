@@ -122,6 +122,7 @@ const PatientList = () => {
             return;
         }
         if (response.data.code === '200') {
+          console.log("res search:",response.data);
           setIsSearch(true)
           const list = response.data.data.result;
           list?.forEach((patient) => {

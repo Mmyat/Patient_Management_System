@@ -52,6 +52,7 @@ const PatientDetails = () => {
       `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientIdSearch/${id}`
     );
     const data = response.data.data.result[0];
+    console.log("patient data:",data);
     setPatient(data);
     setPatientId(id);
     setProfile(data.imageUrl);
@@ -64,7 +65,6 @@ const PatientDetails = () => {
       requestData
     );
     if (response.data.code == 200) {
-      console.log(response.data.data.data);
       const data = response.data.data.data.result[0];
       console.log(data);
       setPartner(data);
@@ -130,19 +130,19 @@ const PatientDetails = () => {
     }
   }, []);
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 sm:py-0">
       <button
         className="text-3xl bg-white p-1 mb-2 border-dashed border-1 border-gray-300 stroke-1 rounded-md"
         onClick={() => navigate(`/admin/patient/`, { state: location.state })}
       >
         <BsArrowLeft />
       </button>
-      <div className="grid bg-white grid-cols-1 sm:grid-cols-2 gap-2 shadow-md">
-        <div className="flex-col">
-          <h3 className="text-xl text-slate-800 ml-4 mt-2">
+      <div className="grid bg-white lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-2 shadow-md">
+        <div className="md:flex-col lg:flex-row">
+          <h3 className="text-xl text-slate-800 ml-1 mt-2">
             Patient's Details
           </h3>
-          <div className="flex px-4 py-5">
+          <div className="flex px-4 py-5 sm:py-2">
             <div className="relative inline-block">
               <img
                 src={profile ? profile : DefaultProfile}
@@ -295,28 +295,29 @@ const PatientDetails = () => {
         ) : null}
       </div>
       {/* <div className="relative flex items-center justify-around text-gray-500 dark:text-gray-400 bg-white shadow-md sm:rounded-lg py-2 md:py-8 mt-2"> */}
-        <ul className="relative flex items-center justify-around bg-white mt-8 py-8 md:mt-0 sm:overflow-x-auto">
-          {Links.map((link) => (
-            <li key={link.name} className="mx-8">
-              <NavLink
-                to={link.link}
-                className={({ isActive }) =>
-                  isActive
-                    ? "h-full bg-blue-200 pt-5 p-2 rounded-md"
-                    : "text-gray-600"
-                }
-              >
-                <Tooltip text={link.name}>
-                  <img
-                    src={link.icon}
-                    alt={`${link.name} icon`}
-                    className="w-8 h-8"
-                  />
-                </Tooltip>
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+      <ul className="relative flex items-center justify-around bg-white mt-4 py-8 md:mt-4 sm:overflow-x-auto sm:flex-nowrap sm:justify-start">
+        {Links.map((link) => (
+          <li key={link.name} className="mx-8 sm:mx-4">
+            <NavLink
+              to={link.link}
+              className={({ isActive }) =>
+                isActive
+                  ? "h-full bg-blue-200 pt-5 p-2 rounded-md"
+                  : "text-gray-600"
+              }
+            >
+              <Tooltip text={link.name}>
+                <img
+                  src={link.icon}
+                  alt='icon'
+                  className="w-8 h-8 z-10"
+                />
+              </Tooltip>
+            </NavLink>
+          </li>
+        ))}
+      </ul>
+
       {/* </div> */}
 
       <Outlet />

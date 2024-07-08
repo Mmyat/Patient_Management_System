@@ -16,7 +16,7 @@ const PatientForm = () => {
   const [dob, setDob] = useState("");
   const [age, setAge] = useState("");
   const nrcStateCode = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-  const [NRCCodeSelect, setNRCCodeSelect] = useState(null);//nrcStateCode ? nrcStateCode[0] : null
+  const [NRCCodeSelect, setNRCCodeSelect] = useState(nrcStateCode[0]);//nrcStateCode ? nrcStateCode[0] : null
   const nrcType = [
     { en: "N", mm: "နိုင်" },
     { en: "E", mm: "ဧည့်" },
@@ -25,20 +25,17 @@ const PatientForm = () => {
     { en: "R", mm: "ယာယီ" },
     { en: "S", mm: "စ" },
   ];
-  const [NRCPlaceSelect, setNRCPlaceSelect] = useState(null);//nrc_data[0].name_en
-  const [NRCTypeSelect, setNRCTypeSelect] = useState(null);//nrcType[0].en
+  const [NRCPlaceSelect, setNRCPlaceSelect] = useState(nrc_data[0].name_en);//
+  const [NRCTypeSelect, setNRCTypeSelect] = useState(nrcType[0].en);//
   const [NRCCode, setNRCCode] = useState(null);
-  const [nrc, setNrc] = useState(null);
   const [passport, setPassport] = useState(null);
   const [gender, setGender] = useState("male");
   const [townshipList, setTownshipList] = useState([]);
-  const [isRequired,setIsRequired] = useState(false)
+  // const [isRequired,setIsRequired] = useState(false)
   const [file, setFile] = useState(null);
   const { id } = useParams();
-  console.log("id:", id);
   const navigate = useNavigate();
   const isNew = id === "null";
-  console.log("new", isNew);
   const [preview, setPreview] = useState(null);
   //
   const handleImageChange = (e) => {
@@ -58,6 +55,7 @@ const PatientForm = () => {
     const inputValue = event.target.value;
     const requiredCode = inputValue.substring(0,6)
     setNRCCode(requiredCode);
+    console.log("onchange code",NRCCode);
   };
   //
   const Toast = Swal.mixin({
@@ -95,23 +93,25 @@ const PatientForm = () => {
   //
   const savePatientData = async (e) => {
     e.preventDefault();
-    if(NRCCodeSelect == null && NRCPlaceSelect==null && NRCTypeSelect==null && NRCCode == null){
-      setNrc(null)
-    }else{
-      setNrc(`${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`)
+    let nrc ;
+    if(NRCCodeSelect !== null && NRCPlaceSelect !== null && NRCTypeSelect !== null && NRCCode !== null){
+      nrc = `${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`
+    }
+    else{
+      nrc = null
     }
       const form_data = new FormData();
       form_data.append("name", name);
       form_data.append("dob", dob);
-      form_data.append("nrc",nrc);
+      form_data.append("nrc",nrc_bug);
       form_data.append("passport", passport);
       form_data.append("gender", gender);
       form_data.append("image", file);
-      console.log("form_data :",form_data);
       const response = await axios.post(
         `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientPicUpload`,
         form_data
       );
+      console.log("save",response.data);
       if (response.data.code == 200) {
         Toast.fire({
           icon: "success",
@@ -128,10 +128,12 @@ const PatientForm = () => {
   //
   const updatePatientData = async (e) => {
     e.preventDefault();
-    if(NRCCodeSelect == null && NRCPlaceSelect==null && NRCTypeSelect==null && NRCCode == null){
-      setNrc(null)
-    }else{
-      setNrc(`${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`)
+    let nrc ;
+    if(NRCCodeSelect !== null && NRCPlaceSelect !== null && NRCTypeSelect !== null && NRCCode !== null){
+      nrc = `${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`
+    }
+    else{
+      nrc = null
     }
     const form_data = new FormData();
     form_data.append("name", name);
@@ -143,6 +145,7 @@ const PatientForm = () => {
     form_data.append("image", file);
     console.log("update form data :", form_data);
     const response = await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientPicUpdate/${id}`,form_data);
+    console.log("errt",response.data);
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
@@ -170,22 +173,25 @@ const PatientForm = () => {
       CalculateAge(formatDate);
       setPassport(data.passport);
       setGender(data.gender);
-      //NRC region code destructure
-      const state_code = data.nrc.split("/", 1);
-      console.log("state code", state_code[0]);
-      setNRCCodeSelect(state_code[0]);
-      //NRC place destructure
-      let match = data.nrc.split(/[/()]/);
-      console.log("town code", match[1]);
-      setNRCPlaceSelect(match[1]);
-      //NRC type destructure
-      const parts = data.nrc.split("(");
-      const subParts = parts[1].split(")");
-      setNRCTypeSelect(subParts[0]);
-      //NRC code destructure
-      const code = data.nrc.split(")");
-      console.log("code", code[1]);
-      setNRCCode(code[1]);
+      if (data.nrc !== null){
+        //NRC region code destructure
+        const state_code = data.nrc.split("/", 1);
+        console.log("state code", state_code[0]);
+        setNRCCodeSelect(state_code[0]);
+        //NRC place destructure
+        let match = data.nrc.split(/[/()]/);
+        console.log("town code", match[1]);
+        setNRCPlaceSelect(match[1]);
+        //NRC type destructure
+        const parts = data.nrc.split("(");
+        const subParts = parts[1].split(")");
+        setNRCTypeSelect(subParts[0]);
+        //NRC code destructure
+        const code = data.nrc.split(")");
+        console.log("code", code[1]);
+        setNRCCode(code[1]);
+        // setNrc(`${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`)
+      }
       //imageUrl
       setPreview(data.imageUrl);
       setFile(data.imageUrl)
@@ -263,7 +269,7 @@ const PatientForm = () => {
             <label htmlFor="nrc" className="block text-sm font-medium text-gray-700">
               NRC Number
             </label>
-            <p className="text-sm text-red-300">{isRequired && "(Please fill at least 6 digits)"} </p>
+            {/* <p className="text-sm text-red-300">{isRequired && "(Please fill at least 6 digits)"} </p> */}
           </div>
           <div className="flex">
             <select
@@ -355,6 +361,7 @@ const PatientForm = () => {
         </div>
         <div className="mt-6">
           <button
+            type="button" 
             onClick={() => navigate(-1)}
             className="shadow-sm text-sm font-medium outline outline-indigo-600 outline-2 outline-offset-2 py-1 px-4 mr-4 rounded-md focus:ring-indigo-500"
           >
