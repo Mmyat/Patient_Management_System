@@ -20,6 +20,9 @@ export const objective_json = {
             ],
           },
         ],
+        // "completeText": {
+        //   "fr": "Envoyer"
+        // }
       },
     ],
     showQuestionNumbers: "off",

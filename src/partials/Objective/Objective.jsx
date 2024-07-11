@@ -1,4 +1,4 @@
-import {useNavigate,useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
 import { objective_json } from "./objective_json";
@@ -12,8 +12,10 @@ const Objective = () => {
   const { id } = useParams();
   const [isNew, setIsNew] = useState(true);
   const [formId, setFormId] = useState(null);
-  const [surveyKey, setSurveyKey] = useState(Date.now()); 
-  //
+  const [surveyKey, setSurveyKey] = useState(Date.now());
+  const [isNavigate,setIsNavigate] = useState(false)
+
+
   const Toast = Swal.mixin({
     toast: true,
     position: "top-end",
@@ -25,34 +27,33 @@ const Objective = () => {
       toast.addEventListener("mouseleave", Swal.resumeTimer);
     },
   });
+
   const resetSurvey = () => {
     survey.clear();
-    setSurveyKey(Date.now()); // Change key to re-render survey
+    setSurveyKey(Date.now());
   };
 
-  //
   const saveSurveyData = async (survey) => {
     const data = survey.data;
     delete data.age;
-    console.log("patient_id", id);
-    const med_data = {
+    const form_data = {
       patient_id: id,
       data: {
-        objectives_concerns: data,
+        "objectives_concerns": data,
       },
     };
-    console.log("history:", med_data);
     const response = await axios.post(
       `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataCreate`,
-      med_data
+      form_data
     );
-    console.log("objecitves :", response.data);
-    if (response.data.code == 200) {
+    console.log("save res--",response);
+    if (response.data.code === '200') {
       Toast.fire({
         icon: "success",
         title: "New Patient's objectives/concerns is saved successfully",
       });
-      navigate(`/admin/patient/patientdetail/${id}`);
+      navigate(`/admin/patient/patientdetail/${id}/objectives`);
+      setIsNavigate(true)
     } else {
       Toast.fire({
         icon: "error",
@@ -60,31 +61,27 @@ const Objective = () => {
       });
     }
   };
-  //
+
   const updateSurveyData = async (survey) => {
     const data = survey.data;
     delete data.age;
-    console.log("update_data", data);
-    const soc_data = {
+    const form_data = {
       patient_id: id,
       data: {
-        objectives_concerns: data,
+        "objectives_concerns": data,
       },
     };
     const response = await axios.put(
       `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataUpdate/${formId}`,
-      soc_data
+      form_data
     );
-    console.log("update", response.data);
-    if (response.data.code == 200) {
-      // navigate(-1)
+    if (response.data.code === '200') {
       Toast.fire({
         icon: "success",
         title: "Patient's objectives/concerns is updated successfully",
       });
-      navigate(`/admin/patient/patientdetail/${id}/objectives`); 
-      resetSurvey(); 
-      // await getData();
+      navigate(`/admin/patient/patientdetail/${id}/objectives`);
+      setIsNavigate(true)
     } else {
       Toast.fire({
         icon: "error",
@@ -92,46 +89,44 @@ const Objective = () => {
       });
     }
   };
+
   survey.completeText = isNew ? "Save" : "Update";
   survey.addNavigationItem({
     id: "cancel",
     title: "Cancel",
     action: () => {
-      console.log("Cancel button clicked!");
       navigate(`/admin/patient/patientdetail/${id}`);
     },
   });
-  survey.onComplete.add(function (sender, options) {
+
+  survey.onComplete.add(function (sender) {
     isNew ? saveSurveyData(sender) : updateSurveyData(sender);
   });
 
   survey.showQuestionNumbers = false;
   survey.sendResultOnPageNext = true;
-  //Get Data
+
   const getData = async () => {
     const response = await axios.post(
       `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,
       { patient_id: id, history: "objectives_concerns" }
     );
-    console.log(response.data);
-    if (response.data.code == 200 && response.data.data.length !== 0) {
+    if (response.data.code === '200' && response.data.data.length > 0) {
       const prevData = response.data.data[0].data.objectives_concerns;
       survey.data = prevData;
-      console.log("previos data", prevData);
       const form_id = response.data.data[0].id;
       setFormId(form_id);
-      console.log("formId", form_id);
       setIsNew(false);
     } else {
       setIsNew(true);
-      return;
     }
   };
+
   useEffect(() => {
     getData();
-    console.log("id :",id);
-  }, [id]);
-  return <Survey model={survey}/>;
+  }, [formId,isNavigate]);
+
+  return <Survey model={survey} key={surveyKey} />;
 };
 
 export default Objective;

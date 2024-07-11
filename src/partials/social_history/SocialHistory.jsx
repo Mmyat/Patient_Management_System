@@ -12,6 +12,7 @@ const SocialHistory = () => {
   const { id } = useParams();
   const [isNew, setIsNew] = useState(true);
   const [formId, setFormId] = useState(null);
+  const [isNavigate,setIsNavigate] = useState(false)
   //
   const Toast = Swal.mixin({
     toast: true,
@@ -47,7 +48,8 @@ const SocialHistory = () => {
         icon: "success",
         title: "New Patient's social history is saved successfully",
       });
-      navigate(`/admin/patient/patientdetail/${id}`);
+      navigate(`/admin/patient/patientdetail/${id}/social`);
+      setIsNavigate(true)
     } else {
       Toast.fire({
         icon: "error",
@@ -59,7 +61,6 @@ const SocialHistory = () => {
   const updateSurveyData = async (survey) => {
     const data = survey.data;
     delete data.age;
-    console.log("update_data", data);
     const soc_data = {
       patient_id: id,
       data: {
@@ -76,8 +77,8 @@ const SocialHistory = () => {
         icon: "success",
         title: "Patient's social history is updated successfully",
       });
-      navigate(`/admin/patient/patientdetail/${id}`);
-      console.log("response data", response.data);
+      navigate(`/admin/patient/patientdetail/${id}/social`);
+      setIsNavigate(true)    
     } else {
       Toast.fire({
         icon: "error",
@@ -122,7 +123,7 @@ const SocialHistory = () => {
   };
   useEffect(() => {
     getData();
-  }, [formId]);
+  }, [formId,isNavigate]);
   return <Survey model={survey} />;
 }
 

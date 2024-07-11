@@ -1,29 +1,54 @@
-import { useState } from "react";
-// import { useSearchParams, useNavigate } from "react-router-dom";
-// import useApi from "../components/useApi";
+import { useState,useEffect } from "react";
+import useApi from "../components/useApi";
+import {useNavigate} from "react-router-dom";
 import axios from "axios";
+
 const Login = () => {
-    // const navigate = useNavigate()
+  const navigate = useNavigate()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-//   const { data, loading, error, callApi } = useApi();
-  const handleLogin = async (e) => {
+  const [message, setMessage] = useState('');
+  const { data, loading, error, callApi } = useApi();
+  
+  const handleLogin = async (e) => { 
     e.preventDefault();
-    console.log("hello login1");
-    // navigate('/admin')
-    await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/admin/adminLogin`,{email,password},{ withCredentials: true });
-    // callApi("post",`${import.meta.env.VITE_SERVER_DOMAIN}/admin/adminLogin`, {
-    //   "email": email,
-    //     "password": password
-    // });
+    setMessage('');
+    // if (email === '' && password === '') {
+    //   setMessage("Please fill email and password!");axios.defaults.withCredentials = true;
 
-    // console.log(data);
-    // window.location.href = data;
+    //   return;
+    // }
+    // await callApi("post", `http://localhost:3000/login`, { email, password });
+    // navigate('/admin/unauthorize')
+    const response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/login`,{ email, password }, { withCredentials: true });
+    console.log(response);
+    navigate('/admin/unauthorize')
   };
 
+
+
+  // useEffect(() => {
+  //   if (data) {
+  //         console.log("data login", error, data);
+  //     if (data.code !== '303') {
+  //       setMessage(data.message);
+  //       return;
+  //     }
+  //     if (data.code === '303') {
+  //       console.log("login success");
+  //       setMessage('')
+  //       // navigate('/admin/unauthorize')
+  //       // window.location.href = data.url;
+  //     }
+  //   }
+  // }, [data, email, password]);
+
   return (
-    <div className="flex flex-col items-center justify-center h-screen mb-5">
-      <form onSubmit={handleLogin} className="flex flex-col h-fit bg-white border-2 rounded-lg shadow-lg hover:shadow-xl mx-auto mt-28 mb-4 p-8">
+    <div className="flex flex-col items-center justify-center h-screen">
+      {/* {loading && <p>Loading...</p>}
+      {error && <p className="text-red-500">{error.message}</p>}
+      {message && <p className="text-red-500">{message}</p>} */}
+      <form onSubmit={handleLogin} className="flex flex-col h-fit bg-white border-2 rounded-lg shadow-lg hover:shadow-xl mt-20 mb-4 p-8">
         <h1 className="text-center font-bold text-sky-400 text-2xl mt-8">
           Login Form
         </h1>

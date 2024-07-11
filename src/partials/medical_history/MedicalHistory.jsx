@@ -16,6 +16,7 @@ const MedicalHistory = () => {
   const { id } = useParams();
   const [isNew, setIsNew] = useState(true);
   const [formId, setFormId] = useState(null);
+  const [isNavigate,setIsNavigate] = useState(false)
   //
   const Toast = Swal.mixin({
     toast: true,
@@ -69,7 +70,7 @@ const MedicalHistory = () => {
         title: "Patient's medical history is saved successfully",
       });
       navigate(`/admin/patient/patientdetail/${id}/medical`);
-      getData()
+      setIsNavigate(true)    
     } else {
       Toast.fire({
         icon: "error",
@@ -98,7 +99,7 @@ const MedicalHistory = () => {
         title: "Patient's medical history is updated successfully",
       });
       navigate(`/admin/patient/patientdetail/${id}/medical`);
-      getData()
+      setIsNavigate(true)
     } else {
       Toast.fire({
         icon: "error",
@@ -122,7 +123,7 @@ const MedicalHistory = () => {
   
   useEffect(() => {
     getData();
-  }, [formId]);
+  }, [formId,isNavigate]);
   return <Survey model={survey} />;
 };
 export default MedicalHistory;

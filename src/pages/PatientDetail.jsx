@@ -1,18 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  NavLink,
-  useLocation,
-  Outlet,
-  useParams,
-  useNavigate,
-} from "react-router-dom";
+import {NavLink,useLocation,Outlet,useParams,useNavigate} from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import Swal from "sweetalert2";
 import DefaultProfile from "../images/defaultprofile.jpg";
 import { BsArrowLeft } from "react-icons/bs";
 import { AiOutlineEdit } from "react-icons/ai";
-import { FaEdit } from "react-icons/fa";
 import Tooltip from "../components/Tooltip";
 import PersonalIcon from "../images/personal_icon.png";
 import ObjectiveIcon from "../images/concern.png";
@@ -48,9 +41,11 @@ const PatientDetails = () => {
   const [partnerProfile, setPartnerProfile] = useState(DefaultProfile);
   const { id } = useParams();
   const getDataById = async () => {
+    console.log("id--",id);
     const response = await axios.post(
       `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientIdSearch/${id}`
     );
+    console.log("id pa--",response);
     const data = response.data.data.result[0];
     console.log("patient data:",data);
     setPatient(data);
@@ -118,16 +113,16 @@ const PatientDetails = () => {
     { name: "File Manager", link: "file-manager", icon: FileManagerIcon },
   ];
   useEffect(() => {
-    if (location.state) {
-      const { info } = location.state;
-      setPatient(info);
-      setPatientId(info.id);
-      setProfile(info.imageUrl);
-      getRelation();
-    } else {
+    // if (location.state) {
+    //   const { info } = location.state;
+    //   setPatient(info);
+    //   setPatientId(info.id);
+    //   setProfile(info.imageUrl);
+    //   getRelation();
+    // } else {
       getDataById();
       getRelation();
-    }
+    // }
   }, []);
   return (
     <div className="container mx-auto px-4 py-8 sm:py-0">
@@ -151,7 +146,7 @@ const PatientDetails = () => {
               />
               <button
                 onClick={() => changeToEdit(patient.id)}
-                className="absolute -bottom-2 right-0 m-2 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full"
+                className="absolute bottom-5 right-0 m-2 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full"
               >
                 <AiOutlineEdit />
               </button>
@@ -165,6 +160,8 @@ const PatientDetails = () => {
               <dd className="text-gray-900">{patient.dob}</dd>
               <dt className="text-gray-700 font-medium">NRC:</dt>
               <dd className="text-gray-900">{patient.nrc}</dd>
+              <dt className="text-gray-700 font-medium">Passport:</dt>
+              <dd className="text-gray-900">{patient.passport}</dd>
               <dt className="text-gray-700 font-medium">Gender:</dt>
               <dd className="text-gray-900">{patient.gender}</dd>
             </dl>
@@ -175,7 +172,7 @@ const PatientDetails = () => {
             <h3 className="text-xl text-slate-800 ml-4 mt-2">
               Partner's Details
             </h3>
-            <div className="flex px-4 py-5">
+            <div className="flex px-4 py-5 sm:py-2">
               <div className="relative inline-block">
                 <img
                   src={partnerProfile ? partnerProfile : DefaultProfile}
@@ -184,7 +181,7 @@ const PatientDetails = () => {
                 />
                 <button
                   onClick={() => changeToEdit(partner.id)}
-                  className="absolute bottom-7 right-0 m-2 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full"
+                  className="absolute bottom-14 right-0 m-2 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full"
                 >
                   <AiOutlineEdit />
                 </button>
@@ -198,6 +195,8 @@ const PatientDetails = () => {
                 <dd className="text-gray-900">{partner.dob}</dd>
                 <dt className="text-gray-700 font-medium">NRC:</dt>
                 <dd className="text-gray-900">{partner.nrc}</dd>
+                <dt className="text-gray-700 font-medium">Passport:</dt>
+                <dd className="text-gray-900">{partner.passport}</dd>
                 <dt className="text-gray-700 font-medium">Gender:</dt>
                 <dd className="text-gray-900">{partner.gender} </dd>
                 <button
@@ -295,28 +294,29 @@ const PatientDetails = () => {
         ) : null}
       </div>
       {/* <div className="relative flex items-center justify-around text-gray-500 dark:text-gray-400 bg-white shadow-md sm:rounded-lg py-2 md:py-8 mt-2"> */}
-      <ul className="relative flex items-center justify-around bg-white mt-4 py-8 md:mt-4 sm:overflow-x-auto sm:flex-nowrap sm:justify-start">
-        {Links.map((link) => (
-          <li key={link.name} className="mx-8 sm:mx-4">
-            <NavLink
-              to={link.link}
-              className={({ isActive }) =>
-                isActive
-                  ? "h-full bg-blue-200 pt-5 p-2 rounded-md"
-                  : "text-gray-600"
-              }
-            >
-              <Tooltip text={link.name}>
-                <img
-                  src={link.icon}
-                  alt='icon'
-                  className="w-8 h-8 z-10"
-                />
-              </Tooltip>
-            </NavLink>
-          </li>
-        ))}
-      </ul>
+      <ul className="relative flex items-center justify-start md:justify-around bg-white mt-4 py-8 md:mt-4 overflow-x-auto flex-nowrap">
+      {Links.map((link) => (
+        <li key={link.name} className="mx-4">
+          <NavLink
+            to={link.link}
+            className={({ isActive }) =>
+              isActive
+                ? "bg-blue-200 pt-4 p-1 md:pt-5 md:p-2 rounded-md"
+                : "text-gray-600 pb-3 p-1 md:pt-5 md:p-2 rounded-md"
+            }
+          >
+            <Tooltip text={link.name}>
+              <img
+                src={link.icon}
+                alt='icon'
+                className="w-8 h-8 mr-2"
+              />
+            </Tooltip>
+          </NavLink>
+        </li>
+      ))}
+</ul>
+
 
       {/* </div> */}
 

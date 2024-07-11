@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect,useState } from 'react';
 import {
   Routes,
   Route,
@@ -27,9 +27,7 @@ import Login from './pages/Login';
 import Unauthorize from './pages/Unauthorize';
 
 function App() {
-
   const location = useLocation();
-
   useEffect(() => {
     document.querySelector('html').style.scrollBehavior = 'auto'
     window.scroll({ top: 0 })
@@ -41,6 +39,7 @@ function App() {
       <Routes>
         <Route exact path="/login" element={<Login/>}/>
         <Route exact path="/admin" element={<Main />}>
+          <Route exact path="unauthorize" element={<Unauthorize/>}/>
           <Route path='dashboard' element={<Dashboard/>} />
           <Route path="patient" element={<Patients/>}/>           
           <Route path="report" element={<Report/>}/>      
@@ -59,7 +58,6 @@ function App() {
             <Route path="file-manager" element={<FileManager/>}/>           
           </Route>
         </Route>
-        <Route exact path="/unauthorize" element={<Unauthorize/>}/>
       </Routes>
       {/* <Routes>
         <Route exact path="/admin" element={<Main />}>

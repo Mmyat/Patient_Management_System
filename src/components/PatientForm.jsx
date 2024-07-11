@@ -169,6 +169,7 @@ const PatientForm = () => {
       console.log("edit data", data);
       setName(data.name);
       const formatDate = parse(data.dob, "yyyy/MM/dd", new Date());
+      console.log("dob edit",data.dob);
       setDob(formatDate);
       CalculateAge(formatDate);
       setPassport(data.passport);

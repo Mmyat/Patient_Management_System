@@ -16,6 +16,8 @@ const PersonalInfo = () => {
   const { id } = useParams();
   const [isNew, setIsNew] = useState(true);
   const [formId, setFormId] = useState(null);
+  const [isNavigate,setIsNavigate] = useState(false)
+
   //
   const Toast = Swal.mixin({
     toast: true,
@@ -51,7 +53,8 @@ const PersonalInfo = () => {
         icon: "success",
         title: "New Patient's personal information is saved successfully",
       });
-      navigate(`/admin/patient/patientdetail/${id}`);
+      navigate(`/admin/patient/patientdetail/${id}/personalinfo`);
+      setIsNavigate(true)
     } else {
       Toast.fire({
         icon: "error",
@@ -81,8 +84,8 @@ const PersonalInfo = () => {
         icon: "success",
         title: "Patient's personal information is updated successfully",
       });
-      navigate(`/admin/patient/patientdetail/${id}`);
-      console.log("response data", response.data);
+      navigate(`/admin/patient/patientdetail/${id}/personalinfo`);
+      setIsNavigate(true)    
     } else {
       Toast.fire({
         icon: "error",
@@ -108,7 +111,6 @@ const PersonalInfo = () => {
   survey.sendResultOnPageNext = true;
   //Get Data
   const getData = async () => {
-    console.log("Id :",id);
     const response = await axios.post(
       `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,
       { patient_id: id, history: "personal_info" }
@@ -120,7 +122,6 @@ const PersonalInfo = () => {
       console.log("previos data", prevData);
       const form_id = response.data.data[0].id;
       setFormId(form_id);
-      console.log("formId", formId);
       setIsNew(false);
     } else {
       setIsNew(true);
@@ -129,7 +130,7 @@ const PersonalInfo = () => {
   };
   useEffect(() => {
     getData();
-  }, [formId]);
+  }, [formId,isNavigate]);
   return <Survey model={survey}/>;
 }
 

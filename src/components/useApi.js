@@ -6,7 +6,7 @@ const useApi = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const callApi = useCallback(async (method, url, requestData = {}) => {
+  const callApi = useCallback(async (method, url, requestData) => {
     setLoading(true);
     setError(null);
 
@@ -15,6 +15,7 @@ const useApi = () => {
         method,
         url,
         data: requestData,
+        withCredentials: true
       });
       setData(response.data);
     } catch (err) {

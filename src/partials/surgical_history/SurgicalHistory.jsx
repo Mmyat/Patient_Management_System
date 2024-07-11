@@ -15,6 +15,7 @@ const SurgicalHistory = () => {
   const { id } = useParams();
   const [formId,setFormId] =useState()
   const [isNew,setIsNew] = useState(true)
+  const [isNavigate,setIsNavigate] = useState(false)
 
  const Toast = Swal.mixin({
   toast: true,
@@ -47,9 +48,9 @@ const SurgicalHistory = () => {
             icon: "success",
             title: "New Patient's surgical history is saved successfully",
         });
-        navigate(`/admin/patient/patientdetail/${id}`)
-        console.log("response data",response.data);  
-    } 
+        navigate(`/admin/patient/patientdetail/${id}/surgical`)
+        setIsNavigate(true)
+        } 
     else{
         Toast.fire({
             icon: "error",
@@ -61,7 +62,6 @@ const SurgicalHistory = () => {
   const updateSurveyData=async (survey)=> {
     const data = survey.data
     delete data.age ;
-    console.log('update_data',data);
     const med_data = {
       patient_id : id,
       data : {
@@ -69,14 +69,13 @@ const SurgicalHistory = () => {
       }
   }
     const response= await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataUpdate/${formId}`,med_data)
-    console.log("update",response.data);
     if(response.data.code == 200){
         Toast.fire({
             icon: "success",
             title: "Patient's surgical history is updated successfully",
         });
-        navigate(`/admin/patient/patientdetail/${id}`)
-        console.log("response data",response.data);  
+        navigate(`/admin/patient/patientdetail/${id}/surgical`)
+        setIsNavigate(true)
     } 
     else
     {
@@ -106,13 +105,10 @@ const SurgicalHistory = () => {
     const response= await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,{patient_id : id,history : "surgical_history"})   
     if(response.data.code == 200){
       const form_id= response.data.data[0].id
-      console.log("form_id",response.data);
       setFormId(form_id)
-      
-        const prevData=response.data.data[0].data.surgical_history
-        survey.data = prevData
-        console.log("previos data",prevData);
-        setIsNew(false)
+      const prevData=response.data.data[0].data.surgical_history
+      survey.data = prevData
+      setIsNew(false)
     }
     else{
         setIsNew(true)
@@ -121,7 +117,7 @@ const SurgicalHistory = () => {
  }
   useEffect(()=>{
     getData()
- },[formId])
+ },[formId,isNavigate])
   return <Survey model={survey} />;
 };
 

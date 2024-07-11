@@ -206,7 +206,7 @@ const PatientList = () => {
     }else{
       getData();
     }
-  }, [page]);
+  }, [page, location.state,searchTerm]);
 
   return (
     <>
