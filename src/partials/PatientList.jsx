@@ -96,6 +96,7 @@ const PatientList = () => {
 
   const getData = async () => {
     try {
+      console.log("hi");
       if (searchTerm !== "" && searchTerm !== null) {
 
         let response;
@@ -112,6 +113,12 @@ const PatientList = () => {
               { nrc: searchTerm }
             );
             break;
+          case "PASSPORT":
+          response = await axios.post(
+            `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientNrcSearch`,
+            { nrc: searchTerm }
+          );
+          break;
           case "ID":
             response = await axios.post(
               `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientIdSearch/${searchTerm}`
@@ -121,6 +128,7 @@ const PatientList = () => {
             setMessage("Invalid search type");
             return;
         }
+        console.log("test net",response);
         if (response.data.code === '200') {
           console.log("res search:",response.data);
           setIsSearch(true)
@@ -218,6 +226,7 @@ const PatientList = () => {
         >
           <option value="Name">Name</option>
           <option value="NRC">NRC</option>
+          <option value="">NRC</option>
           <option value="ID">ID</option>
         </select>
         <div className="relative w-full">

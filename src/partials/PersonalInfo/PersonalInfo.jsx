@@ -99,7 +99,6 @@ const PersonalInfo = () => {
     id: "cancel",
     title: "Cancel",
     action: () => {
-      console.log("Cancel button clicked!");
       navigate(`/admin/patient/patientdetail/${id}`);
     },
   });

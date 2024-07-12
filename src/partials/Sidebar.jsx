@@ -3,6 +3,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import Logo from '../images/software logo.png';
 import dashboard_icon from '../images/dashboard.png';
 import patient_icon from '../images/patient.png';
+import report_icon from '../images/report.png';
 function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const location = useLocation();
   const { pathname } = location;
@@ -88,6 +89,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
           </button>
           {/* Logo */}
           <img className="w-8 h-8 rounded-full" src={Logo} width="32" height="32" alt="Logo" />
+          {/* <p className="text-2xl font-semibold sm:hidden">Dr.Yin</p> */}
         </div>
 
         {/* Links */}
@@ -122,27 +124,27 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
               </li>
               {/* </div> */}
               
-              <li className="border-t border-gray-300 py-2">
+              <li className="border-t border-gray-300 py-1">
                 <NavLink
                   to={"/admin/patient"}
                   className={({ isActive }) =>
                     isActive ? "flex text-gray-700 bg-blue-200 rounded-xl" : "flex text-gray-600"
                   }
                 >
-                  <img className="w-8 h-8 rounded-full" src={patient_icon} width="32" height="32" alt="dashboardicon" />
+                  <img className="w-8 h-8" src={patient_icon} width="32" height="32" alt="dashboardicon" />
                   <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                     Patient
                   </span>
                 </NavLink>
               </li>
-              <li className="border-t border-gray-300 py-2">
+              <li className="border-t border-gray-300 py-1">
                 <NavLink
                   to={"/admin/report"}
                   className={({ isActive }) =>
                     isActive ? "flex text-gray-700 bg-blue-200 rounded-xl" : "flex text-gray-600"
                   }
                 >
-                  <img className="w-8 h-8 rounded-full" src={patient_icon} width="32" height="32" alt="dashboardicon" />
+                  <img className="w-8 h-8" src={report_icon} width="32" height="32" alt="dashboardicon" />
                   <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                     Report
                   </span>

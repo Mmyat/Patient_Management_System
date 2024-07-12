@@ -69,8 +69,8 @@ export const medical_json = {
                   // },
                   {
                     "type": "text",
-                    "inputType": "number",
-                    "isRequired": true,
+                    "inputType": "text",
+                    // "isRequired": true,
                     "name": "infertility_issue_year",
                     "startWithNewLine": true,
                     "title": "How long do you have infertility issue(year) ?"

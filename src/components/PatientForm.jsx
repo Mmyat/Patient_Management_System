@@ -103,7 +103,7 @@ const PatientForm = () => {
       const form_data = new FormData();
       form_data.append("name", name);
       form_data.append("dob", dob);
-      form_data.append("nrc",nrc_bug);
+      form_data.append("nrc",nrc);
       form_data.append("passport", passport);
       form_data.append("gender", gender);
       form_data.append("image", file);

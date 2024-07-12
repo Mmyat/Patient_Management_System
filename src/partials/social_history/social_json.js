@@ -10,12 +10,12 @@ export const social_json = {
               type: "radiogroup",
               choices: [
                 {
-                  value: "no",
-                  text: "No",
-                },
-                {
                   value: "yes",
                   text: "Yes",
+                },
+                {
+                  value: "no",
+                  text: "No",
                 },
               ],
               colCount: 0,
@@ -24,9 +24,9 @@ export const social_json = {
               title: "Are you drinking?",
             },
             {
-              type: "text",
-              inputType: "number",
-              isRequired: true,
+              type: "comment",
+              inputType: "text",
+              // isRequired: true,
               name: "alcohol long time",
               startWithNewLine: true,
               title:
@@ -36,7 +36,7 @@ export const social_json = {
             },
             {
               type: "text",
-              inputType: "number",
+              inputType: "text",
               isRequired: true,
               name: "alcohol unit",
               startWithNewLine: true,
@@ -49,13 +49,13 @@ export const social_json = {
               type: "radiogroup",
               choices: [
                 {
-                  value: "no",
-                  text: "No",
-                },
-                {
                   value: "yes",
                   text: "Yes",
                 },
+                {
+                  value: "no",
+                  text: "No",
+                },  
               ],
               colCount: 0,
               isRequired: true,
@@ -63,8 +63,8 @@ export const social_json = {
               title: "Are you smoking?",
             },
             {
-              type: "text",
-              inputType: "number",
+              type: "comment",
+              inputType: "text",
               isRequired: true,
               name: "smoking long time",
               startWithNewLine: true,

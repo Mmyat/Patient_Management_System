@@ -11,21 +11,17 @@ export const personal_json = {
                 "name": "decimal",
                 "type": "text",
                 "title": "Weight(lb):",
-                "inputMask": "decimal"
               },
               {
                 "name": "phone",
                 "type": "text",
                 "title": "Phone:",
-                "inputMask": "phone",
-                "inputFormat": "99999999999",
                 "startWithNewLine": true
              },
              {
                 "name": "email",
                 "type": "text",
                 "title": "Email address:",
-                "inputMask": "email",
                 "startWithNewLine": true
              }
             ],

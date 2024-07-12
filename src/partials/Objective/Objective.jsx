@@ -95,7 +95,7 @@ const Objective = () => {
     id: "cancel",
     title: "Cancel",
     action: () => {
-      navigate(`/admin/patient/patientdetail/${id}`);
+      navigate(`/admin/patient/patientdetail/${id}/personalinfo`);
     },
   });
 

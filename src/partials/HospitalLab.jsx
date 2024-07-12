@@ -6,6 +6,7 @@ import { AiOutlineEdit, AiFillDelete } from "react-icons/ai";
 import {useParams} from "react-router-dom";
 import Modal from '../components/Modal';
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -49,9 +50,12 @@ const HospitalLab = () => {
   const [total, setTotal] = useState(0);
   const [dataList, setDataList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [location_name,setLocation_name] = useState('')
+  const [location_name,setLocation_name] = useState('Samitevij')
+  const [category,setCategory] = useState('online')
   const [remark,setRemark] = useState('')
-  const [date, setDate] = useState(null);
+  const [doctor,setDoctor] = useState('')
+  const [position,setPosition] = useState('')
+  const [date_time, setDate_time] = useState(null);
   const [isNew,setIsNew] = useState(true)
   const { id } = useParams();
   const [updateId,setUpdateId] = useState(null)
@@ -70,8 +74,8 @@ const HospitalLab = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () =>{ 
     setIsModalOpen(false);
-    setLocation_name("")
-    setDate(null)
+    setLocation_name("Samitevij")
+    setDate_time(null)
     setRemark("")
   }
 
@@ -119,15 +123,13 @@ const HospitalLab = () => {
         showConfirmButton: true,
       });
     }
-  };  
-  
+  };
   const handleDateChange = (newDate) => {
     if (newDate) {
-      const formattedDate = format(newDate, "yyyy/MM/dd");
-      console.log(formattedDate);
-      setDate(formattedDate);
+      const formattedDate = format(newDate, "yyyy/MM/dd hh:mm a");
+      setDate_time(formattedDate);
     }
-  };
+  };  
 
   const handleNew = ()=>{
     setIsNew(true);
@@ -143,7 +145,7 @@ const HospitalLab = () => {
       let history = response.data.data;
       setLocation_name(history.location_name);
       const formatDate = parse(history.date, "yyyy/MM/dd", new Date());
-      setDate(formatDate)
+      setDate_time(formatDate)
       setRemark(history.remark);
     } else {
       Toast.fire({
@@ -189,16 +191,19 @@ const HospitalLab = () => {
     const formData = {
       patient_id: id,
       location_name,
-      date,
+      date_time,
+      category,
+      doctor_name: doctor,
+      doctor_position: position,
       remark
     };
-  
     try {
       if(location_name == ""){
         return;
       }
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/hospAndLab/HosAndLabCreate`, formData); 
-      if (response.status === 200 && response.data.code === '200') {
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpCreate`, formData); 
+      console.log("test",response);
+      if (response.data.code === '200') {
         closeModal();
         Toast.fire({
           icon: "success",
@@ -222,17 +227,19 @@ const HospitalLab = () => {
 
   const updateHistory = async () => {
     try {
-      const formattedDate = format(date, "yyyy/MM/dd");
+      const formattedDate = format(date_time, "yyyy/MM/dd");
       const formData = {
         patient_id: id,
         location_name,
-        date: formattedDate,
+        date_time: formattedDate,
+        category,
+        doctor_name: doctor,
+        doctor_position: position,
         remark,
       };
   
-      const response = await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/HosAndLabUpdate/${updateId}`, formData);
-      console.log("update res",response);
-      if (response.status === 200 && response.data.code === '200') {
+      const response = await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpUpdate/${updateId}`, formData);
+      if (response.data.code === '200') {
         closeModal();
         getHistoryList();
         Toast.fire({
@@ -257,7 +264,7 @@ const HospitalLab = () => {
   
 
   const getHistoryList = async ()=>{
-    let response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/hospAndLab/HosAndLabPatientIdSearch`,{
+    let response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/hospitalList`,{
       patient_id : id,
     })
     if(response.data.code ==='200'){
@@ -296,11 +303,11 @@ const HospitalLab = () => {
                 </svg>
             </button>
         </div>           
-        <div className="justify-end">               
+        {/* <div className="justify-end">               
             <button onClick={exportToExcel} className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
               Export to Excel
             </button>
-        </div>
+        </div> */}
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <form onSubmit={handleSubmit} className="w-full max-w-lg p-6">
@@ -315,10 +322,20 @@ const HospitalLab = () => {
               name="location_name"
             >
               <option value="Samitevij">Samitevij</option>
-              <option value="Jetamin">Jetanin</option>
+              <option value="Jetanin">Jetanin</option>
               <option value="Chaing Mai">Chaing Mai</option>
               <option value="N Health">N Health</option>
               <option value="Others">Others</option>
+            </select>
+          </div>
+          <div className="w-1/3 mb-4">
+            <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
+              Category
+            </label>
+            <select id="category" value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <option value="online">Online</option>
+              <option value="hospital">Hospital</option>
+              <option value="other">Others</option>
             </select>
           </div>
             {/* <input
@@ -330,7 +347,7 @@ const HospitalLab = () => {
               className="mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             /> */}
           {/* </div> */}
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DemoContainer components={["DatePicker"]}>
@@ -345,6 +362,27 @@ const HospitalLab = () => {
                 />
               </DemoContainer>
             </LocalizationProvider>
+          </div> */}
+          <div className="mb-4">
+            <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date & Time</label>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DemoContainer components={["DatePicker"]}>
+                 <DateTimePicker value={date_time} onChange={handleDateChange} format='yyyy/MM/dd hh:mm a' slotProps={{
+                  textField: {
+                    required: true,
+                    variant: 'outlined',
+                    fullWidth: true,
+                  }}}/>
+              </DemoContainer>
+            </LocalizationProvider>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Doctor</label>
+            <input type="text" id="remark" value={doctor} onChange={(e)=>setDoctor(e.target.value)} className="h-auto mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Position</label>
+            <input type="text" id="remark" value={position} onChange={(e)=>setPosition(e.target.value)} className="h-auto mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
           </div>
           <div className="mb-4">
             <label htmlFor="age" className="block text-sm font-medium text-gray-700">Remark</label>

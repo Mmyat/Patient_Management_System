@@ -16,7 +16,6 @@ const SurgicalHistory = () => {
   const [formId,setFormId] =useState()
   const [isNew,setIsNew] = useState(true)
   const [isNavigate,setIsNavigate] = useState(false)
-
  const Toast = Swal.mixin({
   toast: true,
   position: 'top-end',
@@ -90,7 +89,7 @@ const SurgicalHistory = () => {
     id: "cancel",
     title: "Cancel",
     action: () => {
-      navigate(`/admin/patient/patientdetail/${id}`);
+      navigate(`/admin/patient/patientdetail/${id}/personalinfo`);
     },
   });
   survey.onComplete.add(function (sender, options) {

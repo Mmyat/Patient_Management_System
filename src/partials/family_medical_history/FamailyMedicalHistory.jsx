@@ -90,7 +90,7 @@ const FamailyMedicalHistory = () => {
     title: "Cancel",
     action: () => {
       console.log("Cancel button clicked!");
-      navigate(`/admin/patient/patientdetail/${id}`);
+      navigate(`/admin/patient/patientdetail/${id}/personalinfo`);
     },
   });
   survey.onComplete.add(function (sender, options) {

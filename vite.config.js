@@ -11,10 +11,10 @@ export default defineConfig({
     postcss,
   },
   plugins: [react()],
-  server: {
-    host: '192.168.100.18',
-    port: 5000,
-  },
+  // server: {
+  //   host: '192.168.100.18',
+  //   port: 5000,
+  // },
   resolve: {
     alias: [
       {

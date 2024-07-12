@@ -36,6 +36,7 @@ const PatientDetails = () => {
   const [patient, setPatient] = useState({});
   const [partner, setPartner] = useState({});
   const [isTrue, setIsTrue] = useState(false);
+  const [gender, setGender] = useState('male');
   const [showModal, setShowModal] = useState(false);
   const [profile, setProfile] = useState(DefaultProfile);
   const [partnerProfile, setPartnerProfile] = useState(DefaultProfile);
@@ -49,6 +50,7 @@ const PatientDetails = () => {
     const data = response.data.data.result[0];
     console.log("patient data:",data);
     setPatient(data);
+    setGender(data.gender)
     setPatientId(id);
     setProfile(data.imageUrl);
   };
@@ -103,11 +105,7 @@ const PatientDetails = () => {
     { name: "Medical History", link: "medical", icon: MedicalIcon },
     { name: "Surgical History", link: "surgical", icon: SurgicalIcon },
     { name: "Social History", link: "social", icon: SocialHistoryIcon },
-    {
-      name: "Family Medical History",
-      link: "familymedical",
-      icon: FamilyMedicalIcon,
-    },
+    {name: "Family Medical History",link: "familymedical",icon: FamilyMedicalIcon},
     { name: "Hospital & Lab", link: "hospital-lab", icon: HospitalIcon },
     { name: "Follow Up", link: "follow-up", icon: FollowUpIcon },
     { name: "File Manager", link: "file-manager", icon: FileManagerIcon },
@@ -295,31 +293,50 @@ const PatientDetails = () => {
       </div>
       {/* <div className="relative flex items-center justify-around text-gray-500 dark:text-gray-400 bg-white shadow-md sm:rounded-lg py-2 md:py-8 mt-2"> */}
       <ul className="relative flex items-center justify-start md:justify-around bg-white mt-4 py-8 md:mt-4 overflow-x-auto flex-nowrap">
-      {Links.map((link) => (
-        <li key={link.name} className="mx-4">
-          <NavLink
-            to={link.link}
-            className={({ isActive }) =>
-              isActive
-                ? "bg-blue-200 pt-4 p-1 md:pt-5 md:p-2 rounded-md"
-                : "text-gray-600 pb-3 p-1 md:pt-5 md:p-2 rounded-md"
-            }
-          >
-            <Tooltip text={link.name}>
-              <img
-                src={link.icon}
-                alt='icon'
-                className="w-8 h-8 mr-2"
-              />
-            </Tooltip>
-          </NavLink>
-        </li>
-      ))}
-</ul>
-
-
-      {/* </div> */}
-
+        {Links.map((link) => (
+          link.name === "Medical History" ? (
+            patient.gender === "male" ? null : (
+              <li key={link.name} className="mx-4">
+                <NavLink
+                  to={link.link}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "bg-blue-200 pt-4 p-1 md:pt-5 md:p-2 rounded-md"
+                      : "text-gray-600 pb-3 p-1 md:pt-5 md:p-2 rounded-md"
+                  }
+                >
+                  <Tooltip text={link.name}>
+                    <img
+                      src={link.icon}
+                      alt="icon"
+                      className="w-8 h-8 mr-2"
+                    />
+                  </Tooltip>
+                </NavLink>
+              </li>
+            )
+          ) : (
+            <li key={link.name} className="mx-4">
+              <NavLink
+                to={link.link}
+                className={({ isActive }) =>
+                  isActive
+                    ? "bg-blue-200 pt-4 p-1 md:pt-5 md:p-2 rounded-md"
+                    : "text-gray-600 pb-3 p-1 md:pt-5 md:p-2 rounded-md"
+                }
+              >
+                <Tooltip text={link.name}>
+                  <img
+                    src={link.icon}
+                    alt="icon"
+                    className="w-8 h-8 mr-2"
+                  />
+                </Tooltip>
+              </NavLink>
+            </li>
+          )
+        ))}
+      </ul>
       <Outlet />
     </div>
   );
