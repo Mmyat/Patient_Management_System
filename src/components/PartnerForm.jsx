@@ -109,7 +109,7 @@ const PartnerForm = () => {
             icon: "success",
             title: "New Partner is connected with Patient",
         });
-        navigate(-1)
+        navigate(`/admin/patient/patientdetail/${id}/personalinfo`)
       } 
       else{
         Toast.fire({

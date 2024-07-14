@@ -84,7 +84,7 @@ const PatientDetails = () => {
     setPatientId(partner.id);
     setProfile(partnerProfile);
     setPartnerProfile(profile);
-    navigate(`/admin/patient/patientdetail/${partner.id}`);
+    navigate(`/admin/patient/patientdetail/${partner.id}/personalinfo`);
   };
   const changeToEdit = (Id) => {
     navigate(`/admin/patient/patientform/${Id}`);

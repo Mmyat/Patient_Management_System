@@ -14,11 +14,8 @@ const Report = () => {
   const [getDate, setGetDate] = useState(false);
   const [start_date, setStart_date] = useState(null);
   const [end_date, setEnd_date] = useState(null);
-
-  let location_name = null;
-
-  const [data, setData] = useState(null);
-
+  const [message, setMessage] = useState("No Hospital & Lab Report has been searched yet!");
+  const [data, setData] = useState({"location_name":"Samitevij"});
   const columns = [
     {
       Header: "Patient ID",
@@ -67,13 +64,11 @@ const Report = () => {
   ];
 
   const getHosAndLabList = async () => {
-    console.log(start_date,end_date,data);
     if (start_date == null || end_date == null || data == null) {
       Toast.fire({
         icon: "error",
         title: "You must choose Hospital & Lab and Dates.",
       });
-
       setDataList("");
       setTotal("");
       setGetDate(false);
@@ -87,23 +82,18 @@ const Report = () => {
         location_name: data.location_name,
       }
     );
-    console.log(response);
-    console.log(response.data.data);
-    console.log(response.data.code);
-
     if (response.data.code === "200") {
       let list = response.data.data.list;
+      if (list.length == 0){
+        setMessage("There is no data for the selected date at this hospital");
+        return;
+      }
       setDataList(list);
       let total = response.data.data.total;
-      console.log("Total", total);
       setTotal(total);
       setGetDate(true);
     } else {
-      Toast.fire({
-        icon: "error",
-        title:
-          "There is no data available for the hospital and lab report. Please check again.",
-      });
+      setMessage("An error occurs for this data searching")
       setDataList("");
       setTotal("");
       setGetDate(false);
@@ -162,7 +152,6 @@ const Report = () => {
 
   const exportToExcel = () => {
     try {
-      console.log("list", dataList);
       // Check if dataList is an array and not empty
       if (!Array.isArray(dataList) || dataList.length === 0) {
         Swal.fire({
@@ -171,7 +160,6 @@ const Report = () => {
         });
         return;
       }
-
       const fileName = "hospital_lab_report";
       const worksheet = XLSX.utils.json_to_sheet(dataList);
       const workbook = XLSX.utils.book_new();
@@ -184,7 +172,6 @@ const Report = () => {
         type: "application/octet-stream",
       });
       saveAs(blob, `${fileName}.xlsx`);
-
       // Show success message
       Swal.fire({
         icon: "success",
@@ -204,7 +191,6 @@ const Report = () => {
   };
 
   const handleChange = (e) => {
-    console.log(e.target.value);
     setData({ [e.target.name]: e.target.value });
     console.log(data);
   };
@@ -277,7 +263,7 @@ const Report = () => {
               name="location_name"
             >
               <option value="Samitevij">Samitevij</option>
-              <option value="Jetamin">Jetanin</option>
+              <option value="Jetanin">Jetanin</option>
               <option value="Chaing Mai">Chaing Mai</option>
               <option value="N Health">N Health</option>
               <option value="Others">Others</option>
@@ -318,7 +304,7 @@ const Report = () => {
           </div>
         ) : (
           <div class="text-center text-red-300 mt-8">
-            No Hospital & Lab Report has been searched yet!
+            {message}
           </div>
         )}
       </div>

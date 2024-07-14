@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import Logo from '../images/software logo.png';
-import dashboard_icon from '../images/dashboard.png';
+import home_icon from '../images/home.png';
 import patient_icon from '../images/patient.png';
 import report_icon from '../images/report.png';
 function Sidebar({ sidebarOpen, setSidebarOpen }) {
@@ -109,22 +109,22 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
             </h3>
             <ul className="mt-3">
               {/* Dashboard */}
-              <li className="border-t border-gray-300 py-1">               
+              <li className="justify-center items-center border-t border-gray-300 py-1">               
                 <NavLink
                   to={"/admin/dashboard"}
                   className={({ isActive }) =>
                     isActive ? "flex text-gray-700 bg-blue-200 rounded-xl" : "flex text-gray-600"
                   }
                 >
-                  <img className="w-8 h-8" src={dashboard_icon} width="32" height="32" alt="dashboardicon" />
-                  <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                  <img className="w-8 h-8 ml-1" src={home_icon} width="32" height="32" alt="dashboardicon" />
+                  <span className="text-sm font-medium ml-3 mt-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                     Dashboard
                   </span>
                 </NavLink>
               </li>
               {/* </div> */}
               
-              <li className="border-t border-gray-300 py-1">
+              <li className="justify-center items-center border-t border-gray-300 py-1">
                 <NavLink
                   to={"/admin/patient"}
                   className={({ isActive }) =>
@@ -132,7 +132,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                   }
                 >
                   <img className="w-8 h-8" src={patient_icon} width="32" height="32" alt="dashboardicon" />
-                  <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                  <span className="text-sm font-medium ml-3 mt-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                     Patient
                   </span>
                 </NavLink>
@@ -145,7 +145,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                   }
                 >
                   <img className="w-8 h-8" src={report_icon} width="32" height="32" alt="dashboardicon" />
-                  <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                  <span className="text-sm font-medium ml-3 mt-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                     Report
                   </span>
                 </NavLink>

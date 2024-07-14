@@ -15,6 +15,7 @@ export const personal_json = {
               {
                 "name": "phone",
                 "type": "text",
+                "inputType": "number",
                 "title": "Phone:",
                 "startWithNewLine": true
              },

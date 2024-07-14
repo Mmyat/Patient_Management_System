@@ -48,7 +48,7 @@ const PatientList = () => {
       Cell: ({ row }) => (
         <div className="flex gap-2">
           <p
-            onClick={()=>navigate(`patientdetail/${row.id}`,{state: {patient_Lists: patientList,search_input:searchTerm,search_type : searchType,info: row,data_total : total,pageNumber :page}})}
+            onClick={()=>navigate(`patientdetail/${row.id}/personalinfo`,{state: {patient_Lists: patientList,search_input:searchTerm,search_type : searchType,info: row,data_total : total,pageNumber :page}})}
             className="font-medium text-blue-600 dark:text-blue-500 cursor-pointer"
           >
             Detail
@@ -96,9 +96,7 @@ const PatientList = () => {
 
   const getData = async () => {
     try {
-      console.log("hi");
       if (searchTerm !== "" && searchTerm !== null) {
-
         let response;
         switch (searchType) {
           case "Name":
@@ -202,19 +200,23 @@ const PatientList = () => {
   };
 //if(location.state){
   useEffect(() => {
-    if(location.state){
-      const {patient_Lists,search_input,search_type,data_total,pageNumber} = location.state;
-      console.log("location",location.state);
-      setIsSearch(true)
+    if (location.state) {
+      const { patient_Lists, search_input, search_type, data_total, pageNumber } = location.state;
+      console.log("location", location.state);
+      setIsSearch(true);
       setPatientList(patient_Lists);
       setSearchTerm(search_input);
       setSearchType(search_type);
       setTotal(data_total);
       setPage(pageNumber);
-    }else{
+    } else {
       getData();
     }
-  }, [page, location.state,searchTerm]);
+  }, []);
+
+  useEffect(() => {
+    getData();
+  }, [page,searchTerm]);
 
   return (
     <>

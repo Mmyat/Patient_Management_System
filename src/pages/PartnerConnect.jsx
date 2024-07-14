@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from "react";
-import { AiOutlineEdit, AiFillDelete } from "react-icons/ai";
 import { useParams,useNavigate} from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -40,10 +39,6 @@ const PartnerConnect = () => {
       Header: "Gender",
       accessor: "gender",
     },
-    // {
-    //   Header: "Phone",
-    //   accessor: "phone",
-    // },
     {
       Header: "Actions",
       accessor: "detail",
@@ -75,15 +70,13 @@ const PartnerConnect = () => {
       patient_id_1 : id ,
       patient_id_2 : partner_id
     }
-    console.log("payload data",data);
     const response= await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/partner/partnerJoin`,data)
-    console.log(response.data);
     if(response.data.code == 200){
         Toast.fire({
             icon: "success",
             title: "Patient is connected successfully with partner",
         });
-        navigate(`/admin/patient/patientdetail/${id}`)
+        navigate(`/admin/patient/patientdetail/${id}/personalinfo`)
     } 
     else{
         Toast.fire({
@@ -125,91 +118,55 @@ const PartnerConnect = () => {
   }; 
   //
   const getData = async () => {
+    if (!searchTerm) {
+      setIsSearch(false);
+      setMessage("No patient's information has been searched yet!");
+      return;
+    }
+  
     try {
-      if (searchTerm !== "" && searchTerm !== null) {
-        switch (searchType) {
-          //Name Searching
-          case "Name":
-            const response = await axios.post(
-              `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientNameSearch/${page}`,
-              { name: searchTerm } // Pass offset and limit parameters
-            );
-            if (response.data.code == 200) {
-              const list = response.data.data.result;
-              console.log("list", list);
-              list?.map((patient) => {
-                const patient_age = calculateAge(patient.dob);
-                patient.age = patient_age;
-              });
-              const total_patient = response.data.data.total[0].total;
-              setPatientList(list);
-              setTotal(total_patient);
-              toggleState();
-            } else {
-              const err_msg = response.data.message;
-              console.log("res", err_msg);
-              setMessage(err_msg);
-              setIsSearch(false);
-            }
+      let endpoint, requestData;
+  
+      switch (searchType) {
+        case "Name":
+          endpoint = `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientNameSearch/${page}`;
+          requestData = { name: searchTerm };
           break;
-          //NRC searching
-          case "NRC":
-            const nrc_response = await axios.post(
-              `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientNrcSearch`,
-              { nrc: searchTerm } // Pass offset and limit parameters
-            );
-            console.log("nrc res:", nrc_response);
-            if (nrc_response.data.code == 200) {
-              const list = nrc_response.data.data.result;
-              console.log("list", list);
-              list?.map((patient) => {
-                const patient_age = calculateAge(patient.dob);
-                patient.age = patient_age;
-              });
-              const total_patient = nrc_response.data.data.total[0].total;
-              setPatientList(list);
-              setTotal(total_patient);
-              toggleState();
-            } else {
-              const err_msg = nrc_response.data.message;
-              console.log("res", err_msg);
-              setMessage(err_msg);
-              setIsSearch(false);
-            }
-            break;
-            //ID searching
-            case "ID":
-            const Id_response = await axios.post(
-              `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientIdSearch/${searchTerm}`,
-              // { name: searchTerm } // Pass offset and limit parameters
-            );
-            if (Id_response.data.code == 200) {
-              const list = Id_response.data.data.result;
-              console.log("id list", list);
-              list?.map((patient) => {
-                const patient_age = calculateAge(patient.dob);
-                patient.age = patient_age;
-              });
-              const total_patient = Id_response.data.data.total[0].total;
-              setPatientList(list);
-              setTotal(total_patient);
-              toggleState();
-            } else {
-              const err_msg = Id_response.data.message;
-              console.log("res", err_msg);
-              setMessage(err_msg);
-              setIsSearch(false);
-            }
-            break;
-        }
+        case "NRC":
+          endpoint = `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientNrcSearch`;
+          requestData = { nrc: searchTerm };
+          break;
+        case "ID":
+          endpoint = `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientIdSearch/${searchTerm}`;
+          requestData = {};
+          break;
+        default:
+          setIsSearch(false);
+          setMessage("Invalid search type");
+          return;
+      }
+  
+      const response = await axios.post(endpoint, requestData);
+  
+      if (response.data.code === '200') {
+        const list = response.data.data.result;
+        list.forEach(patient => {
+          patient.age = calculateAge(patient.dob);
+        });
+        const total_patient = response.data.data.total[0]?.total || 0;
+        setPatientList(list);
+        setTotal(total_patient);
+        toggleState();
       } else {
+        setMessage(response.data.message);
         setIsSearch(false);
-        setMessage("No patient's information has been searched yet!");
       }
     } catch (error) {
-      setMessage(error);
+      setMessage(error.message);
+      setIsSearch(false);
     }
   };
+  
 
   const toggleState = async () => {
     // Check if partner data exists
