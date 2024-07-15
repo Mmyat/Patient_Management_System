@@ -23,7 +23,7 @@ const HospitalLab = () => {
     },
     {
       Header: "Date",
-      accessor: "date",
+      accessor: "date_time",
     },
     {
       Header: "Remark",
@@ -35,7 +35,7 @@ const HospitalLab = () => {
       Cell: ({ row }) => (
         
         <div className="flex gap-2">  
-          <AiOutlineEdit onClick={() => { handleEdit(row.id);}} className="text-2xl text-orange-600 dark:text-orange-500 cursor-pointer" />
+          <AiOutlineEdit onClick={() => { handleEdit(row);}} className="text-2xl text-orange-600 dark:text-orange-500 cursor-pointer" />
           <AiFillDelete
             className="text-2xl text-red-500 dark:text-red-500 cursor-pointer"
             onClick={() => {
@@ -136,23 +136,15 @@ const HospitalLab = () => {
     openModal()
   }
 
-  const handleEdit =async (rowId) => {
+  const handleEdit =async (row) => {
     setIsNew(false)
     openModal()
-    let response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/hospAndLab/HosAndLabIdSearch/${rowId}`)
-    setUpdateId(rowId);
-    if (response.data.code == 200) {
-      let history = response.data.data;
-      setLocation_name(history.location_name);
-      const formatDate = parse(history.date, "yyyy/MM/dd", new Date());
-      setDate_time(formatDate)
-      setRemark(history.remark);
-    } else {
-      Toast.fire({
-        icon: "error",
-        title: "Failed to fetch patient's hospital and lab history",
-      });
-    }
+    console.log("fetch edit",row.remark);
+    setUpdateId(row.id);
+    setLocation_name(row.location_name);
+    const formatDate = parse(history.date_time, "yyyy/MM/dd hh:mm a", new Date());
+    setDate_time(formatDate)
+    setRemark(row.remark);
   };
 
   const handleDelete =async (rowId) => {
@@ -227,7 +219,8 @@ const HospitalLab = () => {
 
   const updateHistory = async () => {
     try {
-      const formattedDate = format(date_time, "yyyy/MM/dd");
+      const formattedDate = format(date_time, "yyyy/MM/dd hh:mm a");
+      console.log("upd",formattedDate);
       const formData = {
         patient_id: id,
         location_name,
@@ -303,11 +296,6 @@ const HospitalLab = () => {
                 </svg>
             </button>
         </div>           
-        {/* <div className="justify-end">               
-            <button onClick={exportToExcel} className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
-              Export to Excel
-            </button>
-        </div> */}
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <form onSubmit={handleSubmit} className="w-full max-w-lg p-6">
@@ -338,31 +326,6 @@ const HospitalLab = () => {
               <option value="other">Others</option>
             </select>
           </div>
-            {/* <input
-              type="text"
-              id="name"
-              value={location_name}
-              onChange={(e)=>setLocation_name(e.target.value)}
-              required
-              className="mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            /> */}
-          {/* </div> */}
-          {/* <div className="mb-4">
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DemoContainer components={["DatePicker"]}>
-                <DatePicker value={date} onChange={handleDateChange} format='yyyy/MM/dd' 
-                  slotProps={{
-                    textField: {
-                      required: true,
-                      variant: 'outlined',
-                      fullWidth: true,
-                    }
-                  }} 
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-          </div> */}
           <div className="mb-4">
             <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date & Time</label>
             <LocalizationProvider dateAdapter={AdapterDateFns}>

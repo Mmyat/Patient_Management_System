@@ -309,7 +309,7 @@ const PatientDetails = () => {
                     <img
                       src={link.icon}
                       alt="icon"
-                      className="w-8 h-8 mr-2"
+                      className="w-8 h-8"
                     />
                   </Tooltip>
                 </NavLink>
@@ -321,15 +321,15 @@ const PatientDetails = () => {
                 to={link.link}
                 className={({ isActive }) =>
                   isActive
-                    ? "bg-blue-200 pt-4 p-1 md:pt-5 md:p-2 rounded-md"
-                    : "text-gray-600 pb-3 p-1 md:pt-5 md:p-2 rounded-md"
+                    ? "bg-blue-200 pt-4 p-1 mb-1 md:pt-5 md:p-2 rounded-md"
+                    : "text-gray-600 pb-2 p-1 md:pt-5 md:p-2 rounded-md"
                 }
               >
                 <Tooltip text={link.name}>
                   <img
                     src={link.icon}
                     alt="icon"
-                    className="w-8 h-8 mr-2"
+                    className="w-8 h-8"
                   />
                 </Tooltip>
               </NavLink>
