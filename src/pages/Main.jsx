@@ -11,7 +11,7 @@ function Main() {
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <main>
-          <div className="px-4 md:px-1 sm:px-1 md:px-1 lg:px-2 sm:py-1 md:py-1 lg:py-2 w-full max-w-9xl mx-auto">
+          <div className="px-0 md:px-0 lg:px-0 xl:px-2 py-0 md:py-2 lg:py-2 w-full max-w-9xl mx-auto">
             <div className="flex">
                  <Outlet/>        
             </div>

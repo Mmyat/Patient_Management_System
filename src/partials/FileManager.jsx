@@ -235,7 +235,6 @@ const FileManager = () => {
   }
 
   const handleDelete =async (row) => {
-    console.log("row",row);
     swalWithButtons
       .fire({
         title: "Are you sure to delete?",
@@ -248,6 +247,13 @@ const FileManager = () => {
         if (result.isConfirmed) {
           const response = await axios.delete(`${import.meta.env.VITE_SERVER_DOMAIN}/file/fileDelete/${row.id}`)
           console.log("delete res:",response.data);
+          if (response.data.code === '403') {
+            Toast.fire({
+              icon: "error",
+              title: `${response.data.message}`,
+            });
+            return;
+          }
           if (response.status === 200 && response.data.code === '200') {
             Toast.fire({
               icon: "success",
@@ -269,9 +275,7 @@ const FileManager = () => {
   }
 
   const openFolder = (folderName)=>{
-    console.log("name",folderName);  
     setPath((prev)=>prev+">"+folderName)
-    console.log("file path err:",path);
   }
 
   const backFolder =(path)=>{

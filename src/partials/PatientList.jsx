@@ -126,9 +126,7 @@ const PatientList = () => {
             setMessage("Invalid search type");
             return;
         }
-        console.log("test net",response);
         if (response.data.code === '200') {
-          console.log("res search:",response.data);
           setIsSearch(true)
           const list = response.data.data.result;
           list?.forEach((patient) => {
@@ -167,7 +165,7 @@ const PatientList = () => {
           const response = await axios.delete(
             `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientPicDelete/${id}`
           );
-          if (response.data.code === 200) {
+          if (response.data.code === '200') {
             swalWithButtons.fire(
               "Deleted!",
               "Your patient's data has been deleted.",
@@ -176,17 +174,10 @@ const PatientList = () => {
             getData();
           } else {
             swalWithButtons.fire(
-              "Cancelled",
-              "Your patient's data cannot not delete",
-              "error"
-            );
+              'Fail to delete',
+              'error'
+            )
           }
-        } else {
-          swalWithButtons.fire(
-            'Cancelled',
-            'Your patient\'s data cannot not delete',
-            'error'
-          )
         }
       });
   };
@@ -198,7 +189,6 @@ const PatientList = () => {
       setIsSearch(false);
     }
   };
-//if(location.state){
   useEffect(() => {
     if (location.state) {
       const { patient_Lists, search_input, search_type, data_total, pageNumber } = location.state;
@@ -228,7 +218,7 @@ const PatientList = () => {
         >
           <option value="Name">Name</option>
           <option value="NRC">NRC</option>
-          <option value="">NRC</option>
+          <option value="PASSPORT">Passport</option>
           <option value="ID">ID</option>
         </select>
         <div className="relative w-full">

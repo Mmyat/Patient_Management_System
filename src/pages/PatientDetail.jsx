@@ -11,11 +11,12 @@ import PersonalIcon from "../images/personal_icon.png";
 import ObjectiveIcon from "../images/concern.png";
 import MedicalIcon from "../images/medical-history.png";
 import SurgicalIcon from "../images/surgery-room.png";
-import SocialHistoryIcon from "../images/social-media.png";
+import SocialHistoryIcon from "../images/social.png";
 import FamilyMedicalIcon from "../images/family_medial_history.png";
 import HospitalIcon from "../images/hospital.png";
 import FollowUpIcon from "../images/follow_up_icon.png";
 import FileManagerIcon from "../images/file-manager.png";
+import Modal from "../components/Modal";
 
 const PatientDetails = () => {
   const Toast = Swal.mixin({
@@ -41,8 +42,9 @@ const PatientDetails = () => {
   const [profile, setProfile] = useState(DefaultProfile);
   const [partnerProfile, setPartnerProfile] = useState(DefaultProfile);
   const { id } = useParams();
+  //Get patient's Info
   const getDataById = async () => {
-    console.log("id--",id);
+    console.log("hi get api");
     const response = await axios.post(
       `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientIdSearch/${id}`
     );
@@ -111,19 +113,19 @@ const PatientDetails = () => {
     { name: "File Manager", link: "file-manager", icon: FileManagerIcon },
   ];
   useEffect(() => {
-    // if (location.state) {
-    //   const { info } = location.state;
-    //   setPatient(info);
-    //   setPatientId(info.id);
-    //   setProfile(info.imageUrl);
-    //   getRelation();
-    // } else {
+    if (location.state) {
+      const { info } = location.state;
+      setPatient(info);
+      setPatientId(info.id);
+      setProfile(info.imageUrl);
+      getRelation();
+    } else {
       getDataById();
       getRelation();
-    // }
+    }
   }, []);
   return (
-    <div className="container mx-auto px-4 py-8 sm:py-0">
+    <div className="container mx-auto py-1 sm:py-0">
       <button
         className="text-3xl bg-white p-1 mb-2 border-dashed border-1 border-gray-300 stroke-1 rounded-md"
         onClick={() => navigate(`/admin/patient/`, { state: location.state })}
@@ -135,7 +137,7 @@ const PatientDetails = () => {
           <h3 className="text-xl text-slate-800 ml-1 mt-2">
             Patient's Details
           </h3>
-          <div className="flex px-4 py-5 sm:py-2">
+          <div className="flex flex-col md:flex-row px-4 py-5 sm:py-2">
             <div className="relative inline-block">
               <img
                 src={profile ? profile : DefaultProfile}
@@ -144,12 +146,12 @@ const PatientDetails = () => {
               />
               <button
                 onClick={() => changeToEdit(patient.id)}
-                className="absolute bottom-5 right-0 m-2 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full"
+                className="absolute bottom-0 left-32 -bottom-2 md:bottom-12 md:left-20 lg:bottom-12 lg:left-28 xl:bottom-6 xl:left-32 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full"
               >
                 <AiOutlineEdit />
               </button>
             </div>
-            <dl className="grid grid-cols-1 md:grid-cols-2 gap-2 ml-2">
+            <dl className="grid grid-cols-2 md:grid-cols-2 gap-1 md:gap-1 xl:gap-2 ml-1 md:ml-2">
               <dt className="text-gray-700 font-medium">Patient's ID:</dt>
               <dd className="text-gray-900">{patient.id}</dd>
               <dt className="text-gray-700 font-medium">Name:</dt>
@@ -157,7 +159,7 @@ const PatientDetails = () => {
               <dt className="text-gray-700 font-medium">Date of Birth:</dt>
               <dd className="text-gray-900">{patient.dob}</dd>
               <dt className="text-gray-700 font-medium">NRC:</dt>
-              <dd className="text-gray-900">{patient.nrc}</dd>
+              <dd className="text-gray-900 flex-wrap">{patient.nrc}</dd>
               <dt className="text-gray-700 font-medium">Passport:</dt>
               <dd className="text-gray-900">{patient.passport}</dd>
               <dt className="text-gray-700 font-medium">Gender:</dt>
@@ -165,12 +167,12 @@ const PatientDetails = () => {
             </dl>
           </div>
         </div>
-        {isTrue ? (
-          <div className="flex-col border-solid border-gray-400 border-1">
+        {isTrue ? (<div className="justify-center">
+          <div className="hidden sm:block flex-col border-solid border-gray-400 border-1">
             <h3 className="text-xl text-slate-800 ml-4 mt-2">
               Partner's Details
             </h3>
-            <div className="flex px-4 py-5 sm:py-2">
+            <div className="flex flex-col md:flex-row px-4 py-5 sm:py-2">
               <div className="relative inline-block">
                 <img
                   src={partnerProfile ? partnerProfile : DefaultProfile}
@@ -179,12 +181,12 @@ const PatientDetails = () => {
                 />
                 <button
                   onClick={() => changeToEdit(partner.id)}
-                  className="absolute bottom-14 right-0 m-2 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full"
+                  className="absolute bottom-0 left-32 -bottom-2 md:bottom-20 md:left-20 lg:bottom-16 lg:left-28 xl:bottom-16 xl:left-32 text-white bg-blue-500 hover:bg-blue-700 p-2 rounded-full"
                 >
                   <AiOutlineEdit />
                 </button>
               </div>
-              <dl className="grid grid-cols-1 md:grid-cols-2 gap-2 ml-2">
+              <dl className="grid grid-cols-2 gap-1 md:gap-2 ml-1 md:ml-2">
                 <dt className="text-gray-700 font-medium">Partner's ID:</dt>
                 <dd className="text-gray-900">{partner.id}</dd>
                 <dt className="text-gray-700 font-medium">Name:</dt>
@@ -201,23 +203,24 @@ const PatientDetails = () => {
                   className=" rounded bg-indigo-500 hover:bg-indigo-600 text-white text-center mt-1"
                   onClick={handleViewDetail}
                 >
-                  <span className="ml-2">View Detail</span>
+                  <span className="flex-nowrap ml-2">View Partner's Detail</span>
                 </button>
               </dl>
             </div>
           </div>
+          <button className="flex-nowrap btn block md:hidden rounded bg-indigo-500 hover:bg-indigo-600 text-white px-2 py-1 mx-auto mb-2" onClick={handleViewDetail}>
+            View Partner's Detail
+          </button>
+        </div>
         ) : (
           <div className="flex justify-center items-center border-solid border-gray-400 border-l">
             <button
               onClick={() => {
                 setShowModal(true);
               }}
-              className="btn bg-indigo-500 hover:bg-indigo-600 text-white"
+              className="btn bg-indigo-500 hover:bg-indigo-600 text-white mb-2"
             >
-              <svg
-                className="w-4 h-4 fill-current opacity-50 shrink-0"
-                viewBox="0 0 16 16"
-              >
+              <svg className="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
                 <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
               </svg>
               <span className="ml-2">Add Partner</span>
@@ -225,10 +228,7 @@ const PatientDetails = () => {
           </div>
         )}
         {showModal ? (
-          <>
-            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-              <div className="relative w-2/4 my-6 mx-auto max-w-3xl">
-                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+          <Modal isOpen={()=>setShowModal(true)} onClose={()=>setShowModal(false)}>
                   <div className="flex items-start justify-between p-2 border-b border-solid border-blueGray-200 rounded-t">
                     <p className="text-xl font-semibold">
                       Connect with partner
@@ -237,14 +237,7 @@ const PatientDetails = () => {
                       className="justify-center items-center p-1 ml-auto bg-transparent-5 border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                       onClick={() => setShowModal(false)}
                     >
-                      <svg
-                        className="h-6 w-6"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true"
-                      >
+                      <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -261,7 +254,7 @@ const PatientDetails = () => {
                     </p>
                   </div>
                   {/*footer*/}
-                  <div className="flex items-center justify-end p-2 rounded-b">
+                  <div className="flex items-center justify-center p-2 rounded-b">
                     <button
                       className="text-gray-500 background-transparent font-bold px-3 py-2 text-sm outline focus:outline-none mr-2 mb-1 ease-linear transition-all duration-150 rounded-lg"
                       type="button"
@@ -283,15 +276,10 @@ const PatientDetails = () => {
                     >
                       Existing Patient
                     </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-          </>
+                  </div>              
+          </Modal>
         ) : null}
       </div>
-      {/* <div className="relative flex items-center justify-around text-gray-500 dark:text-gray-400 bg-white shadow-md sm:rounded-lg py-2 md:py-8 mt-2"> */}
       <ul className="relative flex items-center justify-start md:justify-around bg-white mt-4 py-8 md:mt-4 overflow-x-auto flex-nowrap">
         {Links.map((link) => (
           link.name === "Medical History" ? (
@@ -319,18 +307,9 @@ const PatientDetails = () => {
             <li key={link.name} className="mx-4">
               <NavLink
                 to={link.link}
-                className={({ isActive }) =>
-                  isActive
-                    ? "bg-blue-200 pt-4 p-1 mb-1 md:pt-5 md:p-2 rounded-md"
-                    : "text-gray-600 pb-2 p-1 md:pt-5 md:p-2 rounded-md"
-                }
-              >
+                className={({ isActive }) =>isActive ? "bg-blue-200 pt-4 p-1 mb-1 md:pt-5 md:p-2 rounded-md" : "text-gray-600 pb-2 p-1 md:pt-5 md:p-2 rounded-md"}>
                 <Tooltip text={link.name}>
-                  <img
-                    src={link.icon}
-                    alt="icon"
-                    className="w-8 h-8"
-                  />
+                  <img src={link.icon} alt="icon" className="w-8 h-8"/>
                 </Tooltip>
               </NavLink>
             </li>

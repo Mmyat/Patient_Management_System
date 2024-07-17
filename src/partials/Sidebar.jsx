@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import Logo from '../images/software logo.png';
-import home_icon from '../images/home.png';
-import patient_icon from '../images/patient.png';
-import report_icon from '../images/report.png';
+import dashboardIcon from '../images/dashboard.png';
+import patientIcon from '../images/patient.png';
+import reportIcon from '../images/report.png';
 function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const location = useLocation();
   const { pathname } = location;
@@ -88,25 +88,17 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
             </svg>
           </button>
           {/* Logo */}
-          <img className="w-8 h-8 rounded-full" src={Logo} width="32" height="32" alt="Logo" />
-          {/* <p className="text-2xl font-semibold sm:hidden">Dr.Yin</p> */}
+          <div className="flex items-center">
+            <img className="w-8 h-8 rounded-full" src={Logo} width="32" height="32" alt="Logo" />
+            <p className="ml-2 font-semibold text-xl lg:hidden lg:sidebar-expanded:block 2xl:block">Dr.Yin</p>
+          </div>
         </div>
 
         {/* Links */}
         <div className="space-y-8">
           {/* Pages group */}
           <div>
-            <h3 className="text-xs uppercase text-slate-500 font-semibold pl-3">
-              <span
-                className="hidden lg:block lg:sidebar-expanded:hidden 2xl:hidden text-center w-6"
-                aria-hidden="true"
-              >
-                •••
-              </span>
-              {/* <span className="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                Pages
-              </span> */}
-            </h3>
+            {/*  */}
             <ul className="mt-3">
               {/* Dashboard */}
               <li className="justify-center items-center border-t border-gray-300 py-1">               
@@ -116,7 +108,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     isActive ? "flex text-gray-700 bg-blue-200 rounded-xl" : "flex text-gray-600"
                   }
                 >
-                  <img className="w-8 h-8 ml-1" src={home_icon} width="32" height="32" alt="dashboardicon" />
+                  <img className="w-8 h-8 ml-1" src={dashboardIcon} alt="dashboardicon" />
                   <span className="text-sm font-medium ml-3 mt-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                     Dashboard
                   </span>
@@ -131,7 +123,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     isActive ? "flex text-gray-700 bg-blue-200 rounded-xl" : "flex text-gray-600"
                   }
                 >
-                  <img className="w-8 h-8" src={patient_icon} width="32" height="32" alt="dashboardicon" />
+                  <img className="w-8 h-8" src={patientIcon} alt="dashboardicon" />
                   <span className="text-sm font-medium ml-3 mt-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                     Patient
                   </span>
@@ -141,10 +133,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <NavLink
                   to={"/admin/report"}
                   className={({ isActive }) =>
-                    isActive ? "flex text-gray-700 bg-blue-200 rounded-xl" : "flex text-gray-600"
+                    isActive ? "flex text-gray-700 bg-blue-200 py-1 rounded-xl" : "flex text-gray-600"
                   }
                 >
-                  <img className="w-8 h-8" src={report_icon} width="32" height="32" alt="dashboardicon" />
+                  <img className="w-8 h-8 ml-2" src={reportIcon}  style={{ height: '25px', width : '20px' }} alt="dashboardicon" />
                   <span className="text-sm font-medium ml-3 mt-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                     Report
                   </span>

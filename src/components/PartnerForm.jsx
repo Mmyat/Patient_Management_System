@@ -166,31 +166,43 @@ const PartnerForm = () => {
         </div>
         <div className="mb-4">
           <label htmlFor="nrc" className="block text-sm font-medium text-gray-700">NRC Number</label>
-          <div className="flex">
-            <select value={NRCCodeSelect} onChange={(e) => setNRCCodeSelect(e.target.value)} className="text-gray-900 bg-gray-50 border-s-2 rounded-s-lg border border-gray-300">
-              {nrcStateCode?.map((item,index)=>(
+          <div className="flex flex-wrap gap-1 md:flex-nowrap md:gap-0">
+            <select
+              value={NRCCodeSelect}
+              onChange={(e) => setNRCCodeSelect(e.target.value)}
+              className="text-gray-900 bg-gray-50 border-s-2 md:rounded-s-lg border border-gray-300 w-full md:w-auto"
+            >
+              {nrcStateCode?.map((item, index) => (
                 <option value={item} key={index}>{item}</option>
               ))}
             </select>
-            <select value={NRCPlaceSelect} onChange={(e) => setNRCPlaceSelect(e.target.value)} className="text-gray-900 bg-gray-50 border border-gray-300">
-              {townshipList?.map((item,index)=>(
+            <select
+              value={NRCPlaceSelect}
+              onChange={(e) => setNRCPlaceSelect(e.target.value)}
+              className="text-gray-900 bg-gray-50 border border-gray-300 w-full md:w-auto"
+            >
+              {townshipList?.map((item, index) => (
                 <option value={item.name_en} key={index}>{item.name_en}</option>
               ))}
             </select>
-            <select value={NRCTypeSelect} onChange={(e) => setNRCTypeSelect(e.target.value)} className="text-gray-900 bg-gray-50 border border-gray-300">
-              {nrcType?.map((item,index)=>(
+            <select
+              value={NRCTypeSelect}
+              onChange={(e) => setNRCTypeSelect(e.target.value)}
+              className="text-gray-900 bg-gray-50 border border-gray-300 w-full md:w-auto"
+            >
+              {nrcType?.map((item, index) => (
                 <option value={item.en} key={index}>{item.en}</option>
               ))}
             </select>
             <input
-            type="number"
-            id="search-dropdown"
-            className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
-            placeholder="Enter code..."
-            value={NRCCode}
-            maxLength={6}
-            minLength={6}
-            onChange={handleCodeChange}
+              type="number"
+              id="search-dropdown"
+              className="block p-2.5 w-full md:w-auto text-sm text-gray-900 bg-gray-50 md:rounded-e-lg md:border-s-gray-50 md:border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+              placeholder="Enter code..."
+              value={NRCCode}
+              maxLength={6}
+              minLength={5}
+              onChange={handleCodeChange}
             />
           </div>
         </div>

@@ -3,6 +3,7 @@ import WelcomeBanner from '../partials/dashboard/WelcomeBanner'
 import TableComponent from '../components/TableComponent';
 import axios from 'axios';
 import { format } from "date-fns";
+import callApi from '../components/callApi';
 
 const Dashboard = () => {
 
@@ -36,11 +37,15 @@ const Dashboard = () => {
       accessor: "reminder_2",
     },
     {
+      Header: "Reminder-3",
+      accessor: "reminder_3",
+    },
+    {
       Header: "Action",
       accessor: "actions",
       Cell: ({ row }) => (  
         <div className="flex gap-2">  
-          <button onClick={() =>handleReminder(row.id)} className={`px-4 py-1 text-white text-sm font-medium rounded-full ${isReminderActive(row.reminder_1,row.reminder_2) ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'}`} disabled={!isReminderActive(row.reminder_1,row.reminder_2)}> 
+          <button onClick={() =>handleReminder(row.id)} className={`px-4 py-1 text-white text-sm font-medium rounded-full ${isReminderActive(row.date_time,row.reminder_1,row.reminder_2,row.reminder_3) ? 'bg-blue-500 focus:bg-blue-400' : 'bg-gray-400 cursor-not-allowed'}`} disabled={!isReminderActive(row.date_time,row.reminder_1,row.reminder_2,row.reminder_3)}> 
           Done </button>        
         </div>
       ),
@@ -48,15 +53,16 @@ const Dashboard = () => {
   ];
   const [dataList,setDataList] = useState([]);
   const [total,setTotal] = useState([]);
-  const [isActive,setIsActive] = useState(true);
+  const [message,setMessage] = useState("There is no Task Today");
 
   const getFollowUpList = async () => {
     try {  
         const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpDateSearch`);
-        console.log("dashboard:", response);
+        if (response.data.code === '404') {
+          setMessage("There is no Task Today")
+        }
       if (response.data.code === '200') { 
         const list = response.data.data.list;
-        console.log("list log:", list);
         setDataList(list);
         const data_total = response.data.data.total;
         setTotal(data_total);
@@ -65,26 +71,38 @@ const Dashboard = () => {
         setTotal(null);
       }
     } catch (error) {
-      console.log("Error:", error);
+      setMessage(error.message)
       return;
     }
   }
-  const isReminderActive  = (reminder_1,reminder_2)=>{
-    if (reminder_1 === null && reminder_2 === null) {
+  const isReminderActive  = (date_time,reminder_1,reminder_2,reminder_3)=>{
+    if (reminder_1 === null && reminder_2 === null && reminder_3 === null) {
       return true;
     }
     let todayDate = new Date();
-    const twoDaysLater = new Date(todayDate);
-    twoDaysLater.setDate(todayDate.getDate() + 2);
-    const formattedToday = format(todayDate, "yyyy/MM/dd");  
-    const formattedTwoDaysLater = format(twoDaysLater, "yyyy/MM/dd");  
-    return (reminder_1 === formattedTwoDaysLater || reminder_2 === formattedToday);
+    const setupDate = new Date(date_time);
+    const twoDayBefore = new Date(date_time);
+    twoDayBefore.setDate(setupDate.getDate() - 2);
+    const oneDayBefore = new Date(date_time);
+    oneDayBefore.setDate(setupDate.getDate() - 1); 
+    const formattedToDay = format(todayDate,"yyyy/MM/dd")
+    const formattedSetupDate = format(setupDate,"yyyy/MM/dd")
+    const formattedOneDayBefore = format(oneDayBefore, "yyyy/MM/dd"); 
+    const formattedTwoDayBefore = format(twoDayBefore, "yyyy/MM/dd"); 
+    if(reminder_1 == formattedTwoDayBefore && formattedOneDayBefore == formattedToDay && reminder_2 == null){
+      return true;
+    }else if(reminder_2 ==formattedOneDayBefore && formattedSetupDate == formattedToDay && reminder_3 == null){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   const handleReminder =async(reminderId)=>{
     try {  
     const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/updateReminder/${reminderId}`);
         if (response.data.code === '200') { 
+          console.log("hi as");
           getFollowUpList()
         } else {
           return;
@@ -94,19 +112,21 @@ const Dashboard = () => {
         return;
       }
   }
-  
+     
   useEffect(()=>{
     getFollowUpList()
   },[])
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-        <WelcomeBanner/>
+        {/* <WelcomeBanner/> */}
         <div>
           <h2 className='text-2xl font-semibold'>Today's Task</h2>
-        </div>{
+        </div>
+        {/* {error && <p className='text-orange-300 justify-center items-center'>{message}</p>} */}
+        {
           dataList ? 
           (<TableComponent data={dataList} columns={columns} total={total}/>) :
-          (<p className='text-orange-300 justify-center items-center'>There are no Task Today</p>)
+          (<p className='text-orange-300 justify-center items-center'>{message}</p>)
         }       
     </div>
   )

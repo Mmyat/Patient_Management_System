@@ -48,7 +48,7 @@ const FollowUp = () => {
   const [total, setTotal] = useState(0);
   const [dataList, setDataList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [category,setCategory] = useState('online')
+  const [category,setCategory] = useState('')
   const [remark,setRemark] = useState('')
   const [date, setDate] = useState(null);
   const [isNew,setIsNew] = useState(true)
@@ -155,6 +155,7 @@ const FollowUp = () => {
   };
 
   const handleDelete =async (rowId) => {
+    console.log("delete id",rowId);
     swalWithButtons.fire({
         title: "Are you sure to delete?",
         showCancelButton: true,
@@ -164,18 +165,18 @@ const FollowUp = () => {
       })
       .then(async (result) => {
         if (result.isConfirmed) {
-          const response = await axios.delete(`http://localhost:3000/followUp/followUpDelete/${rowId}`)
+          const response = await axios.delete(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpDelete/${rowId}`)
           if (response.data.code == 200) {
             Toast.fire({
               icon: "success",
-              title: "Patient's hospital and lab history is deleted successfully",
+              title: "Follow up history is deleted successfully",
             });
             closeModal();
             getHistoryList();
           } else {
               Toast.fire({
                 icon: "error",
-                title: "Failed to delete patient's hospital and lab history",
+                title: "Failed to delete Follow up history",
               });
           }
         } else {
@@ -200,16 +201,17 @@ const FollowUp = () => {
         closeModal();
         Toast.fire({
           icon: 'success',
-          title: "Patient's hospital and lab history is saved successfully",
+          title: "Save new follow up",
+          text: "Follow up history is saved successfully",
         });
         getHistoryList();
       } else {
-        throw new Error('Failed to save history: Unexpected response');
+        throw new Error('Failed to save Follow up history');
       }
     } catch (error) {
       Toast.fire({
         icon: 'error',
-        title: "Failed to save patient's hospital and lab history",
+        title: "Save new follow up",
         text: error.message,
       });
     }
@@ -289,11 +291,6 @@ const FollowUp = () => {
                 </svg>
             </button>
         </div>           
-        {/* <div className="justify-end">               
-            <button onClick={exportToExcel} className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                Export to Excel
-            </button>
-        </div> */}
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <form onSubmit={handleSubmit} className="w-full max-w-lg p-6">
@@ -302,16 +299,6 @@ const FollowUp = () => {
             <label className="block text-sm font-medium text-gray-700">Category</label>
             <input type="text" id="remark" value={category} onChange={(e)=>setCategory(e.target.value)} className="h-auto mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
           </div>
-          {/* <div className="w-1/3 mb-4">
-            <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
-              Category
-            </label>
-            <select id="category" value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-              <option value="online">Online</option>
-              <option value="hospital">Hospital</option>
-              <option value="other">Others</option>
-            </select>
-          </div> */}
           <div className="mb-4">
             <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date & Time</label>
             <LocalizationProvider dateAdapter={AdapterDateFns}>

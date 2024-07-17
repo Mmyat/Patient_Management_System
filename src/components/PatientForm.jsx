@@ -191,7 +191,6 @@ const PatientForm = () => {
         const code = data.nrc.split(")");
         console.log("code", code[1]);
         setNRCCode(code[1]);
-        // setNrc(`${NRCCodeSelect}/${NRCPlaceSelect}(${NRCTypeSelect})${NRCCode}`)
       }
       //imageUrl
       setPreview(data.imageUrl);
@@ -272,11 +271,11 @@ const PatientForm = () => {
             </label>
             {/* <p className="text-sm text-red-300">{isRequired && "(Please fill at least 6 digits)"} </p> */}
           </div>
-          <div className="flex">
+          <div className="flex flex-wrap gap-1 md:flex-nowrap md:gap-0">
             <select
               value={NRCCodeSelect}
               onChange={(e) => setNRCCodeSelect(e.target.value)}
-              className="text-gray-900 bg-gray-50 border-s-2 rounded-s-lg border border-gray-300"
+              className="text-gray-900 bg-gray-50 border-s-2 md:rounded-s-lg border border-gray-300 w-full md:w-auto"
             >
               {nrcStateCode?.map((item, index) => (
                 <option value={item} key={index}>{item}</option>
@@ -285,7 +284,7 @@ const PatientForm = () => {
             <select
               value={NRCPlaceSelect}
               onChange={(e) => setNRCPlaceSelect(e.target.value)}
-              className="text-gray-900 bg-gray-50 border border-gray-300"
+              className="text-gray-900 bg-gray-50 border border-gray-300 w-full md:w-auto"
             >
               {townshipList?.map((item, index) => (
                 <option value={item.name_en} key={index}>{item.name_en}</option>
@@ -294,7 +293,7 @@ const PatientForm = () => {
             <select
               value={NRCTypeSelect}
               onChange={(e) => setNRCTypeSelect(e.target.value)}
-              className="text-gray-900 bg-gray-50 border border-gray-300"
+              className="text-gray-900 bg-gray-50 border border-gray-300 w-full md:w-auto"
             >
               {nrcType?.map((item, index) => (
                 <option value={item.en} key={index}>{item.en}</option>
@@ -303,12 +302,13 @@ const PatientForm = () => {
             <input
               type="number"
               id="search-dropdown"
-              className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+              className="block p-2.5 w-full md:w-auto text-sm text-gray-900 bg-gray-50 md:rounded-e-lg md:border-s-gray-50 md:border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
               placeholder="Enter code..."
               value={NRCCode}
               maxLength={6}
               minLength={5}
-              onChange={handleCodeChange}/>
+              onChange={handleCodeChange}
+            />
           </div>
         </div>
         <div className="mb-4">

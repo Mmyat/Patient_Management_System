@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react'
-import useApi from "../components/useApi";
+import callApi from "../components/callApi";
 import axios from 'axios';
 
 const Unauthorize = () => {
-  // const { data, loading, error, callApi } = useApi();
   axios.defaults.withCredentials = true;
   const handleLogin = async () => { 
     // await callApi("get", `http://192.168.100.18:8000/protected-endpoint`);

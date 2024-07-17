@@ -142,8 +142,11 @@ const HospitalLab = () => {
     console.log("fetch edit",row.remark);
     setUpdateId(row.id);
     setLocation_name(row.location_name);
-    const formatDate = parse(history.date_time, "yyyy/MM/dd hh:mm a", new Date());
+    const formatDate = parse(row.date_time, "yyyy/MM/dd hh:mm a", new Date());
+    console.log("date--",row.date_time);
     setDate_time(formatDate)
+    setDoctor(row.doctor_name)
+    setPosition(row.doctor_position)
     setRemark(row.remark);
   };
 

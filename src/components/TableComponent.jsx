@@ -38,7 +38,7 @@ const TableComponent = ({ columns, data,total }) => {
   return (
     <div className="relative bg-white overflow-x-auto shadow-md sm:rounded-lg mt-4">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 overflow-x-auto">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 overflow-x-auto">
           <tr>
             {columns.map((column) => (
               <th key={column.accessor}  className="flex-row items-center justify-center py-2 px-4 border-b">                 
@@ -55,7 +55,7 @@ const TableComponent = ({ columns, data,total }) => {
             {/* <th className="py-2 px-4 border-b">Actions</th> */}
           </tr>
         </thead>
-        <tbody >
+        <tbody className='overflow-x-auto'>
           {currentRows.map((row, index) => (
             <tr key={index}
             className={
@@ -77,6 +77,13 @@ const TableComponent = ({ columns, data,total }) => {
                  ) :
                  column.accessor === "reminder_2" ?(
                   row.reminder_2 === null ? (
+                    <span className="px-2 py-1 text-sm font-medium bg-red-100 text-red-800 rounded-full">Pending</span>
+                  ) : (
+                    <span className="px-2 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">Done</span>
+                  )
+                 ) :
+                 column.accessor === "reminder_3" ?(
+                  row.reminder_3 === null ? (
                     <span className="px-2 py-1 text-sm font-medium bg-red-100 text-red-800 rounded-full">Pending</span>
                   ) : (
                     <span className="px-2 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full">Done</span>

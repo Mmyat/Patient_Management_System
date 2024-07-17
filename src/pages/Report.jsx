@@ -30,6 +30,10 @@ const Report = () => {
       accessor: "nrc",
     },
     {
+      Header: "Passport",
+      accessor: "passport",
+    },
+    {
       Header: "Date",
       accessor: "date",
     },
@@ -41,26 +45,6 @@ const Report = () => {
       Header: "Remark",
       accessor: "remark",
     },
-    // {
-    //   Header: "Actions",
-    //   accessor: "actions",
-    //   Cell: ({ row }) => (
-    //     <div className="flex gap-2">
-    //       <AiOutlineEdit
-    //         onClick={() => {
-    //           handleEdit(row.id);
-    //         }}
-    //         className="text-2xl text-orange-600 dark:text-orange-500 cursor-pointer"
-    //       />
-    //       <AiFillDelete
-    //         className="text-2xl text-red-500 dark:text-red-500 cursor-pointer"
-    //         onClick={() => {
-    //           handleDelete(row.id);
-    //         }}
-    //       />
-    //     </div>
-    //   ),
-    // },
   ];
 
   const getHosAndLabList = async () => {
@@ -75,7 +59,7 @@ const Report = () => {
       return;
     }
     let response = await axios.post(
-      `${import.meta.env.VITE_SERVER_DOMAIN}/hospAndLab/HosAndLabDateSearch`,
+      `${import.meta.env.VITE_SERVER_DOMAIN}/followup/HosAndLabDateSearch`,
       {
         start_date: start_date,
         end_date: end_date,
@@ -98,56 +82,6 @@ const Report = () => {
       setTotal("");
       setGetDate(false);
     }
-  };
-
-  const handleEdit = async (rowId) => {
-    // setIsNew(false)
-    // openModal()
-    // let response = await axios.get(`http://localhost:3000/followUp/followUpIDSearch/${rowId}`)
-    // setUpdateId(rowId);
-    // if (response.data.code === '200') {
-    //   let history = response.data.data;
-    //   setCategory(history.category);
-    //   const formatDate = parse(history.date_time, "yyyy/MM/dd hh:mm a", new Date());
-    //   setDate(formatDate)
-    //   setRemark(history.remark);
-    // } else {
-    //   Toast.fire({
-    //     icon: "error",
-    //     title: "Failed to fetch patient's hospital and lab history",
-    //   });
-    // }
-  };
-
-  const handleDelete = async (rowId) => {
-    // swalWithButtons.fire({
-    //     title: "Are you sure to delete?",
-    //     showCancelButton: true,
-    //     confirmButtonText: "Yes",
-    //     cancelButtonText: "No",
-    //     reverseButtons: true,
-    //   })
-    //   .then(async (result) => {
-    //     if (result.isConfirmed) {
-    //       const response = await axios.delete(`http://localhost:3000/followUp/followUpDelete/${rowId}`)
-    //       if (response.data.code == 200) {
-    //         Toast.fire({
-    //           icon: "success",
-    //           title: "Patient's hospital and lab history is deleted successfully",
-    //         });
-    //         closeModal();
-    //         getHistoryList();
-    //       } else {
-    //           Toast.fire({
-    //             icon: "error",
-    //             title: "Failed to delete patient's hospital and lab history",
-    //           });
-    //       }
-    //     } else {
-    //       closeModal();
-    //     }
-    //   }
-    // );
   };
 
   const exportToExcel = () => {
@@ -241,7 +175,7 @@ const Report = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center sm:justify-center mx-auto">
+      <div className="flex flex-col items-center sm:justify-center mx-auto overflow-x-auto">
         <div className="flex px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl items-center sm:justify-center mx-auto">
           <p className="text-center text-2xl mb-4 font-semibold">
             Hospital and Lab Report
@@ -270,7 +204,7 @@ const Report = () => {
             </select>
           </div>
 
-          <div className="flex items-center mt-6 mx-5">
+          <div className="flex items-center mt-6 xl:mx-5">
             <Datepicker
               handleDateChange={handleDateChange}
               flatpickrRef={flatpickrRef}
@@ -297,13 +231,11 @@ const Report = () => {
         </div>
 
         {getDate ? (
-          <div className="flex sm:flex-row border items-center sm:justify-center bg-white rounded p-5 sm:p-2 mb-5 w-full ">
-            <div className="container mx-auto">
+          <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
               <TableComponent columns={columns} data={dataList} total={total} />
-            </div>
           </div>
         ) : (
-          <div class="text-center text-red-300 mt-8">
+          <div className="text-center text-red-300 mt-8">
             {message}
           </div>
         )}
