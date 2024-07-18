@@ -10,6 +10,7 @@ import {useParams,useNavigate} from "react-router-dom";
 import Swal from "sweetalert2";
 import fileDownload from 'js-file-download'
 import Tooltip from '../components/Tooltip';
+import { api } from '../components/api';
 
 const FileManager = () => {
   const columns = [
@@ -62,10 +63,36 @@ const FileManager = () => {
   const [type,setType] = useState('folder')
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isProgress, setIsProgress] = useState(false);
+  const [isDownload, setIsDownload] = useState(false);
+  const [sortConfig, setSortConfig] = useState({ key: '', direction: 'ascending' });
+  const [sortedData, setSortedData] = useState([...dataList]);
 
   const openModal = () => {setIsModalOpen(true);  }
   const closeModal = () =>{setIsModalOpen(false); }
   const fileUploadRef = useRef();
+  useEffect(() => {
+    let sortableData = [...dataList];
+    if (sortConfig.key) {
+      sortableData.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    setSortedData(sortableData);
+  }, [dataList, sortConfig]);
+
+  const handleSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
 
   const Toast = Swal.mixin({
     toast: true,
@@ -106,13 +133,13 @@ const FileManager = () => {
 
   const downloadFile =async (url)=>{
     setIsProgress(true)
+    setIsDownload(true)
     let modifiedName=url.split("/",5)
     let filename = modifiedName[4]
-    await axios.get(url, {
+    await api.get(url, {
       responseType: 'blob', // important
       onDownloadProgress: (progressEvent) => {
         let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-        console.log(`Download Progress: ${percentCompleted}%`);
         setUploadProgress(percentCompleted);
       }
     })
@@ -158,12 +185,13 @@ const FileManager = () => {
       }
       closeModal();
       setIsProgress(true)
+      setIsDownload(false)
       const formData = new FormData();
       formData.append("patient_id", id);
       formData.append("name", name);
       formData.append("path", path);
       formData.append("type", type);
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/file/fileCreate`,formData,{
+      const response = await api.post(`${import.meta.env.VITE_SERVER_DOMAIN}/file/fileCreate`,formData,{
         headers: {
           'Content-Type': 'multipart/form-data'
         },
@@ -171,7 +199,6 @@ const FileManager = () => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setUploadProgress(percentCompleted);
         }});
-      console.log("response new save",response);
       if (response.data.code === '200') {
         setIsProgress(false)
         Toast.fire({
@@ -203,8 +230,7 @@ const FileManager = () => {
         path,
         type
       }
-      const response = await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/file/fileUpdate/${updateId}`,formData);
-      console.log("rsponse updt:",response);
+      const response = await api.put(`${import.meta.env.VITE_SERVER_DOMAIN}/file/fileUpdate/${updateId}`,formData);
       if (response.data.code === '200') {
         closeModal();
         Toast.fire({
@@ -245,8 +271,7 @@ const FileManager = () => {
       })
       .then(async (result) => {
         if (result.isConfirmed) {
-          const response = await axios.delete(`${import.meta.env.VITE_SERVER_DOMAIN}/file/fileDelete/${row.id}`)
-          console.log("delete res:",response.data);
+          const response = await api.delete(`${import.meta.env.VITE_SERVER_DOMAIN}/file/fileDelete/${row.id}`)
           if (response.data.code === '403') {
             Toast.fire({
               icon: "error",
@@ -306,7 +331,7 @@ const FileManager = () => {
       <div className="flex flex-col w-full h-fit bg-white grid-cols-1 sm:grid-cols-2 gap-2 shadow-md overflow-x-auto">
         <input className='w-full border-gray-400' value={path} readOnly/>
         <Modal isOpen={isProgress} onClose={()=>setIsProgress(false)}>
-          <p className='text-sm text-gray-700'>Downloading {uploadProgress}%</p>
+          <p className='text-sm text-gray-700'>{isDownload ? 'Downloading' : 'Uploading'} {uploadProgress}%</p>
           <div className="w-full bg-gray-200 rounded-full h-2.5"> 
             <div className="bg-blue-500 h-2.5 items-center justify-center rounded-full" style={{ width: `${uploadProgress}%` }}>    
             </div>
@@ -321,18 +346,17 @@ const FileManager = () => {
                { column.accessor !=="actions" ?(
                   <div className="flex items-center justify-start">
                     {column.Header}
-                    {/* <svg onClick={() => handleSort(column.accessor)} xmlns="http://www.w3.org/2000/svg" className={`flex-end h-5 w-5 cursor-pointer ${sortConfig.direction === 'ascending' ? "rotate-0" : "rotate-180"}`} viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 3a1 1 0 0 1 .707.293l4 4a1 1 0 0 1-1.414 1.414L11 6.414V16a1 1 0 1 1-2 0V6.414l-2.293 2.293a1 1 0 1 1-1.414-1.414l4-4A1 1 0 0 1 10 3z" clipRule="evenodd" /></svg> */}
+                    <svg onClick={() => handleSort(column.accessor)} xmlns="http://www.w3.org/2000/svg" className={`flex-end h-5 w-5 cursor-pointer ${sortConfig.direction === 'ascending' ? "rotate-0" : "rotate-180"}`} viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 3a1 1 0 0 1 .707.293l4 4a1 1 0 0 1-1.414 1.414L11 6.414V16a1 1 0 1 1-2 0V6.414l-2.293 2.293a1 1 0 1 1-1.414-1.414l4-4A1 1 0 0 1 10 3z" clipRule="evenodd" /></svg>
                   </div>
                ) :(
                   column.Header
                )}
               </th>
             ))}
-            {/* <th className="py-2 px-4 border-b">Actions</th> */}
           </tr>
         </thead>
         <tbody >
-          {dataList?.map((row, index) => (
+          {sortedData?.map((row, index) => (
             <tr key={index}
             
             className={"items-center justify-start bg-white border-b dark:bg-gray-800 dark:border-gray-700"}>

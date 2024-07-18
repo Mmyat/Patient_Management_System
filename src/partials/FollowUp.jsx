@@ -12,6 +12,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { format,parse } from "date-fns";
 import axios from 'axios';
 import Swal from "sweetalert2";
+import { api } from '../components/api';
 
 const FollowUp = () => {
   const columns = [
@@ -85,8 +86,6 @@ const FollowUp = () => {
 
   const exportToExcel = () => {
     try {
-      console.log("list", dataList);
-      // Check if dataList is an array and not empty
       if (!Array.isArray(dataList) || dataList.length === 0) {
         Swal.fire({
           title: 'No data to export',
@@ -123,9 +122,7 @@ const FollowUp = () => {
 
   const handleDateChange = (newDate) => {
     if (newDate) {
-      console.log("new date",newDate);
       const formattedDate = format(newDate, "yyyy/MM/dd hh:mm a");
-      console.log("formate date",formattedDate);
       setDate(formattedDate);
     }
   };
@@ -138,7 +135,7 @@ const FollowUp = () => {
   const handleEdit =async (rowId) => {
     setIsNew(false)
     openModal()
-    let response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpIDSearch/${rowId}`)
+    let response = await api.get(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpIDSearch/${rowId}`)
     setUpdateId(rowId);
     if (response.data.code === '200') {
       let history = response.data.data;
@@ -155,7 +152,6 @@ const FollowUp = () => {
   };
 
   const handleDelete =async (rowId) => {
-    console.log("delete id",rowId);
     swalWithButtons.fire({
         title: "Are you sure to delete?",
         showCancelButton: true,
@@ -165,7 +161,7 @@ const FollowUp = () => {
       })
       .then(async (result) => {
         if (result.isConfirmed) {
-          const response = await axios.delete(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpDelete/${rowId}`)
+          const response = await api.delete(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpDelete/${rowId}`)
           if (response.data.code == 200) {
             Toast.fire({
               icon: "success",
@@ -192,11 +188,9 @@ const FollowUp = () => {
       category,
       date_time: date,
       remark
-    };
-  
+    }; 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpCreate`, formData);
-      
+      const response = await api.post(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpCreate`, formData);      
       if (response.status === 200 && response.data.code === '200') {
         closeModal();
         Toast.fire({
@@ -227,7 +221,7 @@ const FollowUp = () => {
         remark
       };
   
-      const response = await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpUpdate/${updateId}`, formData);
+      const response = await api.put(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpUpdate/${updateId}`, formData);
       console.log("update",response);
       if (response.status === 200 && response.data.code === '200') {
         closeModal();
@@ -252,7 +246,7 @@ const FollowUp = () => {
   };
 
   const getHistoryList = async ()=>{
-    let response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpPatientIdSearch`,{
+    let response = await api.post(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpPatientIdSearch`,{
       patient_id : id,
     })
     if(response.data.code ==='200'){

@@ -1,11 +1,5 @@
-import { useEffect,useState } from 'react';
-import {
-  Routes,
-  Route,
-  useLocation
-} from 'react-router-dom';
+import {Routes,Route,} from 'react-router-dom';
 import './css/style.css';
-// Import pages
 import Main from './pages/Main';
 import Dashboard from './pages/Dashboard';
 import Patients from './pages/Patients';
@@ -24,22 +18,15 @@ import FollowUp from './partials/FollowUp';
 import FileManager from './partials/FileManager';
 import Report from './pages/Report';
 import Login from './pages/Login';
-import Unauthorize from './pages/Unauthorize';
+import UnauthorizedPage from './pages/UnauthorizedPage';
 
 function App() {
-  const location = useLocation();
-  useEffect(() => {
-    document.querySelector('html').style.scrollBehavior = 'auto'
-    window.scroll({ top: 0 })
-    document.querySelector('html').style.scrollBehavior = ''
-  }, [location.pathname]); // triggered on route change
-
   return (
     <>
       <Routes>
         <Route exact path="/login" element={<Login/>}/>
         <Route exact path="/admin" element={<Main />}>
-          <Route exact path="unauthorize" element={<Unauthorize/>}/>
+          <Route exact path="unauthorize" element={<UnauthorizedPage/>}/>
           <Route path='dashboard' element={<Dashboard/>} />
           <Route path="patient" element={<Patients/>}/>           
           <Route path="report" element={<Report/>}/>      
@@ -59,24 +46,6 @@ function App() {
           </Route>
         </Route>
       </Routes>
-      {/* <Routes>
-        <Route exact path="/admin" element={<Main />}>
-          <Route path='dashboard' element={<Dashboard/>} />
-          <Route path="patient" element={<Patients/>}>           
-            <Route path="patientform/:id" index element={<PatientForm/>}/> 
-            <Route path="partnerform/:id" element={<PartnerForm/>}/> 
-            <Route path="partnerconnect/:id" element={<PartnerConnect/>}/>
-            <Route path="patientdetail/:id" element={<PatientDetails/>}>   
-              <Route index element={<PersonalInfo/>}/>
-              <Route path="medical" element={<MedicalHistory/>}/>
-              <Route path="surgical" element={<SurgicalHistory/>}/>
-              <Route path="social" element={<SocialHistory/>}/>
-              <Route path="familymedical" element={<FamailyMedicalHistory/>}/>
-              <Route path="objectives" element={<Objective/>}/>           
-            </Route>
-          </Route>
-        </Route>
-      </Routes> */}
     </>
   );
 }

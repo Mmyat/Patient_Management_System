@@ -1,12 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams,useNavigate} from "react-router-dom";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { api } from "../components/api";
 
 const PartnerConnect = () => {
   const { id } = useParams();
-  const isToConnect = id !== null
   const navigate = useNavigate();
   const [patientList, setPatientList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -70,7 +69,7 @@ const PartnerConnect = () => {
       patient_id_1 : id ,
       patient_id_2 : partner_id
     }
-    const response= await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/partner/partnerJoin`,data)
+    const response= await api.post(`/partner/partnerJoin`,data)
     if(response.data.code == 200){
         Toast.fire({
             icon: "success",
@@ -146,7 +145,7 @@ const PartnerConnect = () => {
           return;
       }
   
-      const response = await axios.post(endpoint, requestData);
+      const response = await api.post(endpoint, requestData);
   
       if (response.data.code === '200') {
         const list = response.data.data.result;
@@ -169,18 +168,15 @@ const PartnerConnect = () => {
   
 
   const toggleState = async () => {
-    // Check if partner data exists
-    console.log(patientList.length);
     if (patientList.length > 0) {
       setIsSearch(true);
     } else {
-      setIsSearch(false); // Set isSearh to false if partner data doesn't exist
+      setIsSearch(false);
     }
   };
 
   useEffect(() => {
     getData();
-    console.log("to connect :", isToConnect);
   }, [page, total,isSearh]);
   return (
     <div className="w-full flex flex-col items-center sm:items-center justify-center md:justify-center items-center mb-8 overflow-x-auto">

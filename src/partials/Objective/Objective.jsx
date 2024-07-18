@@ -2,9 +2,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
 import { objective_json } from "./objective_json";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
+import { api } from "../../components/api";
 
 const Objective = () => {
   const navigate = useNavigate();
@@ -28,11 +28,6 @@ const Objective = () => {
     },
   });
 
-  const resetSurvey = () => {
-    survey.clear();
-    setSurveyKey(Date.now());
-  };
-
   const saveSurveyData = async (survey) => {
     const data = survey.data;
     delete data.age;
@@ -42,11 +37,10 @@ const Objective = () => {
         "objectives_concerns": data,
       },
     };
-    const response = await axios.post(
-      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataCreate`,
+    const response = await api.post(
+      `/formData/formDataCreate`,
       form_data
     );
-    console.log("save res--",response);
     if (response.data.code === '200') {
       Toast.fire({
         icon: "success",
@@ -71,10 +65,7 @@ const Objective = () => {
         "objectives_concerns": data,
       },
     };
-    const response = await axios.put(
-      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataUpdate/${formId}`,
-      form_data
-    );
+    const response = await api.put(`/formData/formDataUpdate/${formId}`,form_data);
     if (response.data.code === '200') {
       Toast.fire({
         icon: "success",
@@ -107,10 +98,7 @@ const Objective = () => {
   survey.sendResultOnPageNext = true;
 
   const getData = async () => {
-    const response = await axios.post(
-      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,
-      { patient_id: id, history: "objectives_concerns" }
-    );
+    const response = await api.post(`/formData/formDataSearchPatient/`,{ patient_id: id, history: "objectives_concerns" });
     if (response.data.code === '200' && response.data.data.length > 0) {
       const prevData = response.data.data[0].data.objectives_concerns;
       survey.data = prevData;

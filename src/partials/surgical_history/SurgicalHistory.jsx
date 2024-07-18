@@ -2,12 +2,11 @@ import {useNavigate,useParams} from "react-router-dom";
 import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
 import { surgical_json } from "./surgical_json";
-import axios from 'axios'
 import Swal from 'sweetalert2';
 import { useEffect,useState} from "react";
 import { inputmask } from "surveyjs-widgets";
 import * as SurveyCore from "survey-core";
-
+import { api } from "../../components/api";
 inputmask(SurveyCore);
 const SurgicalHistory = () => {
   const navigate = useNavigate();
@@ -16,17 +15,17 @@ const SurgicalHistory = () => {
   const [formId,setFormId] =useState()
   const [isNew,setIsNew] = useState(true)
   const [isNavigate,setIsNavigate] = useState(false)
- const Toast = Swal.mixin({
-  toast: true,
-  position: 'top-end',
-  showConfirmButton: false,
-  timer: 3000,
-  timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.addEventListener('mouseenter', Swal.stopTimer)
-    toast.addEventListener('mouseleave', Swal.resumeTimer)
-  }
-})
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  })
 //
   survey.completeText =isNew ? "Save" : "Update"
   const saveSurveyData=async (survey)=> {
@@ -39,9 +38,7 @@ const SurgicalHistory = () => {
             surgical_history : data
         }
     }
-    console.log("history:",med_data);
-    const response= await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataCreate`,med_data)
-    console.log("med_history",response.data);
+    const response= await api.post(`/formData/formDataCreate`,med_data)
     if(response.data.code == 200){
         Toast.fire({
             icon: "success",
@@ -66,8 +63,8 @@ const SurgicalHistory = () => {
       data : {
           surgical_history : data
       }
-  }
-    const response= await axios.put(`${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataUpdate/${formId}`,med_data)
+    }
+    const response= await api.put(`/formData/formDataUpdate/${formId}`,med_data)
     if(response.data.code == 200){
         Toast.fire({
             icon: "success",
@@ -95,13 +92,11 @@ const SurgicalHistory = () => {
   survey.onComplete.add(function (sender, options) {
     isNew ? saveSurveyData(sender) : updateSurveyData(sender)
   });
-
   survey.showQuestionNumbers = false;
   survey.sendResultOnPageNext = true;
-
   //Get Data
   const getData=async()=>{
-    const response= await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,{patient_id : id,history : "surgical_history"})   
+    const response= await api.post(`/formData/formDataSearchPatient/`,{patient_id : id,history : "surgical_history"})   
     if(response.data.code == 200){
       const form_id= response.data.data[0].id
       setFormId(form_id)

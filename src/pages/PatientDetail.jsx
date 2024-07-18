@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import {NavLink,useLocation,Outlet,useParams,useNavigate} from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import Swal from "sweetalert2";
@@ -17,6 +16,7 @@ import HospitalIcon from "../images/hospital.png";
 import FollowUpIcon from "../images/follow_up_icon.png";
 import FileManagerIcon from "../images/file-manager.png";
 import Modal from "../components/Modal";
+import { api } from "../components/api";
 
 const PatientDetails = () => {
   const Toast = Swal.mixin({
@@ -30,42 +30,30 @@ const PatientDetails = () => {
       toast.addEventListener("mouseleave", Swal.resumeTimer);
     },
   });
-  //
   const navigate = useNavigate();
   const location = useLocation();
   const { patientId, setPatientId } = useStateContext();
   const [patient, setPatient] = useState({});
   const [partner, setPartner] = useState({});
   const [isTrue, setIsTrue] = useState(false);
-  const [gender, setGender] = useState('male');
   const [showModal, setShowModal] = useState(false);
   const [profile, setProfile] = useState(DefaultProfile);
   const [partnerProfile, setPartnerProfile] = useState(DefaultProfile);
   const { id } = useParams();
   //Get patient's Info
   const getDataById = async () => {
-    console.log("hi get api");
-    const response = await axios.post(
-      `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientIdSearch/${id}`
-    );
-    console.log("id pa--",response);
+    const response = await api.post(`/patient/patientIdSearch/${id}`);
     const data = response.data.data.result[0];
-    console.log("patient data:",data);
     setPatient(data);
-    setGender(data.gender)
     setPatientId(id);
     setProfile(data.imageUrl);
   };
 
   const getRelation = async () => {
     const requestData = { patient_id: id };
-    const response = await axios.post(
-      `${import.meta.env.VITE_SERVER_DOMAIN}/partner/partnerSearch`,
-      requestData
-    );
+    const response = await api.post(`/partner/partnerSearch`,requestData);
     if (response.data.code == 200) {
       const data = response.data.data.data.result[0];
-      console.log(data);
       setPartner(data);
       setPartnerProfile(data.imageUrl);
       toggleState();
@@ -123,7 +111,7 @@ const PatientDetails = () => {
       getDataById();
       getRelation();
     }
-  }, []);
+  }, [id]);
   return (
     <div className="container mx-auto py-1 sm:py-0">
       <button

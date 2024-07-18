@@ -52,17 +52,12 @@ const TableComponent = ({ columns, data,total }) => {
                )}
               </th>
             ))}
-            {/* <th className="py-2 px-4 border-b">Actions</th> */}
           </tr>
         </thead>
         <tbody className='overflow-x-auto'>
           {currentRows.map((row, index) => (
             <tr key={index}
-            className={
-              index % 2 === 0
-                ? "bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                : "bg-white dark:bg-gray-800"
-            }>
+            className={"bg-white border-b dark:bg-gray-800 dark:border-gray-700"}>
               {columns.map((column) => (
                 <td key={column.accessor} className="py-2 px-4 border-b">
                  {column.accessor === "remark" ? (

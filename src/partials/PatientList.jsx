@@ -1,15 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import { AiOutlineEdit, AiFillDelete } from "react-icons/ai";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { api } from "../components/api";
 
 const PatientList = () => {
-  const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-
   const [patientList, setPatientList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("Name");
@@ -100,25 +98,25 @@ const PatientList = () => {
         let response;
         switch (searchType) {
           case "Name":
-            response = await axios.post(
+            response = await api.post(
               `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientNameSearch/${page}`,
               { name: searchTerm }
             );
             break;
           case "NRC":
-            response = await axios.post(
+            response = await api.post(
               `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientNrcSearch`,
               { nrc: searchTerm }
             );
             break;
           case "PASSPORT":
-          response = await axios.post(
-            `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientNrcSearch`,
+          response = await api.post(
+            `${import.meta.env.VITE_SERVER_DOMAIN}/patient/passportSearch`,
             { nrc: searchTerm }
           );
           break;
           case "ID":
-            response = await axios.post(
+            response = await api.post(
               `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientIdSearch/${searchTerm}`
             );
             break;
@@ -162,9 +160,7 @@ const PatientList = () => {
       })
       .then(async (result) => {
         if (result.isConfirmed) {
-          const response = await axios.delete(
-            `${import.meta.env.VITE_SERVER_DOMAIN}/patient/patientPicDelete/${id}`
-          );
+          const response = await api.delete(`/patient/patientPicDelete/${id}`);
           if (response.data.code === '200') {
             swalWithButtons.fire(
               "Deleted!",

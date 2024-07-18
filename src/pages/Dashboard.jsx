@@ -1,9 +1,7 @@
 import {useEffect, useState} from 'react'
-import WelcomeBanner from '../partials/dashboard/WelcomeBanner'
 import TableComponent from '../components/TableComponent';
-import axios from 'axios';
 import { format } from "date-fns";
-import callApi from '../components/callApi';
+import { api } from '../components/api';
 
 const Dashboard = () => {
 
@@ -54,10 +52,11 @@ const Dashboard = () => {
   const [dataList,setDataList] = useState([]);
   const [total,setTotal] = useState([]);
   const [message,setMessage] = useState("There is no Task Today");
+  const [reLoad,setReLoad] = useState(false);
 
   const getFollowUpList = async () => {
     try {  
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/followUpDateSearch`);
+        const response = await api.get(`/followUp/followUpDateSearch`);
         if (response.data.code === '404') {
           setMessage("There is no Task Today")
         }
@@ -100,29 +99,25 @@ const Dashboard = () => {
 
   const handleReminder =async(reminderId)=>{
     try {  
-    const response = await axios.get(`${import.meta.env.VITE_SERVER_DOMAIN}/followUp/updateReminder/${reminderId}`);
+    const response = await api.get(`/followUp/updateReminder/${reminderId}`);
         if (response.data.code === '200') { 
-          console.log("hi as");
-          getFollowUpList()
-        } else {
+          setReLoad(true);
           return;
         }
     } catch (error) {
-        console.log("Error:", error);
+      setMessage(error.message)
         return;
       }
   }
      
   useEffect(()=>{
     getFollowUpList()
-  },[])
+  },[reLoad])
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-        {/* <WelcomeBanner/> */}
         <div>
           <h2 className='text-2xl font-semibold'>Today's Task</h2>
         </div>
-        {/* {error && <p className='text-orange-300 justify-center items-center'>{message}</p>} */}
         {
           dataList ? 
           (<TableComponent data={dataList} columns={columns} total={total}/>) :

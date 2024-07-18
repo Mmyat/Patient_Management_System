@@ -1,8 +1,5 @@
 import { useState,useEffect } from "react";
-import callApi from "../components/callApi";
 import {useNavigate} from "react-router-dom";
-import axios from "axios";
-
 const Login = () => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('');
@@ -11,42 +8,12 @@ const Login = () => {
   
   const handleLogin = async (e) => { 
     e.preventDefault();
-    setMessage('');
-    // if (email === '' && password === '') {
-    //   setMessage("Please fill email and password!");axios.defaults.withCredentials = true;
-
-    //   return;
-    // }
-    // await callApi("post", `http://localhost:3000/login`, { email, password });
+    // setMessage('');
+    // const response = await api.post(`/login`,{ email, password }, { withCredentials: true });
     // navigate('/admin/unauthorize')
-    const response = await axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/login`,{ email, password }, { withCredentials: true });
-    console.log(response);
-    navigate('/admin/unauthorize')
   };
-
-
-
-  // useEffect(() => {
-  //   if (data) {
-  //         console.log("data login", error, data);
-  //     if (data.code !== '303') {
-  //       setMessage(data.message);
-  //       return;
-  //     }
-  //     if (data.code === '303') {
-  //       console.log("login success");
-  //       setMessage('')
-  //       // navigate('/admin/unauthorize')
-  //       // window.location.href = data.url;
-  //     }
-  //   }
-  // }, [data, email, password]);
-
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      {/* {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500">{error.message}</p>}
-      {message && <p className="text-red-500">{message}</p>} */}
       <form onSubmit={handleLogin} className="flex flex-col h-fit bg-white border-2 rounded-lg shadow-lg hover:shadow-xl mt-20 mb-4 p-8">
         <h1 className="text-center font-bold text-sky-400 text-2xl mt-8">
           Login Form

@@ -2,9 +2,9 @@ import {useNavigate,useParams} from "react-router-dom";
 import { Model } from "survey-core";
 import { Survey } from "survey-react-ui";
 import { family_medical_json } from "./family_medical_json";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
+import { api } from "../../components/api";
 
 const FamailyMedicalHistory = () => {
   const navigate = useNavigate();
@@ -29,18 +29,13 @@ const FamailyMedicalHistory = () => {
   const saveSurveyData = async (survey) => {
     const data = survey.data;
     delete data.age;
-    console.log("patient_id", id);
     const med_data = {
       patient_id: id,
       data: {
         family_history: data,
       },
     };
-    console.log("history:", med_data);
-    const response = await axios.post(
-      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataCreate`,
-      med_data
-    );
+    const response = await api.post(`/formData/formDataCreate`,med_data);
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
@@ -59,17 +54,13 @@ const FamailyMedicalHistory = () => {
   const updateSurveyData = async (survey) => {
     const data = survey.data;
     delete data.age;
-    console.log("update_data", data);
     const soc_data = {
       patient_id: id,
       data: {
         family_history: data,
       },
     };
-    const response = await axios.put(
-      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataUpdate/${formId}`,
-      soc_data
-    );
+    const response = await api.put(`/formData/formDataUpdate/${formId}`,soc_data);
     if (response.data.code == 200) {
       Toast.fire({
         icon: "success",
@@ -89,7 +80,6 @@ const FamailyMedicalHistory = () => {
     id: "cancel",
     title: "Cancel",
     action: () => {
-      console.log("Cancel button clicked!");
       navigate(`/admin/patient/patientdetail/${id}/personalinfo`);
     },
   });
@@ -101,17 +91,12 @@ const FamailyMedicalHistory = () => {
   survey.sendResultOnPageNext = true;
   //Get Data
   const getData = async () => {
-    const response = await axios.post(
-      `${import.meta.env.VITE_SERVER_DOMAIN}/formData/formDataSearchPatient/`,
-      { patient_id: id, history: "family_history" }
-    );
+    const response = await api.post(`/formData/formDataSearchPatient/`,{ patient_id: id, history: "family_history" });
     if (response.data.code == 200 && response.data.data.length !== 0) {
       const prevData = response.data.data[0].data.family_history;
       survey.data = prevData;
-      console.log("previos data", prevData);
       const form_id = response.data.data[0].id;
       setFormId(form_id);
-      console.log("formId", formId);
       setIsNew(false);
     } else {
       setIsNew(true);
